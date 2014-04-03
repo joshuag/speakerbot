@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for,  render_template
+from flask import Flask, redirect, url_for,  render_template, request 
 from Speakerbot import Speakerbot, SoundEffect
 import json, string
 import zc.lockfile
@@ -115,9 +115,13 @@ def play_sound(sound_name):
 
     return redirect(url_for("home"))
 
+@app.route('/say/')
 @app.route('/say/<text>')
-def say(text):
-    if len(text) > 100:
+def say(text=None):
+    if not text:
+        text = request.args.get('speech-text', None)
+
+    if not text or len(text) > 100:
         return redirect(url_for("home"))
 
     parse_and_route_speech(text)

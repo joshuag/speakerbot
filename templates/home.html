@@ -37,6 +37,16 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="/">Home</a></li>
           </ul>
+          <div class="col-sm-3 col-md-3 pull-right">
+        <form class="navbar-form" role="say" action="/say/">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Say something" name="speech-text" id="speech-text">
+            <div class="input-group-btn">
+                <button class="btn btn-default"><i class="glyphicon glyphicon-play"></i></button>
+            </div>
+        </div>
+        </form>
+        </div>
         </div><!--/.nav-collapse -->
       </div>
     </div>
@@ -55,7 +65,7 @@
         </div><!-- /.col-sm-8 -->
         <div class="col-sm-9">
         	<div class="well clearfix">
-		        <p><img src='/static/r_gifs/{{ image }}' class="pull-right"></p>
+		        <p><img src='/static/r_gifs/{{ image }}' style="max-width:500px;" class="pull-right"></p>
 			</div>
         </div>
       </div>
