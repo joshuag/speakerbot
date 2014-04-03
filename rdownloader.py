@@ -88,8 +88,8 @@ def parse_page_for_images(link, user_path):
         images = page("a.zoom")
 
         for image in images:
-
-            download_image(image.attrib["href"], user_path)
+            if not "watch" in image.attrib["href"]:
+                download_image(image.attrib["href"], user_path)
 
 
 def download_image(url, path, file_type=None):
