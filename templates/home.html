@@ -42,7 +42,7 @@
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Say something" name="speech-text" id="speech-text">
             <div class="input-group-btn">
-                <button class="btn btn-default"><i class="glyphicon glyphicon-play"></i></button>
+                <button class="btn btn-default"><i class="glyphicon glyphicon-bullhorn"></i></button>
             </div>
         </div>
         </form>
@@ -64,9 +64,14 @@
           </ul>
         </div><!-- /.col-sm-8 -->
         <div class="col-sm-9">
-        	<div class="well clearfix">
-		        <p><img src='/static/r_gifs/{{ image }}' style="max-width:500px;" class="pull-right"></p>
-			</div>
+        	<div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">{{random_title}}</h3>
+            </div>
+            <div class="panel-body">
+              <img src='/static/r_gifs/{{ image }}' style="max-width:500px;" class="pull-right">
+            </div>
+          </div>
         </div>
       </div>
 

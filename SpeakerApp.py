@@ -87,7 +87,7 @@ def home():
 
     sound_tuples = [(url_for("play_sound", sound_name=sound), sound) for sound in o_sounds]
 
-    return render_template("home.html", sounds=sound_tuples, image=get_image())
+    return render_template("home.html", sounds=sound_tuples, image=get_image(), random_title=parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun."))
 
     out = "<!DOCTYPE html>"
     out += "<head><title>Speakerbot and the love below</title></head><body width='100%'>"
