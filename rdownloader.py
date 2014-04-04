@@ -6,7 +6,7 @@ from pyquery import PyQuery as pq
 
 from IPython import embed
 
-def grab_links(url, limit=5, found_links=None):
+def grab_links(url, limit=5, found_links=None, retries=0):
 
     limit -= 1
 
@@ -14,8 +14,19 @@ def grab_links(url, limit=5, found_links=None):
         found_links = []
 
     time.sleep(3)
-    
-    r = requests.get(url)
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.74.9 (KHTML, like Gecko) Version/7.0.2 Safari/537.74.9'
+    }
+
+    r = requests.get(url, headers=headers)
+
+    if "<title>Too Many Requests</title>" in r.text and retries < 5:
+        print "retrying"
+        time.sleep(30)
+        limit += 1
+        retries += 1
+        grab_links(url, limit, found_links, retries)
 
     page = pq(r.text)
 
