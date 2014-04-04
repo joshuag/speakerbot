@@ -16,6 +16,7 @@ def home():
 
 @app.route('/play_sound/<sound_name>')
 def play_sound(sound_name):
+    
     try:
         lock = zc.lockfile.LockFile('play')
         sb.play(sound_name)
@@ -28,6 +29,7 @@ def play_sound(sound_name):
 @app.route('/say/')
 @app.route('/say/<text>')
 def say(text=None):
+
     if not text:
         text = request.args.get('speech-text', None)
 

@@ -71,4 +71,7 @@ def get_image():
 
     file_path = choice(files)
 
+    if "?" in file_path:
+        file_path = get_image()
+
     return file_path
