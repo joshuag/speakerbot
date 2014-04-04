@@ -84,7 +84,7 @@ class Speakerbot(object):
     def play(self, name):
 
         self.record_sound_event(name)
-        self.se.play(self.sounds[name])
+        self.se.play(self.sounds[name][0])
 
     def say(self, name="", speech_text=""):
 
