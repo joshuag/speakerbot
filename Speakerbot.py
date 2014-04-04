@@ -68,7 +68,7 @@ class Speakerbot(object):
         sound_list = self.conn.execute("SELECT * from sounds order by votes desc, name asc")
 
         for sound in sound_list:
-            self.sounds[sound[0]] = sound[1]
+            self.sounds[sound[0]] = (sound[1], sound[2])
 
         return self.sounds
 
