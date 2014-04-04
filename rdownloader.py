@@ -81,15 +81,26 @@ def parse_page_for_images(link, user_path):
 
     #check for a single imgur image
 
+    album_images = page(".album-image")
+
     header = page("#image-title")
 
-    if header:
+    if header and not album_images:
 
         try:
             
-            image = page("div#image div a")[0]
+            image_q = page("div#image div a")
 
-            download_image(image.attrib["href"], user_path)
+            if len(image_q) < 1:
+                image_q = page("div#image div img")
+                image = image_q[0]
+                image_url = image.attrib["src"]
+
+            else:
+                image = image_q[0]
+                image_url = image.attrib["href"]
+
+            download_image(image_url, user_path)
 
         except:
 
@@ -99,9 +110,27 @@ def parse_page_for_images(link, user_path):
 
         images = page("a.zoom")
 
-        for image in images:
-            if not "watch" in image.attrib["href"]:
-                download_image(image.attrib["href"], user_path)
+        try:
+
+            if len(images) > 0:
+
+                for image in images:
+                    if not "watch" in image.attrib["href"]:
+                        download_image(image.attrib["href"], user_path)
+
+            else:
+
+                images = page(".image img")
+
+                for image in images:
+                    if not "watch" in image.attrib["src"]:
+                        download_image(image.attrib["src"], user_path)
+
+        except:
+
+            print link
+
+
 
 
 def download_image(url, path, file_type=None):
