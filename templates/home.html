@@ -55,11 +55,11 @@
       </div>
       <div class="row">
         <div class="col-sm-3">
-          <ul class="list-group">
+          <div class="list-group">
           	{% for sound in sounds %}
-            <li class="list-group-item"><a href="{{url_for("play_sound", sound_name=sound)}}">{{ sound }} <span class="badge pull-right">{{ sounds[sound][1] }}</span></a></li>
+            <a class="list-group-item" href="{{url_for("play_sound", sound_name=sound)}}">{{ sound }} <span class="badge pull-right">{{ sounds[sound][1] }}</span></a>
             {% endfor %}
-          </ul>
+          </div>
         </div><!-- /.col-sm-8 -->
         <div class="col-sm-9">
         	<div class="panel panel-default">
