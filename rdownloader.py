@@ -13,7 +13,8 @@ def grab_links(url, limit=5, found_links=None):
     if not found_links:
         found_links = []
 
-
+    time.sleep(3)
+    
     r = requests.get(url)
 
     page = pq(r.text)
