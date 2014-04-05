@@ -9,11 +9,11 @@
     <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
 
     <title>Speakerbot and the love below</title>
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 
   </head>
 
@@ -50,30 +50,7 @@
     </div>
 
     <div class="container theme-showcase" role="main">
-      <div class="page-header">
-        <h1></h1>
-      </div>
-      <div class="row">
-        <div class="col-sm-3">
-          <div class="list-group">
-          	{% for sound in sounds %}
-            <a class="list-group-item" href="{{url_for("play_sound", sound_name=sound)}}">{{ sound }} <span class="badge pull-right">{{ sounds[sound][1] }}</span></a>
-            {% endfor %}
-          </div>
-        </div><!-- /.col-sm-8 -->
-        <div class="col-sm-9">
-        	<div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">{{random_title}}</h3>
-            </div>
-            <div class="panel-body text-center">
-              <img src='/static/r_gifs/{{ image }}' style="max-width:500px;">
-            </div>
-          </div>
-        </div>
-      </div>
-
-
+    {% block content %}{% endblock %}
     </div> <!-- /container -->
 
 
