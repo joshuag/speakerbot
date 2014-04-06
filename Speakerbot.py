@@ -132,18 +132,6 @@ class Speakerbot(object):
 
         self.conn.commit()
 
-    def _create_tables(self):
-
-        self.conn.execute("CREATE TABLE sounds (name text, path text)")
-        self.conn.execute("CREATE TABLE snippets (name text, speech_text text)")
-
-        self.conn.commit()
-
-    def _create_indexes(self):
-
-        self.conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS UniqueSound ON sounds (name)")
-        self.conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS UniqueSnippet ON snippets (name)")
-
     def add_sound_to_db(self, name, path):
         
         

@@ -63,6 +63,10 @@ def play_speech(speech_func, text):
     except zc.lockfile.LockError:
         pass
 
+def run_with_lock(func, *args, **kwargs):
+    pass
+
+
 def get_image():
 
     path = getcwd() + "/static/r_gifs/"
