@@ -3,10 +3,11 @@ import requests
 import subprocess
 import os
 import sys
-import sqlite3
 from hashlib import md5, sha256
 from urllib import quote_plus
 from collections import OrderedDict
+
+from db.speaker_db import SpeakerDB
 
 from IPython import embed
 
@@ -51,7 +52,7 @@ class Speakerbot(object):
 
     def __init__(self):
 
-        self.conn = sqlite3.connect("speakerbot.db", check_same_thread=False)
+        self.db = SpeakerDB()
         self.snippets = OrderedDict()
         self.sounds = OrderedDict()
 
@@ -65,7 +66,7 @@ class Speakerbot(object):
 
         self.sounds = OrderedDict()
 
-        sound_list = self.conn.execute("SELECT * from sounds order by votes desc, name asc")
+        sound_list = self.db.execute("SELECT * from sounds order by votes desc, name asc")
 
         for sound in sound_list:
             self.sounds[sound[0]] = (sound[1], sound[2])
@@ -76,7 +77,7 @@ class Speakerbot(object):
 
         self.snippets = OrderedDict()
 
-        snippet_list = self.conn.execute("SELECT * FROM snippets")
+        snippet_list = self.db.execute("SELECT * FROM snippets")
 
         for snippet in snippet_list:
             self.snippets[snippet[0]] = snippet[1]
@@ -110,42 +111,35 @@ class Speakerbot(object):
         sha.update(speech_text)
         sha_hash = sha.hexdigest()
 
-        matched_snippet = self.conn.execute("SELECT votes FROM snippets where sha256=?", [sha_hash]).fetchone()
+        matched_snippet = self.db.execute("SELECT votes FROM snippets where sha256=?", [sha_hash]).fetchone()
 
         if matched_snippet:
             votes = matched_snippet[0] + 1
 
-            self.conn.execute("UPDATE snippets set votes=? where sha256=?", [votes, sha_hash])
+            self.db.execute("UPDATE snippets set votes=? where sha256=?", [votes, sha_hash])
         else:
-            self.conn.execute("INSERT into snippets (sha256, speech_text, votes) VALUES (?, ?, 0) ", [sha_hash, speech_text])
-
-        self.conn.commit()
+            self.db.execute("INSERT into snippets (sha256, speech_text, votes) VALUES (?, ?, 0) ", [sha_hash, speech_text])
 
     def record_sound_event(self, sound_name):
 
-        matched_sound = self.conn.execute("SELECT votes FROM sounds where name=?", [sound_name]).fetchone()
+        matched_sound = self.db.execute("SELECT votes FROM sounds where name=?", [sound_name]).fetchone()
 
         if matched_sound:
             votes = matched_sound[0] + 1
 
-            self.conn.execute("UPDATE sounds set votes=? where name=?", [votes, sound_name])
+            self.db.execute("UPDATE sounds set votes=? where name=?", [votes, sound_name])
 
-        self.conn.commit()
 
     def add_sound_to_db(self, name, path):
         
         
-        self.conn.execute("INSERT INTO sounds VALUES (?, ?)", (name, path))
-
-        self.conn.commit()
+        self.db.execute("INSERT INTO sounds VALUES (?, ?)", (name, path))
 
         self.load_sounds()
 
     def add_snippet_to_db(self, name, speech_text):
 
-        self.conn.execute("INSERT INTO snippets VALUES (?, ?)", (name, speech_text))
-
-        self.conn.commit()
+        self.db.execute("INSERT INTO snippets VALUES (?, ?)", (name, speech_text))
 
         self.load_snippets()
 
