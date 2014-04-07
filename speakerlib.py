@@ -14,7 +14,8 @@ def parse_and_route_speech(speech_func, text):
     
     actions = {
         'random':random_utterance,
-        'dada':dada
+        'dada':dada,
+        'slinging':slinging_burgers
     }
     token = None
     argument = None
@@ -37,6 +38,9 @@ def parse_and_route_speech(speech_func, text):
 
     if text:
         play_speech(speech_func, run_filters(text))
+
+def slinging_burgers(text):
+    return "Anyone who describes programming as slinging code should be slinging burgers"
 
 def run_filters(text):
     text = parse_and_fill_mad_lib(text)
