@@ -7,7 +7,7 @@ from hashlib import md5, sha256
 from urllib import quote_plus
 from collections import OrderedDict
 
-from db.speaker_db import SpeakerDB
+from speaker_db import SpeakerDB
 
 from IPython import embed
 
