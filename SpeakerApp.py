@@ -7,7 +7,7 @@ from speakerlib import *
 
 sb = Speakerbot()
 app = Flask(__name__)
-app.config['DEBUG'] = False
+app.config['DEBUG'] = True
 
 @app.route('/')
 def home():
