@@ -27,7 +27,9 @@ class TextToSpeech(object):
 
         if not os.path.isfile(filename):
             f = open(filename, "w")
-            subprocess.call(['curl','-A Mozilla',"http://translate.google.com/translate_tts?tl=en_gb&ie=UTF-8&q=%s" % (text)], stdout=f)
+            subprocess.call(
+                    ['curl','-A Mozilla',"http://translate.google.com/translate_tts?tl=en_gb&ie=UTF-8&q=%s" % (text)], 
+                    stdout=f)
 
         s = SoundEffect()
         s.play_sound(filename)
@@ -57,7 +59,6 @@ class Speakerbot(object):
         self.sounds = OrderedDict()
 
         self.load_sounds()
-        self.load_snippets()
 
         self.se = SoundEffect()
         self.tts = TextToSpeech()
@@ -69,18 +70,9 @@ class Speakerbot(object):
         sound_list = self.db.execute("SELECT * from sounds order by votes desc, name asc")
 
         for sound in sound_list:
-            self.sounds[sound[0]] = (sound[1], sound[2])
+            self.sounds[sound["name"]] = (sound["path"], sound["votes"])
 
         return self.sounds
-
-    def load_snippets(self):
-
-        self.snippets = OrderedDict()
-
-        snippet_list = self.db.execute("SELECT * FROM snippets")
-
-        for snippet in snippet_list:
-            self.snippets[snippet[0]] = snippet[1]
 
     def play(self, name):
 
@@ -114,7 +106,7 @@ class Speakerbot(object):
         matched_snippet = self.db.execute("SELECT votes FROM snippets where sha256=?", [sha_hash]).fetchone()
 
         if matched_snippet:
-            votes = matched_snippet[0] + 1
+            votes = matched_snippet["votes"] + 1
 
             self.db.execute("UPDATE snippets set votes=? where sha256=?", [votes, sha_hash])
         else:
@@ -125,22 +117,14 @@ class Speakerbot(object):
         matched_sound = self.db.execute("SELECT votes FROM sounds where name=?", [sound_name]).fetchone()
 
         if matched_sound:
-            votes = matched_sound[0] + 1
+            votes = matched_sound["votes"] + 1
 
             self.db.execute("UPDATE sounds set votes=? where name=?", [votes, sound_name])
 
-
     def add_sound_to_db(self, name, path):
-        
         
         self.db.execute("INSERT INTO sounds VALUES (?, ?)", (name, path))
 
         self.load_sounds()
-
-    def add_snippet_to_db(self, name, speech_text):
-
-        self.db.execute("INSERT INTO snippets VALUES (?, ?)", (name, speech_text))
-
-        self.load_snippets()
 
 

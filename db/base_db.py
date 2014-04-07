@@ -6,11 +6,19 @@ class base_db(object):
 
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
 
+        self.conn.row_factory = self.row_factory
+
         self.version = self.get_version()
 
         self.migrations = self.get_migrations()
 
         self.run_migrations()
+
+    def row_factory(self, cursor, row):
+        row_dict = {}
+        for idx, column in enumerate(cursor.description):
+            row_dict[column[0]] = row[idx]
+        return row_dict
 
     def update_version(self, version):
         self.version = version
@@ -49,7 +57,7 @@ class base_db(object):
     def get_version(self):
 
         try:
-            version_cursor = self.execute("select version from db_version limit 1")
+            version_cursor = self.execute("select rowid, version from db_version limit 1")
             result = version_cursor.next()
         except sqlite3.OperationalError:
             return 0
@@ -57,8 +65,7 @@ class base_db(object):
         except StopIteration:
             return 0
 
-
-        return int(result[0])
+        return int(result["version"])
 
 
 
