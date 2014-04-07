@@ -1,4 +1,5 @@
 from db.base_db import base_db
+import sqlite3
 
 class SpeakerDB(base_db):
 
