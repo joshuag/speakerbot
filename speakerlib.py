@@ -40,7 +40,8 @@ def parse_and_route_speech(speech_func, text):
         play_speech(speech_func, run_filters(text))
 
 def slinging_burgers(text):
-    return "Anyone who describes programming as slinging code should be slinging burgers"
+    text = "Anyone who describes programming as slinging code should be slinging burgers"
+    return text
 
 def run_filters(text):
     text = parse_and_fill_mad_lib(text)
