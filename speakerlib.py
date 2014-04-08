@@ -18,7 +18,8 @@ def parse_and_route_speech(speech_func, text):
         'random':random_utterance,
         'dada':dada,
         'slinging':slinging_burgers,
-        'weather':weather
+        'weather':weather,
+        'lunch': lunch
     }
     token = None
     argument = None
@@ -41,6 +42,18 @@ def parse_and_route_speech(speech_func, text):
 
     if text:
         play_speech(speech_func, run_filters(text))
+
+def lunch():
+
+    places = [
+        "parkside", "flipside", "subway", "panera", "zoup", "umami", 
+        "dave's", "lemon falls", "giant eagle", "einstein brothers", "fresh start",
+        "panini's", "burntwood tavern", "rick's cafe"
+    ]
+
+    place = choice(places)
+
+    return "I think you ought to go to %s for lunch" % place
 
 def weather():
 
