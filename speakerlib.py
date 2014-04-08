@@ -5,6 +5,8 @@ import zc.lockfile
 from Speakerbot import SoundEffect
 
 from random import choice
+import requests
+import json
 
 
 def dada():
@@ -15,7 +17,8 @@ def parse_and_route_speech(speech_func, text):
     actions = {
         'random':random_utterance,
         'dada':dada,
-        'slinging':slinging_burgers
+        'slinging':slinging_burgers,
+        'weather':weather
     }
     token = None
     argument = None
@@ -38,6 +41,16 @@ def parse_and_route_speech(speech_func, text):
 
     if text:
         play_speech(speech_func, run_filters(text))
+
+def weather():
+
+    r = requests.get("https://api.forecast.io/forecast/38a9c91bca816b2e960c14c1ecdcf8c6/41.4311,81.3886")
+
+    weather = json.loads(r.text)
+
+    weather_text = "The current temperature is %s, the weather is %s" % (weather["currently"]["apparentTemperature"], weather["hourly"]["summary"])
+
+    return weather_text
 
 def slinging_burgers():
     return "Anyone who describes !verb ing as !verb ing !noun should be !verb ing !noun"
