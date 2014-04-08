@@ -44,7 +44,7 @@ def parse_and_route_speech(speech_func, text):
         play_speech(speech_func, run_filters(text))
 
 def lunch():
-
+    #TODO: Make this database driven
     places = [
         "parkside", "flipside", "subway", "panera", "zoup", "umami", 
         "dave's", "lemon falls", "giant eagle", "einstein brothers", "fresh start",
