@@ -40,3 +40,5 @@ sounds
 speech
 play
 speakerbot.db
+
+config.py

@@ -1,13 +1,24 @@
-from words import parse_and_fill_mad_lib
-from os import listdir, getcwd
-from os.path import isfile, join
-import zc.lockfile
-from Speakerbot import SoundEffect
-
-from random import choice
-import requests
+import datetime
 import json
 
+from os import listdir, getcwd
+from os.path import isfile, join
+from random import choice
+
+import zc.lockfile
+import requests
+
+from words import parse_and_fill_mad_lib
+from Speakerbot import SoundEffect
+from config import config
+
+def get_mashape_api(url):
+    api_key = config["mashape_api_key"]
+    headers={
+        "X-Mashape-Authorization": api_key
+    }
+
+    return requests.get(url, headers=headers)
 
 def dada():
     return parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")
@@ -19,7 +30,8 @@ def parse_and_route_speech(speech_func, text):
         'dada':dada,
         'slinging':slinging_burgers,
         'weather':weather,
-        'lunch': lunch
+        'lunch': lunch,
+        'datefact':datefact
     }
     token = None
     argument = None
@@ -42,6 +54,17 @@ def parse_and_route_speech(speech_func, text):
 
     if text:
         play_speech(speech_func, run_filters(text))
+
+def datefact():
+    day = datetime.datetime.today().day
+    month = datetime.datetime.today().month
+
+    url = "https://numbersapi.p.mashape.com/%s/%s/date" % (month, day)
+
+    r = get_mashape_api(url)
+
+    return r.text
+
 
 def lunch():
     #TODO: Make this database driven

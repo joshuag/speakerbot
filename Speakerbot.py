@@ -11,6 +11,18 @@ from speaker_db import SpeakerDB
 
 from IPython import embed
 
+def split_text(text, length):
+    
+    phrases = text.split(".")
+    
+    if len(phrases) == 1:
+        phrases = text.split(",")
+
+    if len(phrases) == 1:
+        return [text[:length-1]]
+    else:
+        return phrases
+
 class TextToSpeech(object):
 
     def __init__(self, speak_path="espeak", wpm=150):
@@ -23,12 +35,10 @@ class TextToSpeech(object):
     def say_classy(self, text):
 
         if len(text) > 100:
-            phrases = text.split(".")
-            if len(phrases) == 1:
-                text = text[:99]
-            else:
-                for phrase in phrases:
-                    self.say_classy(phrase)
+            phrases = split_text(text, 100)
+            for phrase in phrases:
+                self.say_classy(phrase)
+
             return
 
         text = quote_plus(text)
