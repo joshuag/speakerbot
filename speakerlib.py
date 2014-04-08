@@ -74,7 +74,6 @@ def horoscope(sign):
 
 
     text = "The horoscope for %s. %s" % (sign, horoscope)
-    print text
 
     return text
 
