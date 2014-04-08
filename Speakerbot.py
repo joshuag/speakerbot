@@ -21,6 +21,16 @@ class TextToSpeech(object):
         subprocess.call([self.speak_path, text, self.wpm_string])
 
     def say_classy(self, text):
+
+        if len(text) > 100:
+            phrases = text.split(".")
+            if len(phrases) == 1:
+                text = text[:99]
+            else:
+                for phrase in phrases:
+                    self.say_classy(phrase)
+            return
+
         text = quote_plus(text)
 
         filename = "speech/%s.mp3" % text
