@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for,  render_template, request 
 from Speakerbot import Speakerbot
+import datetime
 
 import zc.lockfile
 
@@ -16,6 +17,9 @@ def home():
 
 @app.route('/play_sound/<sound_name>')
 def play_sound(sound_name):
+
+    if sound_name == "rebecca-black" and not datetime.datetime.today().weekday() == 4:
+        sound_name = choice(sb.sounds.keys())
     
     try:
         lock = zc.lockfile.LockFile('play')
