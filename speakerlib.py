@@ -33,8 +33,11 @@ def parse_and_route_speech(speech_func, text):
         'lunch': lunch,
         'datefact':datefact
     }
+    
     token = None
     argument = None
+    record_utterance = True
+
     if text[0] == "!":
         space_pos = text.find(" ")
         if space_pos > 0:
@@ -45,17 +48,23 @@ def parse_and_route_speech(speech_func, text):
 
         method = actions.get(token, None)
         if method:
-            if argument:
-                text_output = method(argument)
-            else:
-                text_output = method()
-            
-            text = text_output
+            try:
+                if argument:
+                    text_output = method(argument)
+                else:
+                    text_output = method()
+
+                record_utterance = False
+                text = text_output
+
+            except TypeError:
+                text = "I need an argument for that function, dummy."
 
     if text:
-        play_speech(speech_func, run_filters(text))
+        play_speech(speech_func, run_filters(text), record_utterance=record_utterance)
 
 def datefact():
+
     day = datetime.datetime.today().day
     month = datetime.datetime.today().month
 
@@ -63,7 +72,7 @@ def datefact():
 
     r = get_mashape_api(url)
 
-    return r.text
+    return u"" + r.text
 
 
 def lunch():
@@ -89,9 +98,11 @@ def weather():
     return weather_text
 
 def slinging_burgers():
+    
     return "Anyone who describes !verb ing as !verb ing !noun should be !verb ing !noun"
 
 def run_filters(text):
+    
     text = parse_and_fill_mad_lib(text)
 
     return text
@@ -108,11 +119,14 @@ def random_utterance():
 
     se.play_sound(path + file_path)
 
-def play_speech(speech_func, text):
+def play_speech(speech_func, text, record_utterance):
+    
     try:
+    
         lock = zc.lockfile.LockFile('play')
-        speech_func(speech_text=text)
+        speech_func(speech_text=text, record_utterance=record_utterance)
         lock.close()
+
     except zc.lockfile.LockError:
         pass
 

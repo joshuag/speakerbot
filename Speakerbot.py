@@ -1,15 +1,12 @@
-import time     #for delay
-import requests
-import subprocess
 import os
-import sys
-from hashlib import md5, sha256
-from urllib import quote_plus
+import subprocess
+
 from collections import OrderedDict
+from hashlib import sha256
+from urllib import quote_plus
 
 from speaker_db import SpeakerDB
 
-from IPython import embed
 
 def split_text(text, length):
     
@@ -26,13 +23,15 @@ def split_text(text, length):
 class TextToSpeech(object):
 
     def __init__(self, speak_path="espeak", wpm=150):
+
         self.speak_path = speak_path
         self.wpm_string = "-s %s" % wpm 
 
     def say(self, text): 
+
         subprocess.call([self.speak_path, text, self.wpm_string])
 
-    def say_classy(self, text):
+    def say_api(self, text, url_string):
 
         if len(text) > 100:
             phrases = split_text(text, 100)
@@ -48,11 +47,17 @@ class TextToSpeech(object):
         if not os.path.isfile(filename):
             f = open(filename, "w")
             subprocess.call(
-                    ['curl','-A Mozilla',"http://translate.google.com/translate_tts?tl=en_gb&ie=UTF-8&q=%s" % (text)], 
+                    ['curl','-A Mozilla', url_string % (text)], 
                     stdout=f)
 
         s = SoundEffect()
         s.play_sound(filename)
+
+    def say_classy(self, text):
+        
+        url_string = u"http://translate.google.com/translate_tts?tl=en_gb&ie=UTF-8&q=%s"
+        self.say_api(text, url_string)
+
 
 class SoundEffect(object):
 
@@ -99,21 +104,23 @@ class Speakerbot(object):
         self.record_sound_event(name)
         self.se.play(self.sounds[name][0])
 
-    def say(self, name="", speech_text=""):
+    def say(self, name="", speech_text="", record_utterance=False):
 
         if name:
             speech_text = self.snippets[name]
-
-        self.record_utterance(speech_text)
+        
+        if record_utterance:
+            self.record_utterance(speech_text)
 
         self.tts.say(speech_text)
 
-    def say_classy(self, name="", speech_text=""):
+    def say_classy(self, name="", speech_text="", record_utterance=False):
 
         if name:    
             speech_text = self.snippets[name]
 
-        self.record_utterance(speech_text)
+        if record_utterance:
+            self.record_utterance(speech_text)
 
         self.tts.say_classy(speech_text)        
 
