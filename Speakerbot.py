@@ -75,9 +75,6 @@ class TextToSpeech(object):
 
         text = quote_plus(text.encode("utf-8"))
 
-        print text
-        return
-
         filename = "speech/%s.mp3" % text
 
         if not os.path.isfile(filename):

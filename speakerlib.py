@@ -32,7 +32,8 @@ def parse_and_route_speech(speech_func, text):
         'weather':weather,
         'lunch': lunch,
         'datefact':datefact,
-        'horoscope':horoscope
+        'horoscope':horoscope,
+        'yoda':yoda
     }
     
     token = None
@@ -63,6 +64,14 @@ def parse_and_route_speech(speech_func, text):
 
     if text:
         play_speech(speech_func, run_filters(text), record_utterance=record_utterance)
+
+def yoda(sentence):
+
+    url = "https://yoda.p.mashape.com/yoda?sentence=%s" % sentence
+
+    r = get_mashape_api(url)
+    
+    return u"" + r.text
 
 def horoscope(sign):
     

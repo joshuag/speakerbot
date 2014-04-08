@@ -12,6 +12,9 @@ def parse_and_fill_mad_lib(mad_lib):
         exclude = set(string.punctuation)
         naked_token = ''.join(ch for ch in token[1:] if ch not in exclude)
 
+        if len(token) == 0:
+        	continue
+
         if token[0] == "!" and naked_token in term_map.keys():
 
             tokens[idx] = choice(term_map[naked_token])
