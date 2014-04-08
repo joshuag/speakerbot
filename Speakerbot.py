@@ -9,17 +9,31 @@ from speaker_db import SpeakerDB
 
 
 def split_text(text, length):
-    
-    if len(text) > length:
-        
-        phrases = []
-        can_phrases = text.split(" ")
-        out_phrase = ""
 
-        for phrase in can_phrases:
+
+    split_list = [".", "!", ";", " and "]
+
+
+    for split in split_list:
+
+        phrases = split_and_keep(text, split)
+
+        if len(phrases) == 1 and len(phrases[0]) > length:
+            continue
+        else:
+            return phrases
+
+    if len(phrases) == 1 and len(phrases[0]) > length:
+
+        split_phrases = split_and_keep(phrases[0], " ")
+
+        out_phrase = ""
+        phrases = []
+
+        for phrase in split_phrases:
 
             if len(out_phrase) + len(phrase) < length:
-                out_phrase = out_phrase + " " + phrase
+                out_phrase = out_phrase + phrase
             else:
                 phrases.append(out_phrase)
                 out_phrase = phrase
@@ -27,6 +41,17 @@ def split_text(text, length):
         phrases.append(out_phrase)
 
     return phrases
+
+def split_and_keep(text, delimiter):
+
+    split_items = text.split(delimiter)
+
+    split_list = [item + delimiter for item in split_items if item != ""]
+
+    split_list[-1] = split_list[-1].replace(delimiter, "")
+
+    return split_list
+    
 
 class TextToSpeech(object):
 
@@ -44,12 +69,15 @@ class TextToSpeech(object):
         if len(text) > 100:
             phrases = split_text(text, 100)
             for phrase in phrases:
-                self.say_classy(phrase)
+                self.say_api(phrase, url_string)
 
             return
 
         text = quote_plus(text.encode("utf-8"))
-        
+
+        print text
+        return
+
         filename = "speech/%s.mp3" % text
 
         if not os.path.isfile(filename):
