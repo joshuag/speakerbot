@@ -31,7 +31,8 @@ def parse_and_route_speech(speech_func, text):
         'slinging':slinging_burgers,
         'weather':weather,
         'lunch': lunch,
-        'datefact':datefact
+        'datefact':datefact,
+        'horoscope':horoscope
     }
     
     token = None
@@ -50,7 +51,7 @@ def parse_and_route_speech(speech_func, text):
         if method:
             try:
                 if argument:
-                    text_output = method(argument)
+                    text_output = method(argument.strip())
                 else:
                     text_output = method()
 
@@ -62,6 +63,20 @@ def parse_and_route_speech(speech_func, text):
 
     if text:
         play_speech(speech_func, run_filters(text), record_utterance=record_utterance)
+
+def horoscope(sign):
+    
+    url = "http://widgets.fabulously40.com/horoscope.json?sign=%s" % sign
+
+    r = requests.get(url)
+
+    horoscope = json.loads(r.text)["horoscope"]["horoscope"]
+
+
+    text = "The horoscope for %s. %s" % (sign, horoscope)
+    print text
+
+    return text
 
 def datefact():
 

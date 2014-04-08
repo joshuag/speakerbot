@@ -10,15 +10,23 @@ from speaker_db import SpeakerDB
 
 def split_text(text, length):
     
-    phrases = text.split(".")
-    
-    if len(phrases) == 1:
-        phrases = text.split(",")
+    if len(text) > length:
+        
+        phrases = []
+        can_phrases = text.split(" ")
+        out_phrase = ""
 
-    if len(phrases) == 1:
-        return [text[:length-1]]
-    else:
-        return phrases
+        for phrase in can_phrases:
+
+            if len(out_phrase) + len(phrase) < length:
+                out_phrase = out_phrase + " " + phrase
+            else:
+                phrases.append(out_phrase)
+                out_phrase = phrase
+
+        phrases.append(out_phrase)
+
+    return phrases
 
 class TextToSpeech(object):
 
@@ -40,8 +48,8 @@ class TextToSpeech(object):
 
             return
 
-        text = quote_plus(text)
-
+        text = quote_plus(text.encode("utf-8"))
+        
         filename = "speech/%s.mp3" % text
 
         if not os.path.isfile(filename):
