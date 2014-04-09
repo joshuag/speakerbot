@@ -54,6 +54,11 @@ def parse_and_route_speech(speech_func, text):
     if text:
         play_speech(speech_func, run_filters(text))
 
+def niceify_number(i):
+    #swiped from http://codegolf.stackexchange.com/questions/4707/outputting-ordinal-numbers-1st-2nd-3rd
+    k=i%10
+    return "%d%s" % (i,"tsnrhtdd"[(i/10%10!=1)*(k<4)*k::4])
+
 def queue_speech_for_tweet(*args, **kwargs):
     text = kwargs["speech_text"]
 
@@ -62,10 +67,17 @@ def queue_speech_for_tweet(*args, **kwargs):
 
     db = SpeakerDB()
     text = text[:139]
-    db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
+    
 
 def queue_sound_for_tweet(name):
-    print name
+
+    db = SpeakerDB()
+    matched_sound = db.execute("SELECT votes FROM sounds where name=?", [name]).fetchone()
+
+    if matched_sound:
+        text = "I just played %s for the %s time" % (name, niceify_number(matched_sound["votes"]))
+        db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
+        
 
 def play_speech(speech_func, text):
     

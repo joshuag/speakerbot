@@ -16,10 +16,10 @@ def listenable(klass):
 
             results = method(*args, **kwargs)
 
-            try:
-                self.dispatch_events(method.__name__, *args, **kwargs)
-            except:
-                print "One of your listeners failed. I'm not going to let it ruin my day though."
+            #try:
+            self.dispatch_events(method.__name__, *args, **kwargs)
+            #except:
+            #    print "One of your listeners failed. I'm not going to let it ruin my day though."
 
             return results
 
