@@ -10,6 +10,7 @@ from random import choice
 import requests
 
 from config import config
+from Speakerbot import SoundEffect
 from words import parse_and_fill_mad_lib
 
 def get_mashape_api(url):
