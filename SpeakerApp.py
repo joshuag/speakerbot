@@ -1,12 +1,21 @@
 from flask import Flask, redirect, url_for,  render_template, request 
-from Speakerbot import Speakerbot
 import datetime
 
 import zc.lockfile
 
+from eventrecorder import EventRecorder
+from Speakerbot import Speakerbot
+from speaker_db import SpeakerDB
 from speakerlib import *
 
 sb = Speakerbot()
+db = SpeakerDB()
+evr = EventRecorder(db=db)
+
+sb.attach_listener("say_classy", queue_speech_for_tweet)
+sb.attach_listener("play", queue_sound_for_tweet)
+sb.attach_listener("play", evr.record_sound_event)
+
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
@@ -36,6 +45,9 @@ def say(text=None):
 
     if not text:
         text = request.args.get('speech-text', None)
+
+    if request.args.get('record_utterance', "true") == "true":
+        evr.record_utterance(text)
 
     if not text or len(text) > 100:
         return redirect(url_for("home"))

@@ -15,12 +15,14 @@ class base_db(object):
         self.run_migrations()
 
     def row_factory(self, cursor, row):
+
         row_dict = {}
         for idx, column in enumerate(cursor.description):
             row_dict[column[0]] = row[idx]
         return row_dict
 
     def update_version(self, version):
+        
         self.version = version
         self.execute("update db_version set version = ?", [version])
     

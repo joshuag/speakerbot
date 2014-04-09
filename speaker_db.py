@@ -42,6 +42,10 @@ class SpeakerDB(base_db):
         self.execute("insert into groups (group_id, group_name) VALUES (?, ?)", [group_name, group_name_hexdigest])
         self.execute("insert into group_membership (group_id, user_name) VALUES (?, ?)", [group_name_hexdigest, "*"])
 
+    def _migrate_4(self):
+
+        self.execute("delete from snippets")
+
 
 if __name__ == "__main__":
-    db = SpeakerDB(db_path="../speakerbot.db")
+    db = SpeakerDB(db_path="speakerbot.db")

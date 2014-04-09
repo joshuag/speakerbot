@@ -5,14 +5,12 @@ from collections import OrderedDict
 from hashlib import sha256
 from urllib import quote_plus
 
+from listenable import listenable, event
 from speaker_db import SpeakerDB
-
 
 def split_text(text, length):
 
-
     split_list = [".", "!", ";", " and "]
-
 
     for split in split_list:
 
@@ -108,6 +106,7 @@ class SoundEffect(object):
 
         subprocess.call([self.sound_player, file_path])
 
+@listenable
 class Speakerbot(object):
 
     def __init__(self):
@@ -115,6 +114,8 @@ class Speakerbot(object):
         self.db = SpeakerDB()
         self.snippets = OrderedDict()
         self.sounds = OrderedDict()
+
+        self.listeners = {}
 
         self.load_sounds()
 
@@ -132,54 +133,26 @@ class Speakerbot(object):
 
         return self.sounds
 
+    @event
     def play(self, name):
 
-        self.record_sound_event(name)
         self.se.play(self.sounds[name][0])
 
-    def say(self, name="", speech_text="", record_utterance=False):
+
+    def say(self, name="", speech_text=""):
 
         if name:
             speech_text = self.snippets[name]
-        
-        if record_utterance:
-            self.record_utterance(speech_text)
 
         self.tts.say(speech_text)
 
-    def say_classy(self, name="", speech_text="", record_utterance=False):
+    @event
+    def say_classy(self, name="", speech_text=""):
 
         if name:    
             speech_text = self.snippets[name]
 
-        if record_utterance:
-            self.record_utterance(speech_text)
-
-        self.tts.say_classy(speech_text)        
-
-    def record_utterance(self, speech_text):
-
-        sha = sha256()
-        sha.update(speech_text)
-        sha_hash = sha.hexdigest()
-
-        matched_snippet = self.db.execute("SELECT votes FROM snippets where sha256=?", [sha_hash]).fetchone()
-
-        if matched_snippet:
-            votes = matched_snippet["votes"] + 1
-
-            self.db.execute("UPDATE snippets set votes=? where sha256=?", [votes, sha_hash])
-        else:
-            self.db.execute("INSERT into snippets (sha256, speech_text, votes) VALUES (?, ?, 0) ", [sha_hash, speech_text])
-
-    def record_sound_event(self, sound_name):
-
-        matched_sound = self.db.execute("SELECT votes FROM sounds where name=?", [sound_name]).fetchone()
-
-        if matched_sound:
-            votes = matched_sound["votes"] + 1
-
-            self.db.execute("UPDATE sounds set votes=? where name=?", [votes, sound_name])
+        self.tts.say_classy(speech_text)
 
     def add_sound_to_db(self, name, path):
         
