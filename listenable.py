@@ -7,6 +7,17 @@ def event(func):
     return func
 
 def listenable(klass):
+    """
+        Class decorator to implement a lightweight event-dispatch model.
+        @listenable on the class
+        @event on the method you want to monitor
+
+
+        listeners must implement the function signature of the event exactly (or take *args, **kwargs generically),
+        plus special argument called "event_result" that contains the return value of the method invocation.
+
+        TODO: Make it work with other decorators, inheritance
+    """
 
     def wrapper(method):
 
@@ -14,14 +25,13 @@ def listenable(klass):
 
             self = args[0]
 
-            results = method(*args, **kwargs)
+            result = method(*args, **kwargs)
 
-            #try:
+            kwargs["event_result"] = result
+
             self.dispatch_events(method.__name__, *args, **kwargs)
-            #except:
-            #    print "One of your listeners failed. I'm not going to let it ruin my day though."
 
-            return results
+            return result
 
         wrapped.is_event = True
         return wrapped
@@ -39,8 +49,11 @@ def listenable(klass):
     def dispatch_events(self, method_name, *args, **kwargs):
 
         for listener in self._listeners.get(method_name, []):
-            #pop off the instance information. We just want the function signature
-            listener(*args[1:], **kwargs)
+            try:
+                #pop off the instance information. We just want the function signature
+                listener(*args[1:], **kwargs)
+            except Exception as e:
+                print "Event listener %s failed. It reported the following: %s" % (listener.__name__, str(e))
     
     for name, method in klass.__dict__.iteritems():
 

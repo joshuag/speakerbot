@@ -20,7 +20,7 @@ class EventRecorder(object):
         else:
             self.db.execute("INSERT into snippets (sha256, speech_text, votes) VALUES (?, ?, 0) ", [sha_hash, speech_text])
 
-    def record_sound_event(self, sound_name):
+    def record_sound_event(self, sound_name, event_result=None):
 
         matched_sound = self.db.execute("SELECT votes FROM sounds where name=?", [sound_name]).fetchone()
 

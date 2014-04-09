@@ -60,6 +60,7 @@ def niceify_number(i):
     return "%d%s" % (i,"tsnrhtdd"[(i/10%10!=1)*(k<4)*k::4])
 
 def queue_speech_for_tweet(*args, **kwargs):
+
     text = kwargs["speech_text"]
 
     if not text:
@@ -67,9 +68,9 @@ def queue_speech_for_tweet(*args, **kwargs):
 
     db = SpeakerDB()
     text = text[:139]
-    
+    db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
 
-def queue_sound_for_tweet(name):
+def queue_sound_for_tweet(name, event_result):
 
     db = SpeakerDB()
     matched_sound = db.execute("SELECT votes FROM sounds where name=?", [name]).fetchone()
@@ -77,7 +78,6 @@ def queue_sound_for_tweet(name):
     if matched_sound:
         text = "I just played %s for the %s time" % (name, niceify_number(matched_sound["votes"]))
         db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
-        
 
 def play_speech(speech_func, text):
     
