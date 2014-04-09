@@ -18,8 +18,6 @@ class SpeakerDB(base_db):
         except sqlite3.OperationalError:
             pass
 
-        self.execute("insert into db_version (version) VALUES (1);")
-
     def _migrate_1(self):
 
         self.execute("create table publish_queue (tweet_text text)")
@@ -45,6 +43,10 @@ class SpeakerDB(base_db):
     def _migrate_4(self):
 
         self.execute("delete from snippets")
+
+    def _migrate_5(self):
+
+        self.execute("ALTER TABLE sounds ADD COLUMN cost INTEGER")
 
 
 if __name__ == "__main__":

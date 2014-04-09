@@ -24,6 +24,10 @@ def get_mashape_api(url):
 def dada():
     return parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")
 
+def ross():
+
+    return "Oh shit! I gotta get out of here!"
+
 def yoda(sentence):
 
     url = "https://yoda.p.mashape.com/yoda?sentence=%s" % sentence
