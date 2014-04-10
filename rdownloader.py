@@ -142,6 +142,11 @@ def download_image(url, path, file_type=None):
 
     file_name = url[url.rfind("/")+1:]
 
+    file_name = file_name.replace("?1","")
+
+    if "." not in file_name:
+        return
+
     file_path = path + os.sep + file_name
 
     if file_type:
