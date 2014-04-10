@@ -12,6 +12,7 @@ import requests
 from config import config
 from Speakerbot import SoundEffect
 from words import parse_and_fill_mad_lib
+from speaker_db import SpeakerDB
 
 def get_mashape_api(url):
     api_key = config["mashape_api_key"]
@@ -20,6 +21,16 @@ def get_mashape_api(url):
     }
 
     return requests.get(url, headers=headers)
+
+def jon():
+    db = SpeakerDB()
+    results = db.execute("SELECT * FROM snippets where votes > 2 order by rowid desc limit 10")
+
+    speech_list = [result["speech_text"] for result in results]
+
+    speech_text = choice(speech_list)
+
+    return speech_text
 
 def dada():
     return parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")

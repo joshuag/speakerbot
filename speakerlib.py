@@ -23,7 +23,8 @@ def parse_and_route_speech(speech_func, text):
         'datefact':datefact,
         'horoscope':horoscope,
         'yoda':yoda,
-        'ross':ross
+        'ross':ross,
+        'jon':jon
     }
     
     token = None
