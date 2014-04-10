@@ -24,7 +24,7 @@ def get_mashape_api(url):
 
 def jon():
     db = SpeakerDB()
-    results = db.execute("SELECT * FROM snippets where votes > 2 order by rowid desc limit 10")
+    results = db.execute("SELECT * FROM snippets where votes > 1 order by rowid desc limit 10")
 
     speech_list = [result["speech_text"] for result in results]
 
