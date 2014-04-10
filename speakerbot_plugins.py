@@ -92,7 +92,7 @@ def weather():
 
     weather = json.loads(r.text)
 
-    weather_text = "The current temperature is %s, the weather is %s" % (weather["currently"]["apparentTemperature"], weather["hourly"]["summary"])
+    weather_text = "The current temperature is %s, the weather forecast is %s" % (weather["currently"]["apparentTemperature"], weather["hourly"]["summary"])
 
     return weather_text
 
