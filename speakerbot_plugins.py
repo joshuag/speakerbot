@@ -88,7 +88,7 @@ def lunch():
 
 def weather():
 
-    r = requests.get("https://api.forecast.io/forecast/38a9c91bca816b2e960c14c1ecdcf8c6/81.3886,41.4311")
+    r = requests.get("https://api.forecast.io/forecast/38a9c91bca816b2e960c14c1ecdcf8c6/41.4311,-81.3886")
 
     weather = json.loads(r.text)
 
