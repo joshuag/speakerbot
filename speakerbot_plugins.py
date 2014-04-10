@@ -28,9 +28,11 @@ def jon():
 
     speech_list = [result["speech_text"] for result in results]
 
-    speech_text = choice(speech_list)
-
-    return speech_text
+    if len(speech_list) > 1:
+        speech_text = choice(speech_list)
+        return speech_text
+    else:
+        return "I haven't heard enough funny things to commit a jon"
 
 def dada():
     return parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")

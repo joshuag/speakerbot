@@ -46,7 +46,7 @@ def say(text=None):
     if not text:
         text = request.args.get('speech-text', None)
 
-    if request.args.get('record_utterance', "true") == "true":
+    if request.args.get('record_utterance', "false") == "true" and text[0] != "!":
         evr.record_utterance(text)
 
     if not text or len(text) > 100:
