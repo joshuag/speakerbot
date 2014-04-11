@@ -14,7 +14,7 @@ def listenable(klass):
 
 
         listeners must implement the function signature of the event exactly (or take *args, **kwargs generically),
-        plus special argument called "event_result" that contains the return value of the method invocation.
+        plus a special argument called "event_result" that contains the return value of the method invocation.
 
         TODO: Make it work with other decorators, inheritance
     """

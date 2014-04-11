@@ -29,13 +29,8 @@ def play_sound(sound_name):
 
     if sound_name == "rebecca-black" and not datetime.datetime.today().weekday() == 4:
         sound_name = choice(sb.sounds.keys())
-    
-    try:
-        lock = zc.lockfile.LockFile('play')
-        sb.play(sound_name)
-        lock.close()
-    except zc.lockfile.LockError:
-        pass
+
+    run_with_lock(sb.play, sound_name)
 
     return redirect(url_for("home"))
 

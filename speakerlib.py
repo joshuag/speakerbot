@@ -1,6 +1,3 @@
-import datetime
-import json
-
 from os import listdir, getcwd
 from os.path import isfile, join
 from random import choice
@@ -9,8 +6,14 @@ import zc.lockfile
 
 from config import config
 from speaker_db import SpeakerDB
-from Speakerbot import SoundEffect
 from speakerbot_plugins import *
+
+def create_deferred(function, *args, **kwargs):
+
+    def _exec():
+        function(*args, **kwargs)
+
+    return _exec
 
 def parse_and_route_speech(speech_func, text):
     
@@ -82,18 +85,16 @@ def queue_sound_for_tweet(name, event_result):
         db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
 
 def play_speech(speech_func, text):
-    
-    try:
-    
-        lock = zc.lockfile.LockFile('play')
-        speech_func(speech_text=text)
-        lock.close()
-
-    except zc.lockfile.LockError:
-        pass
+        
+    run_with_lock(speech_func, speech_text=text)
 
 def run_with_lock(func, *args, **kwargs):
-    pass
+    try:
+        lock = zc.lockfile.LockFile('play')
+        func(*args, **kwargs)
+        lock.close()
+    except zc.lockfile.LockError:
+        pass
 
 def get_image():
 
