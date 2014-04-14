@@ -27,7 +27,8 @@ def parse_and_route_speech(speech_func, text):
         'horoscope':horoscope,
         'yoda':yoda,
         'ross':ross,
-        'jon':jon
+        'jon':jon,
+        'spin':price_is_right
     }
     
     token = None

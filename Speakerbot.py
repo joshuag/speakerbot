@@ -2,7 +2,6 @@ import os
 import subprocess
 
 from collections import OrderedDict
-from hashlib import sha256
 from urllib import quote_plus
 
 from listenable import listenable, event

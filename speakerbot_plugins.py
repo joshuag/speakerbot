@@ -22,6 +22,28 @@ def get_mashape_api(url):
 
     return requests.get(url, headers=headers)
 
+def price_is_right():
+
+    win_sounds = ["price-come-on-down-1.mp3", "price-come-on-down-2.mp3", "price-is-right.mp3", "price-big-wheel-win.mp3"]
+
+    if choice(range(1,20)) == 15:
+        winner = True
+    else:
+        winner = False
+
+    se = SoundEffect()
+
+    se.play("price-big-wheel.mp3")
+
+    if winner:
+        se.play(choice(win_sounds))
+        return "You win a new car!"
+    else:
+        se.play("priceisright-horns.mp3")
+
+
+
+
 def jon():
     db = SpeakerDB()
     results = db.execute("SELECT * FROM snippets where votes > 1 order by rowid desc limit 10")
