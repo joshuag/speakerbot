@@ -71,11 +71,10 @@ class SpeakerDB(base_db):
             cursor = self.execute("select votes from images where file_name=?", [image])
             result = cursor.next()
             votes = int(result["votes"])
-        except sqlite3.OperationalError:
-            votes = 0
-
         except StopIteration:
             self.execute("insert into images (file_name) values (?)", [image])
+            votes = 0
+        except:
             votes = 0
 
         return votes
