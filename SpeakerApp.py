@@ -20,9 +20,62 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 
 @app.route('/')
-def home():
+@app.route('/home/<image>')
+def home(image=None):
 
-    return render_template("home.html", sounds=sb.load_sounds(), image=get_image(), random_title=parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun."))
+    if not image:
+        image = get_image(db.check_sfw)
+
+    votes = db.get_image_votes(image)
+    comments = db.get_image_comments(image)
+
+    return render_template(
+            "home.html", 
+            sounds=sb.load_sounds(), 
+            image=image, 
+            votes=votes,
+            comments=comments,
+            random_title=parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")
+            )
+
+
+@app.route('/image/<image>/upboat')
+def upvote_image(image):
+    
+    votes = db.get_image_votes(image)
+
+    votes += 1
+
+    db.execute("update images set votes=? where file_name=?", [votes, image])
+    return redirect(url_for("home", image=image))
+
+@app.route('/image/<image>/downgoat')
+def downvote_image(image):
+    votes = db.get_image_votes(image)
+
+    votes -= 1
+
+    db.execute("update images set votes=? where file_name=?", [votes, image])
+
+    return redirect(url_for("home", image=image))
+
+@app.route('/image/<image>/nsfw')
+def flag_image(image):
+    
+    db.execute("update images set nsfw=1 where file_name=?", [image])
+
+    return redirect(url_for("home", image=image))
+
+@app.route('/comment/<image>', methods=["POST"])
+def comment_image(image):
+
+    comment = request.form["image-comment"]
+    
+    db.add_comment(image, comment)
+
+    return redirect(url_for("home", image=image))
+
+
 
 @app.route('/play_sound/<sound_name>')
 def play_sound(sound_name):

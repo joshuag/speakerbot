@@ -100,7 +100,7 @@ def run_with_lock(func, *args, **kwargs):
     except zc.lockfile.LockError:
         pass
 
-def get_image():
+def get_image(checker_func=lambda x: True, depth=5):
 
     path = getcwd() + "/static/r_gifs/"
     
@@ -110,5 +110,10 @@ def get_image():
 
     if "?" in file_path:
         file_path = get_image()
+
+    if not checker_func(file_path) and depth != 0:
+        print "trying to get sfw image"
+        depth -= 1
+        file_path = get_image(checker_func, depth)
 
     return file_path

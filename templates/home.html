@@ -17,7 +17,31 @@
               <h3 class="panel-title">{{random_title}}</h3>
             </div>
             <div class="panel-body text-center">
-              <img src='/static/r_gifs/{{ image }}' style="max-width:500px;">
+              <img src='/static/r_gifs/{{ image }}' class="random-image"/>
+
+              <h1><span class="label label-default">{{ votes }}</span></h1>
+
+              <div class="btn-group random-image-toolbar">
+                <a href="/image/{{ image }}/upboat" class="btn btn-default glyphicon glyphicon-thumbs-up"></a>
+                <a href="/image/{{ image }}/nsfw" class="btn btn-default glyphicon glyphicon-remove"></a>
+                <a href="/image/{{ image }}/downgoat" class="btn btn-default glyphicon glyphicon-thumbs-down"></a>
+              </div>
+
+              <form action="/comment/{{ image }}" method="post" class="comment-form">
+                  <div class="input-group">
+                    <input type="text" class="form-control" maxlength="250" placeholder="How does this make you feel?" name="image-comment" id="image-comment">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default"><i class="glyphicon glyphicon-plus"></i></button>
+                    </div>
+                </div>
+              </form>
+
+              <ul class="list-group">
+                  {% for comment in comments %}
+                     <li class="list-group-item">{{ comment["comment"] }}</li>
+                  {% endfor %}
+              </ul>
+
             </div>
           </div>
         </div>

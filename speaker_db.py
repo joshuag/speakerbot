@@ -52,6 +52,48 @@ class SpeakerDB(base_db):
         self.execute("delete from publish_queue")
         self.execute("create table images (file_name text, votes integer, nsfw integer)")
 
+    def _migrate_7(self):
+        self.execute("create table image_comments (comment text, file_name text)")
+
+    def add_comment(self, image, comment):
+
+        self.execute("insert into image_comments (file_name, comment) values (?, ?)", [image, comment])
+
+    def get_image_comments(self, image):
+
+        return self.execute("select comment from image_comments where file_name=?", [image])
+
+    def get_image_votes(self, image):
+
+        votes = 0
+
+        try:
+            cursor = self.execute("select votes from images where file_name=?", [image])
+            result = cursor.next()
+            votes = int(result["votes"])
+        except sqlite3.OperationalError:
+            votes = 0
+
+        except StopIteration:
+            self.execute("insert into images (file_name) values (?)", [image])
+            votes = 0
+
+        return votes
+
+    def check_sfw(self, image):
+        
+        try:
+            cursor = self.execute("select nsfw from images where file_name=?", [image])
+            result = cursor.next()
+            nsfw = int(result["nsfw"])
+        except sqlite3.OperationalError:
+            nsfw = 0
+
+        except StopIteration:
+            nsfw = 0
+
+        return nsfw != 1
+
 
 if __name__ == "__main__":
     db = SpeakerDB(db_path="speakerbot.db")
