@@ -69,6 +69,9 @@ def queue_speech_for_tweet(*args, **kwargs):
 
     text = kwargs["speech_text"]
 
+    if text[0] == "!" or text[0:2] == "..":
+        return
+
     if not text:
         return
 

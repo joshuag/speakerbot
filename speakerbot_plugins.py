@@ -25,6 +25,7 @@ def get_mashape_api(url):
 def price_is_right():
 
     win_sounds = ["price-come-on-down-1.mp3", "price-come-on-down-2.mp3", "price-is-right.mp3", "price-big-wheel-win.mp3"]
+    lose_sounds = ["you-lose.mp3", "good-grief.mp3","priceisright-horns.mp3", "pacman-die.mp3", "sad-trombone.mp3", "wet-fart.mp3"]
 
     if choice(range(1,20)) == 15:
         winner = True
@@ -39,7 +40,7 @@ def price_is_right():
         se.play(choice(win_sounds))
         return "You win a new car!"
     else:
-        se.play("priceisright-horns.mp3")
+        se.play(choice(lose_sounds))
 
 
 

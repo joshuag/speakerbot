@@ -48,6 +48,10 @@ class SpeakerDB(base_db):
 
         self.execute("ALTER TABLE sounds ADD COLUMN cost INTEGER")
 
+    def _migrate_6(self):
+        self.execute("delete from publish_queue")
+        self.execute("create table images (file_name text, votes integer, nsfw integer)")
+
 
 if __name__ == "__main__":
     db = SpeakerDB(db_path="speakerbot.db")
