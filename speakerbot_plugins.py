@@ -13,6 +13,7 @@ from config import config
 from Speakerbot import SoundEffect
 from words import parse_and_fill_mad_lib
 from speaker_db import SpeakerDB
+from Speakerbot import Speakerbot
 
 def get_mashape_api(url):
     api_key = config["mashape_api_key"]
@@ -24,6 +25,8 @@ def get_mashape_api(url):
 
 def price_is_right():
 
+    sb = Speakerbot()
+
     win_sounds = ["price-come-on-down-1.mp3", "price-come-on-down-2.mp3", "price-is-right.mp3", "price-big-wheel-win.mp3"]
 
     if choice(range(1,20)) == 15:
@@ -33,7 +36,7 @@ def price_is_right():
 
     se = SoundEffect()
 
-    se.play("price-big-wheel.mp3")
+    sb.say_classy(speech_text="Spinning")
 
     if winner:
         se.play(choice(win_sounds))
