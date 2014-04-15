@@ -43,7 +43,7 @@ def say(text=None):
 
     if request.args.get('record_utterance', "false") == "true" and text[0] != "!":
         evr.record_utterance(text)
-    else:
+    elif text[0] != "!":
         text = ".." + text
 
     if not text or len(text) > 100:
