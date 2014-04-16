@@ -87,6 +87,8 @@ class SpeakerDB(base_db):
             nsfw = int(result["nsfw"])
         except sqlite3.OperationalError:
             nsfw = 0
+        except TypeError:
+            nsfw = 0
 
         except StopIteration:
             nsfw = 0
