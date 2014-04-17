@@ -55,6 +55,9 @@ class SpeakerDB(base_db):
     def _migrate_7(self):
         self.execute("create table image_comments (comment text, file_name text)")
 
+    def _migrate_8(self):
+        self.execute("ALTER TABLE sounds ADD COLUMN base_cost INTEGER")
+
     def add_comment(self, image, comment):
 
         self.execute("insert into image_comments (file_name, comment) values (?, ?)", [image, comment])

@@ -7,7 +7,11 @@
         <div class="col-sm-3">
           <div class="list-group">
           	{% for sound in sounds %}
-            <a class="list-group-item" href="{{url_for("play_sound", sound_name=sound)}}">{{ sound }} <span class="badge pull-right">{{ sounds[sound][1] }}</span></a>
+            <a class="list-group-item" href="{{url_for("play_sound", sound_name=sound)}}">
+              {{ sound }}
+              <span class="badge alert-default">{{ sounds[sound][1]}}</span>
+              <p class="pull-left sound-cost">{% if economy_is_active %}<span class="glyphicon glyphicon-bullhorn"></span> {{ sounds[sound][2] }}{% else %}FREE{% endif %} </p>
+            </a>
             {% endfor %}
           </div>
         </div><!-- /.col-sm-8 -->

@@ -35,6 +35,7 @@ def home(image=None):
             image=image, 
             votes=votes,
             comments=comments,
+            economy_is_active=economy_is_active(),
             random_title=parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")
             )
 
@@ -83,6 +84,8 @@ def play_sound(sound_name):
     if sound_name == "rebecca-black" and not datetime.datetime.today().weekday() == 4:
         sound_name = choice(sb.sounds.keys())
 
+    #Implement cost here
+    
     run_with_lock(sb.play, sound_name)
 
     return redirect(url_for("home"))
