@@ -1,0 +1,57 @@
+import datetime as dt
+from speaker_db import SpeakerDB
+
+class Speakonomy:
+    def __init__(self, speakerbot=None):
+        self.db = SpeakerDB()
+        self.speakerbot = speakerbot
+
+    def is_active(self):
+        if dt.datetime.today().weekday() in [5,6]:
+            return False
+            
+        current_hour = dt.datetime.now().hour
+        if current_hour >= 8 and current_hour < 18:
+            return True
+
+        return False
+
+    def get_speakerbuck_balance(self):
+        balance = self.db.execute("SELECT balance FROM bank_account").fetchone()
+        if balance:
+            return balance['balance']
+        return 0
+
+    def amplify_sound_cost(self, sound_name, **kwargs):
+        if self.is_active():
+            self.db.execute("UPDATE sounds set cost=cost*2 where name=?", [sound_name,])
+
+    def deposit_funds(self, amount=1):
+        assert isinstance(amount,int)
+        self.db.execute("UPDATE bank_account set balance=balance+{}".format(amount))
+
+    def regulate_costs(self):
+        self.db.execute("UPDATE sounds set cost=cost-1 WHERE cost > base_cost")
+        self.db.execute("UPDATE sounds set cost=base_cost WHERE cost < base_cost")
+
+    def set_sound_base_costs(self, sound_dir="sounds"):
+        assert self.spearkbot != None
+        if not self.speakerbot.sounds:
+            self.speakerbot.load_sounds()
+
+        for sound_name in self.speakerbot.sounds:
+            sound_path = '{}/{}'.format(sound_dir, self.speakerbot.sounds[sound_name][0])
+            sound_cost = os.stat(sound_path).st_size
+            try:
+                sound_size = os.stat(sound_path).st_size
+                sound_cost = int(sound_size/1024 * 0.0854455 - 0.0953288 + 0.5)
+                if sound_cost < 1:
+                    sound_cost = 1
+            except:
+                sound_cost = 0
+            self.db.execute("UPDATE sounds SET base_cost={} where name='{}'".format(sound_cost, sound_name))
+
+if __name__ == "__main__":
+    speakonomy = Speakonomy()
+    speakonomy.deposit_funds(1)
+    speakonomy.regulate_costs()

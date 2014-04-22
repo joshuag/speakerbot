@@ -18,6 +18,8 @@ class SpeakerDB(base_db):
         except sqlite3.OperationalError:
             pass
 
+        self.execute("insert into db_version (version) values(0)")
+
     def _migrate_1(self):
 
         self.execute("create table publish_queue (tweet_text text)")
@@ -57,6 +59,11 @@ class SpeakerDB(base_db):
 
     def _migrate_8(self):
         self.execute("ALTER TABLE sounds ADD COLUMN base_cost INTEGER")
+
+    def _migrate_9(self):
+        self.execute("create table bank_account (balance INTEGER)")
+        self.execute("insert into bank_account (balance) values(0)")
+
 
     def add_comment(self, image, comment):
 

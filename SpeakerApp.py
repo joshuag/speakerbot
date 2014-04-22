@@ -7,13 +7,16 @@ from eventrecorder import EventRecorder
 from Speakerbot import Speakerbot
 from speaker_db import SpeakerDB
 from speakerlib import *
+from speakonomy import Speakonomy
 
 sb = Speakerbot()
+speakonomy = Speakonomy(sb)
 db = SpeakerDB()
 evr = EventRecorder(db=db)
 
 sb.attach_listener("say_classy", queue_speech_for_tweet)
 sb.attach_listener("play", queue_sound_for_tweet)
+sb.attach_listener("play", speakonomy.amplify_sound_cost)
 sb.attach_listener("play", evr.record_sound_event)
 
 app = Flask(__name__)
@@ -35,7 +38,7 @@ def home(image=None):
             image=image, 
             votes=votes,
             comments=comments,
-            economy_is_active=economy_is_active(),
+            speakonomy=speakonomy,
             random_title=parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")
             )
 
@@ -83,8 +86,6 @@ def play_sound(sound_name):
 
     if sound_name == "rebecca-black" and not datetime.datetime.today().weekday() == 4:
         sound_name = choice(sb.sounds.keys())
-
-    #Implement cost here
     
     run_with_lock(sb.play, sound_name)
 

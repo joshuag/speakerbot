@@ -10,7 +10,7 @@
             <a class="list-group-item" href="{{url_for("play_sound", sound_name=sound)}}">
               {{ sound }}
               <span class="badge alert-default">{{ sounds[sound][1]}}</span>
-              <p class="pull-left sound-cost">{% if economy_is_active %}<span class="glyphicon glyphicon-bullhorn"></span> {{ sounds[sound][2] }}{% else %}FREE{% endif %} </p>
+              <p class="pull-left sound-cost">{% if speakonomy.is_active %}<span class="glyphicon glyphicon-bullhorn"></span> {{ sounds[sound][2] }}{% else %}FREE{% endif %} </p>
             </a>
             {% endfor %}
           </div>
