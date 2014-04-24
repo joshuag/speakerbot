@@ -1,4 +1,5 @@
 import datetime as dt
+import os
 from speaker_db import SpeakerDB
 
 class Speakonomy:
