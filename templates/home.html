@@ -1,13 +1,42 @@
 {% extends "base.html" %}
+{% block javascript %}
+$(document).ready(function() {
+  var $grid = $('#sounds');
+
+  $grid.on('done.shuffle', function() {
+      $(".sound").css("width", "100%");
+    });
+  $grid.shuffle({
+    itemSelector: '.sound',
+  });
+});
+function capitaliseFirstLetter(string)
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+function change_sort(type) {
+  $('a#sort_by').text(capitaliseFirstLetter(type));
+  $('#sort_by').popover('hide')
+  $('#sounds').shuffle('sort', {
+      by: function($el) {
+        return $el.data(type);
+      }
+    });
+
+}
+$('#sort_by').popover()
+{% endblock %}
 {% block content %}
       <div class="page-header">
         <h1></h1>
       </div>
       <div class="row">
         <div class="col-sm-3">
-          <div class="list-group">
+          <div style="height:20px"><div class="pull-right">Sort: <a id="sort_by" href="#" type="button" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-content='<a href="#" onclick=change_sort("cost")>Cost</a><br>
+          <a href="#" onclick=change_sort("plays")>Plays</a>'>Plays</a></div></div>
+          <div class="list-group" id="sounds">
           	{% for sound in sounds %}
-            <a class="list-group-item" href="{{url_for("play_sound", sound_name=sound)}}">
+            <a class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound)}}" data-cost="{{ sounds[sound][2] }}">
               {{ sound }}
               <span class="badge alert-default">{{ sounds[sound][1]}}</span>
               <p class="pull-right sound-cost">{% if speakonomy.is_active() %}{{ "{:,}".format(sounds[sound][2]) }} <span class="glyphicon glyphicon-bullhorn"></span>{% else %}FREE{% endif %} </p>

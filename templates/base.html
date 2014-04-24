@@ -23,6 +23,9 @@
         margin-top:16px;
         margin-bottom:16px;
       }
+      .sound {
+        max-height: 40px;
+      }
       .sound-cost {
         color: orange;
         margin-right: 10px;
@@ -49,7 +52,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Speakerbot+</a>
+          <a class="navbar-brand" href="/">Speakerbot+</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -87,6 +90,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.shuffle.js"></script>
     <script>
     $(function(){
       var obj = $("body");
@@ -112,6 +116,7 @@
     function handleFileUpload(files, obj){
       alert("foo")
     }
+    {% block javascript %}{% endblock %}
   </script>
   </body>
 </html>
