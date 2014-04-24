@@ -45,7 +45,7 @@ class Speakonomy:
         self.db.execute("UPDATE sounds set cost=base_cost WHERE cost < base_cost")
 
     def set_sound_base_costs(self, sound_dir="sounds"):
-        assert self.spearkbot != None
+        assert self.speakerbot != None
         if not self.speakerbot.sounds:
             self.speakerbot.load_sounds()
 
