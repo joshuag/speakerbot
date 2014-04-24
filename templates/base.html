@@ -57,7 +57,7 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="/">Home</a></li>
-            <li><a href="/say/!spin" onclick="return confirm('Want to spin? It costs 50 speakerbucks but you could win 1000!')">Spin</a></li>
+            <li><a href="#" onclick="spin_the_wheel()">Spin</a></li>
             <li><a href="/say/!weather">Weather</a></li>
             <li><a href="/say/!random">Again</a></li>
             <li><a href="/say/!lunch">Lunch</a></li>
@@ -116,6 +116,10 @@
     })
     function handleFileUpload(files, obj){
       alert("foo")
+    }
+    function spin_the_wheel() {
+      wager = prompt('Enter your speakerbuck wager:', '50');
+      window.location ='/say/!spin%20'+wager;
     }
     {% block javascript %}{% endblock %}
   </script>

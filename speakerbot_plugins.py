@@ -23,13 +23,13 @@ def get_mashape_api(url):
 
     return requests.get(url, headers=headers)
 
-def price_is_right():
+def price_is_right(wager):
+    wager = int(wager)
     speakonomy = Speakonomy()
     if speakonomy.is_active():
-        cost = 50
-        if not speakonomy.check_affordability(cost=cost):
+        if not speakonomy.check_affordability(cost=wager):
             return "Not enough speakerbucks to spin"
-        speakonomy.withdraw_funds(cost)
+        speakonomy.withdraw_funds(wager)
     win_sounds = ["price-come-on-down-1.mp3", "price-come-on-down-2.mp3", "price-is-right.mp3", "price-big-wheel-win.mp3"]
     lose_sounds = ["you-lose.mp3", "good-grief.mp3","priceisright-horns.mp3", "pacman-die.mp3", "sad-trombone.mp3", "wet-fart.mp3"]
 
@@ -45,7 +45,7 @@ def price_is_right():
     if winner:
         se.play(choice(win_sounds))
         if speakonomy.is_active():
-            speakonomy.deposit_funds(1000)
+            speakonomy.deposit_funds(wager*20)
         return "You win a new car. And 1000 speakerbucks!"
     else:
         se.play(choice(lose_sounds))
