@@ -86,12 +86,13 @@ def comment_image(image):
 @app.route('/play_sound/<sound_name>')
 def play_sound(sound_name):
 
-    #TODO: Economy - is it affordable to play?
-    if not speakonomy.check_affordability(sound_name):
-        return redirect(url_for("home", message="Ain't nobody got speakerbucks for that!"))
-
     if sound_name == "rebecca-black" and not datetime.datetime.today().weekday() == 4:
         sound_name = choice(sb.sounds.keys())
+
+
+    #Economy - is it affordable to play?
+    if not speakonomy.check_affordability(sound_name):
+        return redirect(url_for("home", message="Ain't nobody got speakerbucks for that!"))
     
     run_with_lock(sb.play, sound_name)
 
