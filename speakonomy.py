@@ -23,8 +23,9 @@ class Speakonomy:
             return balance['balance']
         return 0
 
-    def check_affordability(self, sound_name):
-        cost = self.db.execute("SELECT cost FROM sounds WHERE name=?", [sound_name,]).fetchone()['cost']
+    def check_affordability(self, sound_name=None, cost=None):
+        if not cost:
+            cost = self.db.execute("SELECT cost FROM sounds WHERE name=?", [sound_name,]).fetchone()['cost']
         balance = self.get_speakerbuck_balance()
         if cost <= balance:
             return True
@@ -36,6 +37,9 @@ class Speakonomy:
             cost = self.db.execute("SELECT cost FROM sounds WHERE name=?", [sound_name,]).fetchone()['cost']
             self.db.execute("UPDATE bank_account SET balance=balance-{}".format(cost))
             self.db.execute("UPDATE sounds set cost=cost*2 where name=?", [sound_name,])
+
+    def withdraw_funds(self, amount):
+        self.deposit_funds(amount=-1*amount)
 
     def deposit_funds(self, amount=1):
         assert isinstance(amount,int)
