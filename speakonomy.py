@@ -7,7 +7,6 @@ class Speakonomy:
         self.speakerbot = speakerbot
 
     def is_active(self):
-        return True
         if dt.datetime.today().weekday() in [5,6]:
             return False
             
