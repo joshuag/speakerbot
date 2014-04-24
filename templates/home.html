@@ -10,12 +10,13 @@
             <a class="list-group-item" href="{{url_for("play_sound", sound_name=sound)}}">
               {{ sound }}
               <span class="badge alert-default">{{ sounds[sound][1]}}</span>
-              <p class="pull-left sound-cost">{% if speakonomy.is_active %}<span class="glyphicon glyphicon-bullhorn"></span> {{ sounds[sound][2] }}{% else %}FREE{% endif %} </p>
+              <p class="pull-left sound-cost">{% if speakonomy.is_active() %}<span class="glyphicon glyphicon-bullhorn"></span> {{ sounds[sound][2] }}{% else %}FREE{% endif %} </p>
             </a>
             {% endfor %}
           </div>
         </div><!-- /.col-sm-8 -->
         <div class="col-sm-9">
+          {% if message %}<div class="alert alert-warning"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> {{ message }}</div>{% endif %}
         	<div class="panel panel-default">
             <div class="panel-heading">
               <h3 class="panel-title">{{random_title}}</h3>

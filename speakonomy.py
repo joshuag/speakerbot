@@ -7,6 +7,7 @@ class Speakonomy:
         self.speakerbot = speakerbot
 
     def is_active(self):
+        return True
         if dt.datetime.today().weekday() in [5,6]:
             return False
             
@@ -22,8 +23,18 @@ class Speakonomy:
             return balance['balance']
         return 0
 
-    def amplify_sound_cost(self, sound_name, **kwargs):
+    def check_affordability(self, sound_name):
+        cost = self.db.execute("SELECT cost FROM sounds WHERE name=?", [sound_name,]).fetchone()['cost']
+        balance = self.get_speakerbuck_balance()
+        if cost <= balance:
+            return True
+        return False
+
+
+    def sell_sound(self, sound_name, **kwargs):
         if self.is_active():
+            cost = self.db.execute("SELECT cost FROM sounds WHERE name=?", [sound_name,]).fetchone()['cost']
+            self.db.execute("UPDATE bank_account SET balance=balance-{}".format(cost))
             self.db.execute("UPDATE sounds set cost=cost*2 where name=?", [sound_name,])
 
     def deposit_funds(self, amount=1):

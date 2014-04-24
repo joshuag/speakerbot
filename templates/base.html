@@ -71,7 +71,7 @@
         </form>
         </div>
 
-         <p class="navbar-text pull-right" style="color: white;"><span class="glyphicon glyphicon-bullhorn"></span> {{speakonomy.get_speakerbuck_balance()}}</p>
+         <p class="navbar-text pull-right" style="color: white;"><span class="glyphicon glyphicon-bullhorn"></span> {{"{:,}".format(speakonomy.get_speakerbuck_balance())}}</p>
         </div><!--/.nav-collapse -->
       </div>
     </div>

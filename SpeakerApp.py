@@ -16,7 +16,7 @@ evr = EventRecorder(db=db)
 
 sb.attach_listener("say_classy", queue_speech_for_tweet)
 sb.attach_listener("play", queue_sound_for_tweet)
-sb.attach_listener("play", speakonomy.amplify_sound_cost)
+sb.attach_listener("play", speakonomy.sell_sound)
 sb.attach_listener("play", evr.record_sound_event)
 
 app = Flask(__name__)
@@ -25,6 +25,7 @@ app.config['DEBUG'] = True
 @app.route('/')
 @app.route('/home/<image>')
 def home(image=None):
+    message = request.args.get('message', None)
 
     if not image:
         image = get_image(db.check_sfw)
@@ -36,6 +37,7 @@ def home(image=None):
             "home.html", 
             sounds=sb.load_sounds(), 
             image=image, 
+            message=message,
             votes=votes,
             comments=comments,
             speakonomy=speakonomy,
@@ -83,6 +85,10 @@ def comment_image(image):
 
 @app.route('/play_sound/<sound_name>')
 def play_sound(sound_name):
+
+    #TODO: Economy - is it affordable to play?
+    if not speakonomy.check_affordability(sound_name):
+        return redirect(url_for("home", message="Ain't nobody got speakerbucks for that!"))
 
     if sound_name == "rebecca-black" and not datetime.datetime.today().weekday() == 4:
         sound_name = choice(sb.sounds.keys())
