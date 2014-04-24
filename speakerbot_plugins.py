@@ -25,6 +25,8 @@ def get_mashape_api(url):
 
 def price_is_right(wager):
     wager = int(wager)
+    if wager < 0:
+        return "Nice try wiseguy"
     speakonomy = Speakonomy()
     if speakonomy.is_active():
         if not speakonomy.check_affordability(cost=wager):
