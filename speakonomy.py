@@ -102,7 +102,7 @@ if __name__ == "__main__":
     try:
         deposit_amount = int(sys.argv[1])
     except:
-        last_withdrawal_time, deposit_amount = get_last_withdrawal_time(include_sbpm=True)
+        last_withdrawal_time, deposit_amount = speakonomy.get_last_withdrawal_time(include_sbpm=True)
         
         if deposit_amount < 1:
             deposit_amount = 1
