@@ -94,10 +94,14 @@ if __name__ == "__main__":
     except:
         deposit_amount = 1
 
+        today_time = dt.datetime.combine(dt.date.today(), dt.datetime.min.time())
         last_withdrawal_time = speakonomy.get_last_withdrawal_time()
-        if last_withdrawal_time > 0:
-            minutes_since_last_withdrawal = (dt.datetime.now() - last_withdrawal_time).total_seconds() / 60
-            deposit_amount = int((minutes_since_last_withdrawal + 9) / 10)
+        if last_withdrawal_time < today_time:
+            last_withdrawal_time = today_time
+
+        minutes_since_last_withdrawal = (dt.datetime.now() - last_withdrawal_time).total_seconds() / 60
+        print last_withdrawal_time
+        deposit_amount = int((minutes_since_last_withdrawal + 9) / 10)
 
     print "Depositing {}...".format(deposit_amount)
     speakonomy.deposit_funds(deposit_amount)
