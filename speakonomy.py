@@ -68,7 +68,7 @@ class Speakonomy:
 
 if __name__ == "__main__":
     try:
-        deposit_amount = sys.argv[1]
+        deposit_amount = int(sys.argv[1])
     except:
         deposit_amount = 1
     speakonomy = Speakonomy()
