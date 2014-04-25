@@ -67,6 +67,8 @@ class SpeakerDB(base_db):
     def _migrate_10(self):
         self.execute("ALTER table bank_account add column free_play_timeout INTEGER NOT NULL DEFAULT 0")
 
+    def _migrate_11(self):
+        self.execute("ALTER table bank_account add column last_withdrawal_time INTEGER NOT NULL DEFAULT 0")
 
     def add_comment(self, image, comment):
 
