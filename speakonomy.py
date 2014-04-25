@@ -38,6 +38,8 @@ class Speakonomy:
         return 0
 
     def check_affordability(self, sound_name=None, cost=None):
+        if not self.is_active():
+            return True
         if not cost:
             cost = self.db.execute("SELECT cost FROM sounds WHERE name=?", [sound_name,]).fetchone()['cost']
         balance = self.get_speakerbuck_balance()
