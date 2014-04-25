@@ -62,9 +62,19 @@ class Speakonomy:
         assert isinstance(amount,int)
         self.db.execute("UPDATE bank_account set balance=balance+{}".format(amount))
 
-    def get_last_withdrawal_time(self):
+    def get_last_withdrawal_time(self, include_sbpm=False):
         last_withdrawal_time = self.db.execute("SELECT last_withdrawal_time FROM bank_account").fetchone()['last_withdrawal_time']
-        return dt.datetime.fromtimestamp(last_withdrawal_time)
+        last_withdrawal_time = dt.datetime.fromtimestamp(last_withdrawal_time)
+        if not include_sbpm:
+            return last_withdrawal_time
+        today_time = dt.datetime.combine(dt.date.today(), dt.datetime.min.time())
+        if last_withdrawal_time < today_time:
+            last_withdrawal_time = today_time
+
+        minutes_since_last_withdrawal = (dt.datetime.now() - last_withdrawal_time).total_seconds() / 60
+        
+        spbm = int((minutes_since_last_withdrawal + 9) / 10)
+        return last_withdrawal_time, spbm
 
     def regulate_costs(self):
         self.db.execute("UPDATE sounds set cost=CAST(0.95*cost+0.05*base_cost AS INT) WHERE cost > base_cost")
@@ -92,16 +102,10 @@ if __name__ == "__main__":
     try:
         deposit_amount = int(sys.argv[1])
     except:
-        deposit_amount = 1
-
-        today_time = dt.datetime.combine(dt.date.today(), dt.datetime.min.time())
-        last_withdrawal_time = speakonomy.get_last_withdrawal_time()
-        if last_withdrawal_time < today_time:
-            last_withdrawal_time = today_time
-
-        minutes_since_last_withdrawal = (dt.datetime.now() - last_withdrawal_time).total_seconds() / 60
-        print last_withdrawal_time
-        deposit_amount = int((minutes_since_last_withdrawal + 9) / 10)
+        last_withdrawal_time, deposit_amount = get_last_withdrawal_time(include_sbpm=True)
+        
+        if deposit_amount < 1:
+            deposit_amount = 1
 
     print "Depositing {}...".format(deposit_amount)
     speakonomy.deposit_funds(deposit_amount)

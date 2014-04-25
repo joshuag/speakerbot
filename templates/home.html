@@ -32,7 +32,7 @@ $('#sort_by').popover()
       </div>
       <div class="row">
         <div class="col-sm-3">
-          <div style="height:20px; font-size: 10px;">Last sound: {{ speakonomy.get_last_withdrawal_time().strftime('%A @ %H:%M %p') }}<div class="pull-right">Sort: <a id="sort_by" href="#" type="button" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-content='<a href="#" onclick=change_sort("cost")>Cost</a><br>
+          <div style="height:20px; font-size: 10px;">Last sound: {{ speakonomy.get_last_withdrawal_time().strftime('%A @ %H:%M %p') }} (+{{ speakerbucks_per_minute }})<div class="pull-right">Sort: <a id="sort_by" href="#" type="button" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-content='<a href="#" onclick=change_sort("cost")>Cost</a><br>
             <a href="#" onclick=change_sort("name")>Name</a><br>
           <a href="#" onclick=change_sort("plays")>Plays</a>'>Plays</a></div></div>
           <div class="list-group" id="sounds">
