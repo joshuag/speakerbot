@@ -48,7 +48,7 @@ def price_is_right(wager):
         se.play(choice(win_sounds))
         if speakonomy.is_active():
             speakonomy.deposit_funds(wager*20)
-        return "You win a new car. And 1000 speakerbucks!"
+        return "You win a new car. And {} speakerbucks!".format(wager*20)
     else:
         se.play(choice(lose_sounds))
 

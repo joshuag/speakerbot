@@ -31,7 +31,6 @@ class Speakonomy:
             return True
         return False
 
-
     def sell_sound(self, sound_name, **kwargs):
         if self.is_active():
             cost = self.db.execute("SELECT cost FROM sounds WHERE name=?", [sound_name,]).fetchone()['cost']
@@ -46,7 +45,7 @@ class Speakonomy:
         self.db.execute("UPDATE bank_account set balance=balance+{}".format(amount))
 
     def regulate_costs(self):
-        self.db.execute("UPDATE sounds set cost=cost-1 WHERE cost > base_cost")
+        self.db.execute("UPDATE sounds set cost=INT(0.95*cost+0.05*base_cost) WHERE cost > base_cost")
         self.db.execute("UPDATE sounds set cost=base_cost WHERE cost < base_cost")
 
     def set_sound_base_costs(self, sound_dir="sounds"):
