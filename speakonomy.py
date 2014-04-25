@@ -1,5 +1,6 @@
 import datetime as dt
 import os
+import sys
 from speaker_db import SpeakerDB
 
 class Speakonomy:
@@ -45,7 +46,7 @@ class Speakonomy:
         self.db.execute("UPDATE bank_account set balance=balance+{}".format(amount))
 
     def regulate_costs(self):
-        self.db.execute("UPDATE sounds set cost=INT(0.95*cost+0.05*base_cost) WHERE cost > base_cost")
+        self.db.execute("UPDATE sounds set cost=CAST(0.95*cost+0.05*base_cost AS INT) WHERE cost > base_cost")
         self.db.execute("UPDATE sounds set cost=base_cost WHERE cost < base_cost")
 
     def set_sound_base_costs(self, sound_dir="sounds"):
@@ -66,6 +67,10 @@ class Speakonomy:
             self.db.execute("UPDATE sounds SET base_cost={} where name='{}'".format(sound_cost, sound_name))
 
 if __name__ == "__main__":
+    try:
+        deposit_amount = sys.argv[1]
+    except:
+        deposit_amount = 1
     speakonomy = Speakonomy()
-    speakonomy.deposit_funds(1)
+    speakonomy.deposit_funds(deposit_amount)
     speakonomy.regulate_costs()
