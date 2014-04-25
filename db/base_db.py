@@ -54,6 +54,8 @@ class base_db(object):
                 migration_number = elem[9:]
                 migrations.append(getattr(self, elem))
 
+        migrations.sort(key=lambda f: int(f.__name__[9:]))
+
         return migrations
        
     def get_version(self):

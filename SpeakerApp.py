@@ -86,8 +86,11 @@ def comment_image(image):
 @app.route('/play_sound/<sound_name>')
 def play_sound(sound_name):
 
-    if sound_name == "rebecca-black" and not datetime.datetime.today().weekday() == 4:
-        sound_name = choice(sb.sounds.keys())
+    if sound_name == "rebecca-black":
+        if datetime.datetime.today().weekday() == 4:
+            speakonomy.set_free_play_timeout(minutes=5)
+        else:
+            sound_name = choice(sb.sounds.keys())
 
 
     #Economy - is it affordable to play?

@@ -13,10 +13,23 @@ class Speakonomy:
             return False
             
         current_hour = dt.datetime.now().hour
-        if current_hour >= 8 and current_hour < 18:
-            return True
+        if current_hour < 8 or current_hour > 18:
+            return False
 
-        return False
+        if dt.datetime.now() < self.get_free_play_timeout():
+            return False
+
+        return True
+
+    def set_free_play_timeout(self, expiration_datetime=None, hours=0, minutes=0):
+        if not expiration_datetime:
+            expiration_datetime = dt.datetime.now() + dt.timedelta(hours=hours, minutes=minutes)
+        expiration_timestamp = expiration_datetime.strftime("%s")
+        self.db.execute("UPDATE bank_account SET free_play_timeout=?", [expiration_timestamp,])
+
+    def get_free_play_timeout(self):
+        expiration_timestamp = self.db.execute("SELECT free_play_timeout FROM bank_account").fetchone()['free_play_timeout']
+        return dt.datetime.fromtimestamp(expiration_timestamp)
 
     def get_speakerbuck_balance(self):
         balance = self.db.execute("SELECT balance FROM bank_account").fetchone()

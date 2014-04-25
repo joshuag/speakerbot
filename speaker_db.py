@@ -64,6 +64,9 @@ class SpeakerDB(base_db):
         self.execute("create table bank_account (balance INTEGER)")
         self.execute("insert into bank_account (balance) values(0)")
 
+    def _migrate_10(self):
+        self.execute("ALTER table bank_account add column free_play_timeout INTEGER NOT NULL DEFAULT 0")
+
 
     def add_comment(self, image, comment):
 
