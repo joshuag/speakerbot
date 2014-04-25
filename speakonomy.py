@@ -62,6 +62,10 @@ class Speakonomy:
         assert isinstance(amount,int)
         self.db.execute("UPDATE bank_account set balance=balance+{}".format(amount))
 
+    def get_last_withdrawal_time(self):
+        last_withdrawal_time = self.db.execute("SELECT last_withdrawal_time FROM bank_account").fetchone()['last_withdrawal_time']
+        return dt.datetime.fromtimestamp(last_withdrawal_time)
+
     def regulate_costs(self):
         self.db.execute("UPDATE sounds set cost=CAST(0.95*cost+0.05*base_cost AS INT) WHERE cost > base_cost")
         self.db.execute("UPDATE sounds set cost=base_cost WHERE cost < base_cost")
@@ -90,9 +94,9 @@ if __name__ == "__main__":
     except:
         deposit_amount = 1
 
-        last_withdrawal_time = speakonomy.db.execute("SELECT last_withdrawal_time FROM bank_account").fetchone()['last_withdrawal_time']
+        last_withdrawal_time = speakonomy.get_last_withdrawal_time()
         if last_withdrawal_time > 0:
-            minutes_since_last_withdrawal = (dt.datetime.now() - dt.datetime.fromtimestamp(last_withdrawal_time)).total_seconds() / 60
+            minutes_since_last_withdrawal = (dt.datetime.now() - last_withdrawal_time).total_seconds() / 60
             deposit_amount = int((minutes_since_last_withdrawal + 9) / 10)
 
     print "Depositing {}...".format(deposit_amount)
