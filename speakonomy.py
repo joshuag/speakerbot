@@ -106,7 +106,7 @@ class Speakonomy:
 if __name__ == "__main__":
     speakonomy = Speakonomy()
     if not speakonomy.is_active():
-        return
+        exit()
     try:
         deposit_amount = int(sys.argv[1])
     except:
