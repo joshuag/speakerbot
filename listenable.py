@@ -25,35 +25,65 @@ def listenable(klass):
 
             self = args[0]
 
-            result = method(*args, **kwargs)
+            if self.dispatch_events(self._interrogators, method.__name__, *args, **kwargs):
 
-            kwargs["event_result"] = result
+                result = method(*args, **kwargs)
 
-            self.dispatch_events(method.__name__, *args, **kwargs)
+                kwargs["event_result"] = result
 
-            return result
+                self.dispatch_events(self._listeners, method.__name__, *args, **kwargs)
+
+                return result
 
         wrapped.is_event = True
         return wrapped
 
-    def attach_listener(self, event, listener):
 
+    def _attach(self, event, func, handler_collection_name):
+        
         if not hasattr(getattr(self, event), "is_event"):
 
             raise NotEventException("This method hasn't been decorated as an event listener")
 
-        listeners = self._listeners.get(event, [])
-        listeners.append(listener)
-        self._listeners[event] = listeners
+        handler_collection = getattr(self, handler_collection_name)
 
-    def dispatch_events(self, method_name, *args, **kwargs):
+        handlers = handler_collection.get(event, [])
+        handlers.append(func)
+        handler_collection[event] = handlers
 
-        for listener in self._listeners.get(method_name, []):
+        setattr(self, handler_collection_name, handler_collection)
+
+
+    def attach_interrogator(self, event, interrogator):
+
+        _attach(self, event, interrogator, "_interrogators")
+
+
+    def attach_listener(self, event, listener):
+
+        _attach(self, event, listener, "_listeners")
+        
+
+    def dispatch_events(self, handler_collection, method_name, *args, **kwargs):
+
+        please_do_continue = True
+
+        for handler in handler_collection.get(method_name, []):
             try:
                 #pop off the instance information. We just want the function signature
-                listener(*args[1:], **kwargs)
+                please_do_continue = handler(*args[1:], **kwargs)
+                
+                if please_do_continue == None:
+                    please_do_continue = True
+
+                if not please_do_continue:
+                    break
+
             except Exception as e:
-                print "Event listener %s failed. It reported the following: %s" % (listener.__name__, str(e))
+                print "Event listener %s failed. It reported the following: %s" % (handler.__name__, str(e))
+
+        return please_do_continue
+
     
     for name, method in klass.__dict__.iteritems():
 
@@ -62,7 +92,9 @@ def listenable(klass):
             setattr(klass, name, wrapper(method))
         
     setattr(klass, "_listeners", {})
+    setattr(klass, "_interrogators", {})
     setattr(klass, "attach_listener", attach_listener)
+    setattr(klass, "attach_interrogator", attach_interrogator)
     setattr(klass, "dispatch_events", dispatch_events)
 
     return klass

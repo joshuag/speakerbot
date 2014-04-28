@@ -12,7 +12,7 @@ import requests
 from config import config
 from Speakerbot import SoundEffect
 from speakonomy import Speakonomy
-from words import parse_and_fill_mad_lib
+from words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
 
 def get_mashape_api(url):
@@ -128,8 +128,10 @@ def weather():
     return weather_text
 
 def slinging_burgers():
+
+    verb = choice(term_map["verb"])
     
-    return "Anyone who describes !verb ing as !verb ing !noun should be !verb ing !noun"
+    return "Anyone who describes !verb ing as " + verb + " ing !noun should be " + verb + " ing !noun"
 
 def run_filters(text):
     
