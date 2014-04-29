@@ -7,14 +7,24 @@ from eventrecorder import EventRecorder
 from Speakerbot import Speakerbot
 from speaker_db import SpeakerDB
 from speakerlib import *
+from speakonomy import Speakonomy
 
 sb = Speakerbot()
+speakonomy = Speakonomy(sb)
 db = SpeakerDB()
 evr = EventRecorder(db=db)
 
+def stub_interrogator(*args, **kwargs):
+    return True
+
+
 sb.attach_listener("say_classy", queue_speech_for_tweet)
 sb.attach_listener("play", queue_sound_for_tweet)
+sb.attach_listener("play", speakonomy.sell_sound)
 sb.attach_listener("play", evr.record_sound_event)
+
+sb.attach_interrogator("play", stub_interrogator)
+
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -22,6 +32,7 @@ app.config['DEBUG'] = True
 @app.route('/')
 @app.route('/home/<image>')
 def home(image=None):
+    message = request.args.get('message', None)
 
     if not image:
         image = get_image(db.check_sfw)
@@ -29,12 +40,18 @@ def home(image=None):
     votes = db.get_image_votes(image)
     comments = db.get_image_comments(image)
 
+    last_withdrawal_time, speakerbucks_per_minute = speakonomy.get_last_withdrawal_time(include_sbpm=True)
+
     return render_template(
             "home.html", 
             sounds=sb.load_sounds(), 
             image=image, 
+            message=message,
             votes=votes,
             comments=comments,
+            speakonomy=speakonomy,
+            last_withdrawal_time=last_withdrawal_time,
+            speakerbucks_per_minute=speakerbucks_per_minute,
             random_title=parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")
             )
 
@@ -80,11 +97,18 @@ def comment_image(image):
 @app.route('/play_sound/<sound_name>')
 def play_sound(sound_name):
 
-    if sound_name == "rebecca-black" and not datetime.datetime.today().weekday() == 4:
+    if sound_name == "rebecca-black" and datetime.datetime.today().weekday() != 4:
         sound_name = choice(sb.sounds.keys())
 
-    run_with_lock(sb.play, sound_name)
 
+    #Economy - is it affordable to play?
+    if not speakonomy.check_affordability(sound_name):
+        return redirect(url_for("home", message="Ain't nobody got speakerbucks for that!"))
+    
+    run_with_lock(sb.play, sound_name)
+    if sound_name == "rebecca-black":
+        speakonomy.set_free_play_timeout(minutes=5)
+        parse_and_route_speech(sb.say_classy, "It's Friday. Friday. So all sounds are free for the next 5 minutes.")
     return redirect(url_for("home"))
 
 @app.route('/say/')

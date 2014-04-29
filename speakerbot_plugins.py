@@ -11,7 +11,8 @@ import requests
 
 from config import config
 from Speakerbot import SoundEffect
-from words import parse_and_fill_mad_lib
+from speakonomy import Speakonomy
+from words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
 
 def get_mashape_api(url):
@@ -22,8 +23,15 @@ def get_mashape_api(url):
 
     return requests.get(url, headers=headers)
 
-def price_is_right():
-
+def price_is_right(wager):
+    wager = int(wager)
+    if wager < 0:
+        return "Nice try wiseguy"
+    speakonomy = Speakonomy()
+    if speakonomy.is_active():
+        if not speakonomy.check_affordability(cost=wager):
+            return "Not enough speakerbucks to spin"
+        speakonomy.withdraw_funds(wager)
     win_sounds = ["price-come-on-down-1.mp3", "price-come-on-down-2.mp3", "price-is-right.mp3", "price-big-wheel-win.mp3"]
     lose_sounds = ["you-lose.mp3", "good-grief.mp3","priceisright-horns.mp3", "pacman-die.mp3", "sad-trombone.mp3", "wet-fart.mp3"]
 
@@ -38,11 +46,11 @@ def price_is_right():
 
     if winner:
         se.play(choice(win_sounds))
-        return "You win a new car!"
+        if speakonomy.is_active():
+            speakonomy.deposit_funds(wager*20)
+        return "You win a new car. And {} speakerbucks!".format(wager*20)
     else:
         se.play(choice(lose_sounds))
-
-
 
 
 def jon():
@@ -120,8 +128,10 @@ def weather():
     return weather_text
 
 def slinging_burgers():
+
+    verb = choice(term_map["verb"])
     
-    return "Anyone who describes !verb ing as !verb ing !noun should be !verb ing !noun"
+    return "Anyone who describes !verb ing as " + verb + " ing !noun should be " + verb + " ing !noun"
 
 def run_filters(text):
     

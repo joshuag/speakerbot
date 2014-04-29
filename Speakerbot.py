@@ -128,7 +128,7 @@ class Speakerbot(object):
         sound_list = self.db.execute("SELECT * from sounds order by votes desc, name asc")
 
         for sound in sound_list:
-            self.sounds[sound["name"]] = (sound["path"], sound["votes"])
+            self.sounds[sound["name"]] = (sound["path"], sound["votes"], sound["cost"])
 
         return self.sounds
 
@@ -155,8 +155,7 @@ class Speakerbot(object):
 
     def add_sound_to_db(self, name, path):
         
-        self.db.execute("INSERT INTO sounds VALUES (?, ?)", (name, path))
+        self.db.execute("INSERT INTO sounds VALUES (?, ?, ?, ?)", (name, path, 0, 0))
 
         self.load_sounds()
-
 

@@ -23,6 +23,14 @@
         margin-top:16px;
         margin-bottom:16px;
       }
+      .sound {
+        max-height: 40px;
+      }
+      .sound-cost {
+        color: orange;
+        margin-right: 10px;
+      }
+      }
     </style>
 
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -44,16 +52,17 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Speakerbot+</a>
+          <a class="navbar-brand" href="/">Speakerbot+</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/">Home</a></li>
+            <li><a href="#" onclick="spin_the_wheel()">Spin</a></li>
             <li><a href="/say/!weather">Weather</a></li>
             <li><a href="/say/!random">Again</a></li>
             <li><a href="/say/!lunch">Lunch</a></li>
           </ul>
           <div class="col-sm-6 col-md-6 pull-right">
+          
         <form class="navbar-form" role="say" action="/say/">
         <div class="input-group">
             <input type="text" class="form-control" maxlength="100" placeholder="Say something" name="speech-text" id="speech-text">
@@ -64,6 +73,8 @@
         </div>
         </form>
         </div>
+
+         <p class="navbar-text pull-right" style="color: white;">{{ "{:,}".format(speakonomy.get_speakerbuck_balance()) }} <span class="glyphicon glyphicon-bullhorn"></span></p>
         </div><!--/.nav-collapse -->
       </div>
     </div>
@@ -79,6 +90,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.shuffle.js"></script>
     <script>
     $(function(){
       var obj = $("body");
@@ -104,6 +116,11 @@
     function handleFileUpload(files, obj){
       alert("foo")
     }
+    function spin_the_wheel() {
+      wager = prompt('Enter your speakerbuck wager:', '50');
+      window.location ='/say/!spin%20'+wager;
+    }
+    {% block javascript %}{% endblock %}
   </script>
   </body>
 </html>
