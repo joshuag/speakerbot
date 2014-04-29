@@ -7,6 +7,7 @@ def event(func):
     return func
 
 def listenable(klass):
+
     """
         Class decorator to implement a lightweight event-dispatch model.
         @listenable on the class
