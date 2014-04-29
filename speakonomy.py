@@ -71,7 +71,7 @@ class Speakonomy:
     def sell_sound(self, sound_name, **kwargs):
         if self.is_active():
             cost = self.db.execute("SELECT cost FROM sounds WHERE name=?", [sound_name,]).fetchone()['cost']
-            self.db.execute("UPDATE bank_account SET balance=balance-{}".format(cost))
+            self.withdraw_funds(cost)
             self.db.execute("UPDATE sounds set cost=cost*2 where name=?", [sound_name,])
 
     def set_free_play_timeout(self, expiration_datetime=None, hours=0, minutes=0):
