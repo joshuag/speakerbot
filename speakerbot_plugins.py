@@ -33,7 +33,7 @@ def random_drumroll(sb):
 
 
 
-def price_is_right(wager):
+def price_is_right(sb, wager):
     wager = int(wager)
     if wager < 0:
         return "Nice try wiseguy"
