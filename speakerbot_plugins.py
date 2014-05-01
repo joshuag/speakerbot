@@ -23,8 +23,7 @@ def get_mashape_api(url):
 
     return requests.get(url, headers=headers)
 
-def random_drumroll():
-    sb = Speakerbot()
+def random_drumroll(sb):
 
     sb.play("drumroll")
     
@@ -64,7 +63,7 @@ def price_is_right(wager):
         se.play(choice(lose_sounds))
 
 
-def jon():
+def jon(sb):
     db = SpeakerDB()
     results = db.execute("SELECT * FROM snippets where votes > 1 order by rowid desc limit 10")
 
@@ -76,14 +75,14 @@ def jon():
     else:
         return "I haven't heard enough funny things to commit a jon"
 
-def dada():
+def dada(sb):
     return parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")
 
-def ross():
+def ross(sb):
 
     return "Oh shit! I gotta get out of here!"
 
-def yoda(sentence):
+def yoda(sb, sentence):
 
     url = "https://yoda.p.mashape.com/yoda?sentence=%s" % sentence
 
@@ -91,7 +90,7 @@ def yoda(sentence):
     
     return u"" + r.text
 
-def horoscope(sign):
+def horoscope(sb, sign):
     
     url = "http://widgets.fabulously40.com/horoscope.json?sign=%s" % sign
 
@@ -104,7 +103,7 @@ def horoscope(sign):
 
     return text
 
-def datefact():
+def datefact(sb):
 
     day = datetime.datetime.today().day
     month = datetime.datetime.today().month
@@ -116,7 +115,7 @@ def datefact():
     return u"" + r.text
 
 
-def lunch():
+def lunch(sb):
     #TODO: Make this database driven
     places = [
         "parkside", "flipside", "subway", "panera", "zoup", "umami", 
@@ -128,7 +127,7 @@ def lunch():
 
     return "I think you ought to go to %s for lunch" % place
 
-def weather():
+def weather(sb):
 
     r = requests.get("https://api.forecast.io/forecast/38a9c91bca816b2e960c14c1ecdcf8c6/41.4311,-81.3886")
 
@@ -138,7 +137,7 @@ def weather():
 
     return weather_text
 
-def slinging_burgers():
+def slinging_burgers(sb):
 
     verb = choice(term_map["verb"])
     
@@ -150,7 +149,7 @@ def run_filters(text):
 
     return text
 
-def random_utterance():
+def random_utterance(sb):
     
     path = getcwd() + "/speech/"
     

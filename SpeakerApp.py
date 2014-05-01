@@ -113,7 +113,7 @@ def play_sound(sound_name):
     run_with_lock(sb.play, sound_name)
     if sound_name == "rebecca-black":
         speakonomy.set_free_play_timeout(minutes=5)
-        parse_and_route_speech(sb.say_classy, "It's Friday. Friday. So all sounds are free for the next 5 minutes.")
+        parse_and_route_speech(sb, "It's Friday. Friday. So all sounds are free for the next 5 minutes.")
     return redirect(url_for("home"))
 
 @app.route('/say/')
@@ -131,7 +131,7 @@ def say(text=None):
     if not text or len(text) > 100:
         return redirect(url_for("home"))
 
-    parse_and_route_speech(sb.say_classy, text)
+    parse_and_route_speech(sb, text)
 
     return redirect(url_for("home"))    
 
