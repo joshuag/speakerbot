@@ -39,7 +39,8 @@ def parse_and_route_speech(speech_func, text):
         'yoda':yoda,
         'ross':ross,
         'jon':jon,
-        'spin':price_is_right
+        'spin':price_is_right,
+        'suspense':random_drumroll
     }
     
     token = None

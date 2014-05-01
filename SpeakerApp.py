@@ -17,6 +17,9 @@ evr = EventRecorder(db=db)
 def stub_interrogator(*args, **kwargs):
     return True
 
+def stub_mangler(*args, **kwargs):
+    return args, kwargs
+
 
 sb.attach_listener("say_classy", queue_speech_for_tweet)
 sb.attach_listener("play", queue_sound_for_tweet)
@@ -24,6 +27,8 @@ sb.attach_listener("play", speakonomy.sell_sound)
 sb.attach_listener("play", evr.record_sound_event)
 
 sb.attach_interrogator("play", stub_interrogator)
+
+sb.attach_mangler("say_classy", stub_mangler)
 
 
 app = Flask(__name__)

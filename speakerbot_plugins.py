@@ -10,7 +10,7 @@ from random import choice
 import requests
 
 from config import config
-from Speakerbot import SoundEffect
+from Speakerbot import SoundEffect, Speakerbot
 from speakonomy import Speakonomy
 from words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
@@ -22,6 +22,17 @@ def get_mashape_api(url):
     }
 
     return requests.get(url, headers=headers)
+
+def random_drumroll():
+    sb = Speakerbot()
+
+    sb.play("drumroll")
+    
+    sound = choice(sb.sounds.keys())
+
+    sb.play(sound)
+
+
 
 def price_is_right(wager):
     wager = int(wager)
