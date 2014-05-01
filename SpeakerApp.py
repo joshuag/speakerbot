@@ -69,7 +69,10 @@ def upvote_image(image):
     votes += 1
 
     db.execute("update images set votes=? where file_name=?", [votes, image])
-    return redirect(url_for("home", image=image))
+
+    speakonomy.deposit_funds(5)
+
+    return redirect(url_for("home", message="Thank you for voting, have 5 speakerbucks"))
 
 @app.route('/image/<image>/downgoat')
 def downvote_image(image):
@@ -79,7 +82,9 @@ def downvote_image(image):
 
     db.execute("update images set votes=? where file_name=?", [votes, image])
 
-    return redirect(url_for("home", image=image))
+    speakonomy.deposit_funds(5)
+
+    return redirect(url_for("home", message="Thank you for voting, have 5 speakerbucks"))
 
 @app.route('/image/<image>/nsfw')
 def flag_image(image):
@@ -94,8 +99,9 @@ def comment_image(image):
     comment = request.form["image-comment"]
     
     db.add_comment(image, comment)
+    speakonomy.deposit_funds(10)
 
-    return redirect(url_for("home", image=image))
+    return redirect(url_for("home", image=image, message="Thank you for commenting, have 10 speakerbucks"))
 
 
 
