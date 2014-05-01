@@ -28,7 +28,7 @@ sb.attach_listener("play", evr.record_sound_event)
 
 sb.attach_interrogator("play", stub_interrogator)
 
-sb.attach_mangler("say_classy", stub_mangler)
+#sb.attach_mangler("say_classy", stub_mangler)
 
 
 app = Flask(__name__)
