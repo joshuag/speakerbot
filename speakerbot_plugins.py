@@ -10,7 +10,7 @@ from random import choice
 import requests
 
 from config import config
-from Speakerbot import SoundEffect, Speakerbot
+from Speakerbot import SoundEffect
 from speakonomy import Speakonomy
 from words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
@@ -31,8 +31,6 @@ def random_drumroll(sb):
 
     sb.play(sound)
 
-
-
 def price_is_right(sb, wager):
     wager = int(wager)
     if wager < 0:
@@ -45,7 +43,12 @@ def price_is_right(sb, wager):
     win_sounds = ["price-come-on-down-1.mp3", "price-come-on-down-2.mp3", "price-is-right.mp3", "price-big-wheel-win.mp3"]
     lose_sounds = ["you-lose.mp3", "good-grief.mp3","priceisright-horns.mp3", "pacman-die.mp3", "sad-trombone.mp3", "wet-fart.mp3"]
 
-    if choice(range(1,20)) == 15:
+    rng = range(1,20)
+
+    if wager % 69 == 0:
+        rng = range(12,20)
+
+    if choice(rng) == 15:
         winner = True
     else:
         winner = False
