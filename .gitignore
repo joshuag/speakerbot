@@ -38,7 +38,7 @@ nosetests.xml
 # Mac
 .DS_Store
 
-static
+static/r_gifs
 sounds
 speech
 play
