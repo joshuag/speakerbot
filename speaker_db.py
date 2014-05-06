@@ -90,6 +90,10 @@ class SpeakerDB(base_db):
 
         return self.execute("select comment from image_comments where file_name=?", [image])
 
+    def get_nsfw_images(self):
+
+        return self.execute("select * from images where nsfw=1")
+
     def get_image_votes(self, image):
 
         votes = 0

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+      <div class="page-header">
+        <h1></h1>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="isotope js-isotope" data-isotope-options='{ "itemSelector": ".item", "masonry": { "columnWidth": 100 } }'>
+            {% for image in images %}
+                <img src="/static/r_gifs/{{ image["file_name"] }}" />
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+{% endblock %}
