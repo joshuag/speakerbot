@@ -32,6 +32,9 @@ def random_drumroll(sb):
     sb.play(sound)
 
 def price_is_right(sb, wager):
+
+    lost_it_all = False
+
     wager = int(wager)
     if wager < 0:
         return "Nice try wiseguy"
@@ -46,7 +49,13 @@ def price_is_right(sb, wager):
     rng = range(1,20)
 
     if wager % 69 == 0:
+
         rng = range(12,20)
+
+        if choice(range(1,20)) == 7:
+            lost_it_all = True
+
+
 
     if choice(rng) == 15:
         winner = True
@@ -64,6 +73,9 @@ def price_is_right(sb, wager):
         return "You win a new car. And {} speakerbucks!".format(wager*20)
     else:
         se.play(choice(lose_sounds))
+        if lost_it_all:
+            speakonomy.withdraw_funds(speakonomy.get_speakerbuck_balance())
+            return "You risked it all for sexy times. And lost."
 
 
 def jon(sb):
