@@ -114,21 +114,25 @@ class SpeakerDB(base_db):
 
         return votes
 
-    def check_sfw(self, image):
-        
+    def check_appropriate(self, image):
+        appropriate = True
         try:
-            cursor = self.execute("select nsfw from images where file_name=?", [image])
+            cursor = self.execute("select nsfw, votes from images where file_name=?", [image])
             result = cursor.next()
             nsfw = int(result["nsfw"])
+            votes = int(result["votes"])
+
+            if nsfw or votes < 0:
+                appropriate = False
+
         except sqlite3.OperationalError:
-            nsfw = 0
+            appropriate = False
         except TypeError:
-            nsfw = 0
-
+            appropriate = False
         except StopIteration:
-            nsfw = 0
+            appropriate = False
 
-        return nsfw != 1
+        return appropriate
 
 
 if __name__ == "__main__":
