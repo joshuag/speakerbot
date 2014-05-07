@@ -112,7 +112,9 @@ def nsfw_images():
 @app.route('/images/top')
 def top_images():
 
-    images = db.get_top_images()
+    num_images = request.args.get("num", 25)
+
+    images = db.get_top_images(num_images=num_images)
     return render_template("images.html", images=images, speakonomy=speakonomy)
 
 

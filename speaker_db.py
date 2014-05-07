@@ -94,9 +94,9 @@ class SpeakerDB(base_db):
 
         return self.execute("select * from images where nsfw=1")
 
-    def get_top_images(self):
+    def get_top_images(self, num_images=20):
 
-        return self.execute("select * from images order by votes desc limit 10")
+        return self.execute("select * from images order by votes desc limit ?", [num_images])
 
     def get_image_votes(self, image):
 
