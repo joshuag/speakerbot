@@ -1,11 +1,17 @@
 {% extends "base.html" %}
+{% block javascript %}
+  var $container = $('#images');
+  $container.imagesLoaded(function() {
+    $container.isotope({ "itemSelector": ".item", "masonry": { "columnWidth": 100 }});
+  });
+{% endblock %}
 {% block content %}
       <div class="page-header">
         <h1></h1>
       </div>
       <div class="row">
         <div class="col-sm-12">
-          <div class="isotope js-isotope" data-isotope-options='{ "itemSelector": ".item", "masonry": { "columnWidth": 100 } }'>
+          <div id="images">
             {% for image in images %}
                 <img class="item" style="max-width:300px;" src="/static/r_gifs/{{ image["file_name"] }}" />
             {% endfor %}
