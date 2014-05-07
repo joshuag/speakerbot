@@ -2,7 +2,7 @@
 {% block javascript %}
   var $container = $('#images');
   $container.imagesLoaded(function() {
-    $container.isotope({ "itemSelector": ".item", "masonry": { "columnWidth": 100 }});
+    $container.isotope({ "itemSelector": ".item", "masonryHorizontal": { "columnWidth": 100 }});
   });
 {% endblock %}
 {% block content %}
