@@ -126,11 +126,11 @@ class SpeakerDB(base_db):
                 appropriate = False
 
         except sqlite3.OperationalError:
-            appropriate = False
+            appropriate = True
         except TypeError:
-            appropriate = False
+            appropriate = True
         except StopIteration:
-            appropriate = False
+            appropriate = True
 
         return appropriate
 
