@@ -103,11 +103,18 @@ def comment_image(image):
 
     return redirect(url_for("home", image=image, message="Thank you for commenting, have 10 speakerbucks"))
 
-@app.route('/nsfw')
-def nsfw():
+@app.route('/images/nsfw')
+def nsfw_images():
 
     images = db.get_nsfw_images()
     return render_template("images.html", images=images, speakonomy=speakonomy)
+
+@app.route('/images/top')
+def top_images():
+
+    images = db.get_top_images()
+    return render_template("images.html", images=images, speakonomy=speakonomy)
+
 
 @app.route('/play_sound/<sound_name>')
 def play_sound(sound_name):
