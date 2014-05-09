@@ -119,8 +119,15 @@ class SpeakerDB(base_db):
         try:
             cursor = self.execute("select nsfw, votes from images where file_name=?", [image])
             result = cursor.next()
-            nsfw = int(result["nsfw"])
-            votes = int(result["votes"])
+            if result["nsfw"]:
+                nsfw = int(result["nsfw"])
+            else:
+                nsfw = 0
+
+            if result["votes"]:
+                votes = int(result["votes"])
+            else:
+                votes = 0
 
             if nsfw == 1 or votes < 0:
                 appropriate = False
