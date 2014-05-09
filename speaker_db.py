@@ -122,7 +122,7 @@ class SpeakerDB(base_db):
             nsfw = int(result["nsfw"])
             votes = int(result["votes"])
 
-            if nsfw or votes < 0:
+            if nsfw == 1 or votes < 0:
                 appropriate = False
 
         except sqlite3.OperationalError:
