@@ -13,7 +13,7 @@
         <div class="col-sm-12">
           <div id="images">
             {% for image in images %}
-                <img class="item" style="max-width:300px;" src="/static/r_gifs/{{ image["file_name"] }}" />
+                <a href="/home/{{ image["file_name"] }}"><img class="item" style="max-width:300px;" src="/static/r_gifs/{{ image["file_name"] }}" /></a>
             {% endfor %}
           </div>
         </div>
