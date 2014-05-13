@@ -88,7 +88,8 @@ def comment_image(image):
 
     comment = request.form["image-comment"]
     
-    db.add_comment(image, comment)
+    if comment.strip() != '':
+        db.add_comment(image, comment)
 
     return redirect(url_for("home", image=image))
 
