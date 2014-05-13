@@ -98,8 +98,9 @@ def comment_image(image):
 
     comment = request.form["image-comment"]
     
-    db.add_comment(image, comment)
-    speakonomy.deposit_funds(10)
+    if comment.strip() != '':
+        db.add_comment(image, comment)
+        speakonomy.deposit_funds(10)
 
     return redirect(url_for("home", image=image, message="Thank you for commenting, have 10 speakerbucks"))
 
