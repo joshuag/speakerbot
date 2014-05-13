@@ -26,7 +26,7 @@ def create_deferred(function, *args, **kwargs):
 
     return _exec
 
-def parse_and_route_speech(speech_func, text):
+def parse_and_route_speech(speakerbot, text):
     
     actions = {
         'random':random_utterance,
@@ -39,7 +39,8 @@ def parse_and_route_speech(speech_func, text):
         'yoda':yoda,
         'ross':ross,
         'jon':jon,
-        'spin':price_is_right
+        'spin':price_is_right,
+        'suspense':random_drumroll
     }
     
     token = None
@@ -58,9 +59,9 @@ def parse_and_route_speech(speech_func, text):
         if method:
             try:
                 if argument:
-                    text_output = method(argument.strip())
+                    text_output = method(speakerbot, argument.strip())
                 else:
-                    text_output = method()
+                    text_output = method(speakerbot)
 
                 text = text_output
 
@@ -69,7 +70,7 @@ def parse_and_route_speech(speech_func, text):
 
 
     if text:
-        play_speech(speech_func, run_filters(text))
+        play_speech(speakerbot.say_classy, run_filters(text))
 
 def niceify_number(i):
     #swiped from http://codegolf.stackexchange.com/questions/4707/outputting-ordinal-numbers-1st-2nd-3rd
@@ -123,7 +124,7 @@ def get_image(checker_func=lambda x: True, depth=5):
         file_path = get_image()
 
     if not checker_func(file_path) and depth != 0:
-        print "trying to get sfw image"
+        print "trying to get passable image"
         depth -= 1
         file_path = get_image(checker_func, depth)
 

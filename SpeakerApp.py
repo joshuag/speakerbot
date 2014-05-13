@@ -17,6 +17,9 @@ evr = EventRecorder(db=db)
 def stub_interrogator(*args, **kwargs):
     return True
 
+def stub_mangler(*args, **kwargs):
+    return args, kwargs
+
 
 sb.attach_listener("say_classy", queue_speech_for_tweet)
 sb.attach_listener("play", queue_sound_for_tweet)
@@ -24,6 +27,8 @@ sb.attach_listener("play", speakonomy.sell_sound)
 sb.attach_listener("play", evr.record_sound_event)
 
 sb.attach_interrogator("play", stub_interrogator)
+
+#sb.attach_mangler("say_classy", stub_mangler)
 
 
 app = Flask(__name__)
@@ -35,7 +40,7 @@ def home(image=None):
     message = request.args.get('message', None)
 
     if not image:
-        image = get_image(db.check_sfw)
+        image = get_image(db.check_appropriate)
 
     votes = db.get_image_votes(image)
     comments = db.get_image_comments(image)
@@ -64,7 +69,10 @@ def upvote_image(image):
     votes += 1
 
     db.execute("update images set votes=? where file_name=?", [votes, image])
-    return redirect(url_for("home", image=image))
+
+    speakonomy.deposit_funds(5)
+
+    return redirect(url_for("home", message="Thank you for voting, have 5 speakerbucks"))
 
 @app.route('/image/<image>/downgoat')
 def downvote_image(image):
@@ -74,7 +82,9 @@ def downvote_image(image):
 
     db.execute("update images set votes=? where file_name=?", [votes, image])
 
-    return redirect(url_for("home", image=image))
+    speakonomy.deposit_funds(5)
+
+    return redirect(url_for("home", message="Thank you for voting, have 5 speakerbucks"))
 
 @app.route('/image/<image>/nsfw')
 def flag_image(image):
@@ -90,9 +100,23 @@ def comment_image(image):
     
     if comment.strip() != '':
         db.add_comment(image, comment)
+        speakonomy.deposit_funds(10)
 
-    return redirect(url_for("home", image=image))
+    return redirect(url_for("home", image=image, message="Thank you for commenting, have 10 speakerbucks"))
 
+@app.route('/images/nsfw')
+def nsfw_images():
+
+    images = db.get_nsfw_images()
+    return render_template("images.html", images=images, speakonomy=speakonomy)
+
+@app.route('/images/top')
+def top_images():
+
+    num_images = request.args.get("num", 25)
+
+    images = db.get_top_images(num_images=num_images)
+    return render_template("images.html", images=images, speakonomy=speakonomy)
 
 
 @app.route('/play_sound/<sound_name>')
@@ -109,7 +133,7 @@ def play_sound(sound_name):
     run_with_lock(sb.play, sound_name)
     if sound_name == "rebecca-black":
         speakonomy.set_free_play_timeout(minutes=5)
-        parse_and_route_speech(sb.say_classy, "It's Friday. Friday. So all sounds are free for the next 5 minutes.")
+        parse_and_route_speech(sb, "It's Friday. Friday. So all sounds are free for the next 5 minutes.")
     return redirect(url_for("home"))
 
 @app.route('/say/')
@@ -127,7 +151,7 @@ def say(text=None):
     if not text or len(text) > 100:
         return redirect(url_for("home"))
 
-    parse_and_route_speech(sb.say_classy, text)
+    parse_and_route_speech(sb, text)
 
     return redirect(url_for("home"))    
 

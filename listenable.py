@@ -28,6 +28,8 @@ def listenable(klass):
 
             if self.dispatch_events(self._interrogators, method.__name__, *args, **kwargs):
 
+                args, kwargs = self.run_manglers(method.__name__, *args, **kwargs)
+
                 result = method(*args, **kwargs)
 
                 kwargs["event_result"] = result
@@ -63,6 +65,24 @@ def listenable(klass):
     def attach_listener(self, event, listener):
 
         _attach(self, event, listener, "_listeners")
+
+
+    def attach_mangler(self, event, listener):
+
+        _attach(self, event, listener, "_manglers")
+
+
+    def run_manglers(self, method_name, *args, **kwargs):
+
+        for mangler in self._manglers.get(method_name, []):
+            try:
+                #pop off the instance information. We just want the function signature
+                args, kwargs = mangler(*args[1:], **kwargs)
+                
+            except Exception as e:
+                print "Argument mangler %s failed. It reported the following: %s" % (mangler.__name__, str(e))
+
+        return args, kwargs
         
 
     def dispatch_events(self, handler_collection, method_name, *args, **kwargs):
@@ -94,8 +114,11 @@ def listenable(klass):
         
     setattr(klass, "_listeners", {})
     setattr(klass, "_interrogators", {})
+    setattr(klass, "_manglers", {})
     setattr(klass, "attach_listener", attach_listener)
     setattr(klass, "attach_interrogator", attach_interrogator)
+    setattr(klass, "attach_mangler", attach_mangler)
     setattr(klass, "dispatch_events", dispatch_events)
+    setattr(klass, "run_manglers", run_manglers)
 
     return klass

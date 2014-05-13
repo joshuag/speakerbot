@@ -86,8 +86,10 @@ class Speakonomy:
             self.speakerbot.load_sounds()
 
         for sound_name in self.speakerbot.sounds:
+            
             sound_path = '{}/{}'.format(sound_dir, self.speakerbot.sounds[sound_name][0])
             sound_cost = os.stat(sound_path).st_size
+
             try:
                 sound_size = os.stat(sound_path).st_size
                 sound_cost = int(sound_size/1024 * 0.0854455 - 0.0953288 + 0.5)
@@ -95,6 +97,7 @@ class Speakonomy:
                     sound_cost = 1
             except:
                 sound_cost = 0
+
             self.db.execute("UPDATE sounds SET base_cost={} where name='{}'".format(sound_cost, sound_name))
 
     def withdraw_funds(self, amount):
