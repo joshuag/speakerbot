@@ -178,7 +178,8 @@ def urban(sb, text):
     defn = ""
 
     if defn_tag:
-        defn = defn_tag.text().split("<br>")[0]
+        print defn_tag.html()
+        defn = defn_tag.html().split("<br/>")[0]
 
     if not defn:
         return "I couldn't find a definition for %s" % text
