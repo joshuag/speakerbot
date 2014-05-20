@@ -40,7 +40,8 @@ def parse_and_route_speech(speakerbot, text):
         'ross':ross,
         'jon':jon,
         'spin':price_is_right,
-        'suspense':random_drumroll
+        'suspense':random_drumroll,
+        'urban': urban
     }
     
     token = None
