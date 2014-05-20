@@ -8,6 +8,7 @@ from random import choice
 
 
 import requests
+import re
 
 from config import config
 from Speakerbot import SoundEffect
@@ -178,8 +179,7 @@ def urban(sb, text):
     defn = ""
 
     if defn_tag:
-        print defn_tag.html()
-        defn = defn_tag.html().split("<br/>")[0]
+        defn = re.sub('<[^<]+?>(.*?)</[^<]+?>', r'\1', defn_tag.html().split("<br/>")[0])[:500]
 
     if not defn:
         return "I couldn't find a definition for %s" % text
