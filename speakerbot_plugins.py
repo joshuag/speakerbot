@@ -180,6 +180,7 @@ def urban(sb, text):
 
     if defn_tag:
         defn = re.sub('<[^<]+?>(.*?)</[^<]+?>', r'\1', defn_tag.html().split("<br/>")[0])[:500]
+        defn = "".join(defn.split(".")[:3])
 
     if not defn:
         return "I couldn't find a definition for %s" % text
