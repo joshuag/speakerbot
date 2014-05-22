@@ -4,12 +4,26 @@ from random import choice
 
 import datetime
 
-from multiprocessing import Lock
-
 from speaker_db import SpeakerDB
 from speakerbot_plugins import *
 
-threadLock = Lock()
+
+try:
+    import uwsgi
+
+    def lock():
+        uwsgi.lock()
+
+    def unlock():
+        uwsgi.unlock()
+
+except ImportError:
+    from multiprocessing import Lock
+    threadLock = Lock()
+    def lock():
+        threadLock.acquire(True)
+    def unlock():
+        threadLock.release()
 
 def economy_is_active():
     if datetime.datetime.today().weekday() in [5,6]:
@@ -109,12 +123,12 @@ def play_speech(speech_func, text):
 
 def run_with_lock(func, *args, **kwargs):
     try:
-        threadLock.acquire(True)
+        lock()
         func(*args, **kwargs)
     except:
         pass
     finally:
-        threadLock.release()
+        unlock()
 
 def get_image(checker_func=lambda x: True, depth=5):
 
