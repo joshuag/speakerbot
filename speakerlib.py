@@ -2,12 +2,14 @@ from os import listdir, getcwd
 from os.path import isfile, join
 from random import choice
 
-import datetime, threading, thread
+import datetime
+
+from multiprocessing import Lock
 
 from speaker_db import SpeakerDB
 from speakerbot_plugins import *
 
-threadLock = threading.Lock()
+threadLock = Lock()
 
 def economy_is_active():
     if datetime.datetime.today().weekday() in [5,6]:
