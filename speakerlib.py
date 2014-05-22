@@ -2,12 +2,12 @@ from os import listdir, getcwd
 from os.path import isfile, join
 from random import choice
 
-import datetime
-import zc.lockfile
+import datetime, threading, thread
 
-from config import config
 from speaker_db import SpeakerDB
 from speakerbot_plugins import *
+
+threadLock = threading.Lock()
 
 def economy_is_active():
     if datetime.datetime.today().weekday() in [5,6]:
@@ -107,11 +107,12 @@ def play_speech(speech_func, text):
 
 def run_with_lock(func, *args, **kwargs):
     try:
-        lock = zc.lockfile.LockFile('play')
+        threadLock.acquire(True)
         func(*args, **kwargs)
-        lock.close()
-    except zc.lockfile.LockError:
+    except:
         pass
+    finally:
+        threadLock.release()
 
 def get_image(checker_func=lambda x: True, depth=5):
 
