@@ -135,7 +135,12 @@ class Speakerbot(object):
     @event
     def play(self, name):
 
-        self.se.play(self.sounds[name][0])
+        if ".mp3" in name:
+            sound = name
+        else:
+            sound = self.sounds[name][0]
+
+        self.se.play(sound)
 
 
     def say(self, name="", speech_text=""):
