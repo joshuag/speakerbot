@@ -12,7 +12,6 @@ try:
     from uwsgidecorators import lock
 
 except ImportError:
-    print "Didn't work"
     def lock(f):
         return f
 
