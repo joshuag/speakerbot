@@ -9,16 +9,6 @@ from config import config
 from speaker_db import SpeakerDB
 from speakerbot_plugins import *
 
-def economy_is_active():
-    if datetime.datetime.today().weekday() in [5,6]:
-        return False
-        
-    current_hour = datetime.datetime.now().hour
-    if current_hour >= 8 and current_hour < 18:
-        return True
-
-    return False
-
 def create_deferred(function, *args, **kwargs):
 
     def _exec():
