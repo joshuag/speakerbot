@@ -32,7 +32,7 @@ sb.attach_interrogator("play", stub_interrogator)
 
 
 app = Flask(__name__)
-app.config['DEBUG'] = False
+app.config['DEBUG'] = True
 
 @app.route('/')
 @app.route('/home/<image>')
