@@ -3,11 +3,16 @@ from os.path import isfile, join
 from random import choice
 
 import datetime
-import zc.lockfile
 
-from config import config
 from speaker_db import SpeakerDB
 from speakerbot_plugins import *
+
+try:   
+    from uwsgidecorators import lock
+
+except ImportError:
+    def lock(f):
+        return f
 
 def create_deferred(function, *args, **kwargs):
 
@@ -30,7 +35,8 @@ def parse_and_route_speech(speakerbot, text):
         'ross':ross,
         'jon':jon,
         'spin':price_is_right,
-        'suspense':random_drumroll
+        'suspense':random_drumroll,
+        'urban': urban
     }
     
     token = None
@@ -94,13 +100,9 @@ def play_speech(speech_func, text):
         
     run_with_lock(speech_func, speech_text=text)
 
+@lock
 def run_with_lock(func, *args, **kwargs):
-    try:
-        lock = zc.lockfile.LockFile('play')
-        func(*args, **kwargs)
-        lock.close()
-    except zc.lockfile.LockError:
-        pass
+    func(*args, **kwargs)
 
 def get_image(checker_func=lambda x: True, depth=5):
 

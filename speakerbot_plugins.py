@@ -8,12 +8,14 @@ from random import choice
 
 
 import requests
+import re
 
 from config import config
 from Speakerbot import SoundEffect
 from speakonomy import Speakonomy
 from words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
+from pyquery import PyQuery as pq
 
 def get_mashape_api(url):
     api_key = config["mashape_api_key"]
@@ -166,6 +168,26 @@ def run_filters(text):
     text = parse_and_fill_mad_lib(text)
 
     return text
+
+def urban(sb, text):
+
+    page = requests.get("http://www.urbandictionary.com/define.php?term=%s" % text)
+
+    page = pq(page.text)
+
+    defn_tag = page("div.meaning")
+    defn = ""
+
+    if defn_tag:
+        defn = re.sub('<[^<]+?>(.*?)</[^<]+?>', r'\1', defn_tag.html().split("<br/>")[0])[:500]
+        defn = "".join(defn.split(".")[:3])
+
+    if not defn:
+        return "I couldn't find a definition for %s" % text
+    else:
+        return "The definition for %s: %s" % (text, defn)
+
+
 
 def random_utterance(sb):
     
