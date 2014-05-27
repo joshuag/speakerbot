@@ -21,6 +21,7 @@ def create_deferred(function, *args, **kwargs):
 
     return _exec
 
+@lock
 def parse_and_route_speech(speakerbot, text):
     
     actions = {
