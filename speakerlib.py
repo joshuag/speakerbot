@@ -21,6 +21,7 @@ def create_deferred(function, *args, **kwargs):
 
     return _exec
 
+@lock
 def parse_and_route_speech(speakerbot, text):
     
     actions = {
@@ -67,7 +68,7 @@ def parse_and_route_speech(speakerbot, text):
 
 
     if text:
-        play_speech(speakerbot.say_classy, run_filters(text))
+        speakerbot.say_classy(speech_text=run_filters(text))
 
 def niceify_number(i):
     #swiped from http://codegolf.stackexchange.com/questions/4707/outputting-ordinal-numbers-1st-2nd-3rd
