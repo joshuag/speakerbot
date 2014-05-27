@@ -102,6 +102,10 @@ def ross(sb):
 
     return "Oh shit! I gotta get out of here!"
 
+def dave(sb):
+    options = ['shut the fuck up', 'who gives a shit']
+    return choice(options)
+
 def josh(sb):
     exclamations = ['Heavens to betsy','Jiminy Crickets','Hells bells','Holy hell','Son of a gun','Balls on a hat','Poop in a bucket','God damnit', 'Goodness gracious']
     which = ['this','that']

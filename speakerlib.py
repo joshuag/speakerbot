@@ -36,6 +36,7 @@ def parse_and_route_speech(speakerbot, text):
         'ross':ross,
         'jon':jon,
         'josh':josh,
+        'dave':dave,
         'spin':price_is_right,
         'suspense':random_drumroll,
         'urban': urban
