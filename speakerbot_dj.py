@@ -25,7 +25,6 @@ class SpeakerbotDJ:
         return field_match.group(1)
 
     def cache_theme_songs(self):
-        self.last_theme_cache_time = dt.datetime.now()
         results = self.db.execute("SELECT name, theme_song, last_theme_play_time FROM person").fetchall()
         for result in results:
             play_ok = True
@@ -36,6 +35,7 @@ class SpeakerbotDJ:
                     play_ok = False
 
             self.theme_songs[minimize_string(result['name'])] = (result['name'], result['theme_song'], play_ok)
+        self.last_theme_cache_time = dt.datetime.now()
 
     def check_for_entrance(self):
         # Needs cleanup... 
@@ -71,7 +71,7 @@ class SpeakerbotDJ:
             if not theme_song or not play_ok:
                 print "No theme song or play_ok"
                 continue
-            if door in ['mezstairdevhall','nstair2labdrb1n1mezz']:
+            if door in ['mezstairdevhall','nstair2labdrb1n1mezz','nhall2labdrb2n2mezz']:
                 print 'queue now'
             elif door in ['sstairdrb2n1serv']:
                 print 'queue in 45 seconds'
