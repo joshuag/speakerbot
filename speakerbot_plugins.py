@@ -110,8 +110,8 @@ def josh(sb):
     exclamations = ['Oh nuts on nuts.', 'Heavens to betsy','Jiminy Crickets','Hells bells','Holy hell','Son of a gun','Balls on a hat','Poop in a bucket','God damnit', 'Goodness gracious']
     which = ['this','that']
     subjects = ['dude','guy','girl','woman','man']
-    predicates = ['is a complete {noun}','is a total {noun}','is an outright {noun}', 'is an absolute {noun}', 'is an udder {noun}', 'can go piss up a rope', 'about as useful as tits on a bull','a son of a gun']
-    predicate_nouns = ['chucklefuck','knucklehead','dicknut']
+    predicates = ['gets my knickers in a twist', 'is a complete {noun}','is a total {noun}','is an outright {noun}', 'is an absolute {noun}', 'is an udder {noun}', 'can go piss up a rope', 'about as useful as tits on a bull','a son of a gun']
+    predicate_nouns = ['chucklefuck','knucklehead','dicknut','scallywag']
 
     phrase = '{exclamation}! {which} {subject} {predicate}'.format(
         exclamation=choice(exclamations),
