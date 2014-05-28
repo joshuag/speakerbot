@@ -68,7 +68,7 @@ def theme_songs():
         return redirect(url_for("theme_songs"))
     return render_template(
             "themesongs.html", 
-            sounds=sb.load_sounds(), 
+            sounds=sorted(sb.load_sounds().keys()), 
             people=db.get_people(),
             speakonomy=speakonomy,
             )
@@ -77,6 +77,9 @@ def theme_songs():
 def admin():
     if request.form.get('person-name'):
         db.add_person(request.form['person-name'])
+        return redirect(url_for("admin"))
+    elif request.form.get('delete-person'):
+        db.remove_person(request.form['delete-person'])
         return redirect(url_for("admin"))
 
     return render_template(

@@ -61,7 +61,10 @@ class SpeakerbotDJ:
             user = minimize_string(user)
             door = minimize_string(door)
             #lookup theme song based on user
-            real_name, theme_song, play_ok = self.theme_songs.get(user)
+            if not self.theme_songs.get(user):
+                print "Unrecognized user:", user
+                continue
+            real_name, theme_song, play_ok = self.theme_songs[user]
 
             if not theme_song or not play_ok:
                 continue

@@ -1,19 +1,32 @@
 {% extends "base.html" %}
+{% block css %}
+.delete-person-icon {
+  cursor: pointer;
+}
+{% endblock %}}
+{% block javascript %}
+function delete_user(name) {
+  $('#delete-person').val(name);
+  $('#admin-form').submit();
+}
+{% endblock %}
 {% block content %}
       <div class="page-header">
         <h1>Admin</h1>
       </div>
       <div class="row">
-        <form action="/spadmin" method="post">
+        <form id="admin-form" action="/spadmin" method="post">
         <div class="col-sm-3">
           <div class="list-group" id="people">
           	{% for person in people %}
             <a class="list-group-item" data-name="{{ person.name }}" data-theme="{{ person.theme_song }}">
               {{ person.name }}
+              <p class="pull-right delete-person-icon" onclick="delete_user('{{ person.name }}')"><i class="glyphicon glyphicon-remove"></i></p>
             </a>
             {% endfor %}
             <div class="list-group-item">
                 <div class="input-group">
+                  <input type="hidden" id="delete-person" name="delete-person" value="">
                   <input type="text" class="form-control" maxlength="250" placeholder="New person..." name="person-name" id="person-name">
                   <div class="input-group-btn">
                       <button class="btn btn-default"><i class="glyphicon glyphicon-plus"></i></button>

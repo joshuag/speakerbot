@@ -126,6 +126,10 @@ class SpeakerDB(base_db):
 
         self.execute("insert into person (name) values (?)", [name,])
 
+    def remove_person(self, name):
+
+        self.execute("DELETE FROM person WHERE name = ?", [name,])
+
     def check_appropriate(self, image):
         appropriate = True
         try:
