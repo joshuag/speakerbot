@@ -74,8 +74,11 @@ class SpeakerbotDJ:
             if door in ['mezstairdevhall','nstair2labdrb1n1mezz']:
                 print 'queue now'
             elif door in ['sstairdrb2n1serv']:
-                print 'queue in a minute'
+                print 'queue in 45 seconds'
                 sleep(45)
+            elif door in ['1stflelevbutton']:
+                print 'queue in 60 seconds'
+                sleep(60)
             else:
                 print 'Unknown door:', door
                 continue
@@ -89,7 +92,7 @@ class SpeakerbotDJ:
 
 if __name__ == "__main__":
     sb = Speakerbot()
-    dj = SpeakerbotDJ()
+    dj = SpeakerbotDJ(speakerbot=sb)
     while True:
         if (dt.datetime.now()-dj.last_theme_cache_time).total_seconds() >= 60:
             dj.cache_theme_songs()            
