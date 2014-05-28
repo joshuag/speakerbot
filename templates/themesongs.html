@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block css %}
+a.list-group-item {
+  cursor: pointer;
+}
+{% endblock %}
+{% block javascript %}
+function select_user(d) {
+  $('a.list-group-item').removeClass('active');
+  $(d).addClass('active');
+  theme = $(d).attr("data-theme");
+  $("a[data-name="+theme+"]").addClass('active');
+  $('#user').val($(d).attr("data-name"));
+  $('#song').val(theme);
+}
+function select_song(d) {
+  $('a.sound').removeClass('active');
+  $(d).addClass('active');
+  $('#song').val($(d).attr("data-name"));
+}
+{% endblock %}
+{% block content %}
+      <div class="page-header">
+        <h1>Theme Song Manager</h1>
+      </div>
+      <div class="row">
+        <form action="/theme-songs" method="post">
+        <div class="col-sm-3">
+          <div class="list-group" id="people">
+          	{% for person in people %}
+            <a class="list-group-item" data-name="{{ person.name }}" data-theme="{{ person.theme_song }}" onclick="select_user(this)">
+              {{ person.name }}
+            </a>
+            {% endfor %}
+          </div>
+        </div><!-- /.col-sm-8 -->
+        <div class="col-sm-3">
+          <div class="list-group" id="sounds">
+            {% for sound in sounds %}
+            <a class="list-group-item sound" data-name="{{ sound }}" onclick="select_song(this)">
+              {{ sound }}
+            </a>
+            {% endfor %}
+          </div>
+        </div><!-- /.col-sm-8 -->
+        <div class="col-sm-3">
+          <input type="hidden" name="user" id="user" value="">
+          <input type="hidden" name="song" id="song" value="">
+          <button type="submit" class="btn btn-default">Submit</button>
+        </div><!-- /.col-sm-8 -->
+        </form>
+      </div>
+{% endblock %}

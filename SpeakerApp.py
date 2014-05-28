@@ -60,6 +60,30 @@ def home(image=None):
             random_title=parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")
             )
 
+@app.route('/theme-songs', methods=["GET", "POST"])
+def theme_songs():
+    if request.method == 'POST':
+        if request.form['user'] and request.form['song']:
+            db.execute("update person set theme_song=? where name=?", [request.form['song'], request.form['user']])
+        return redirect(url_for("theme_songs"))
+    return render_template(
+            "themesongs.html", 
+            sounds=sb.load_sounds(), 
+            people=db.get_people(),
+            speakonomy=speakonomy,
+            )
+
+@app.route('/spadmin', methods=["GET", "POST"])
+def admin():
+    if request.form.get('person-name'):
+        db.add_person(request.form['person-name'])
+        return redirect(url_for("admin"))
+
+    return render_template(
+            "admin.html", 
+            people=db.get_people(),
+            speakonomy=speakonomy,
+            )
 
 @app.route('/image/<image>/upboat')
 def upvote_image(image):

@@ -82,6 +82,10 @@ class SpeakerDB(base_db):
         self.execute("update sounds set cost=0 where cost is null")
         self.execute("update sounds set base_cost=0 where base_cost is null")
 
+    def _migrate_13(self):
+        self.execute('CREATE TABLE person (name text NOT NULL, theme_song text, last_theme_play_time INTEGER NOT NULL DEFAULT 0);')
+        self.execute('CREATE UNIQUE INDEX UniquePerson ON person (name);')
+
     def add_comment(self, image, comment):
 
         self.execute("insert into image_comments (file_name, comment) values (?, ?)", [image, comment])
@@ -113,6 +117,14 @@ class SpeakerDB(base_db):
             votes = 0
 
         return votes
+
+    def get_people(self):
+
+        return self.execute("select * from person order by name")
+        
+    def add_person(self, name):
+
+        self.execute("insert into person (name) values (?)", [name,])
 
     def check_appropriate(self, image):
         appropriate = True

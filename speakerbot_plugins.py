@@ -107,17 +107,17 @@ def dave(sb):
     return choice(options)
 
 def josh(sb):
-    exclamations = ['Heavens to betsy','Jiminy Crickets','Hells bells','Holy hell','Son of a gun','Balls on a hat','Poop in a bucket','God damnit', 'Goodness gracious']
+    exclamations = ['Oh nuts on nuts.', 'Heavens to betsy','Jiminy Crickets','Hells bells','Holy hell','Son of a gun','Balls on a hat','Poop in a bucket','God damnit', 'Goodness gracious']
     which = ['this','that']
     subjects = ['dude','guy','girl','woman','man']
-    descriptors = ['a complete {noun}','a total {noun}','an outright {noun}', 'an absolute {noun}', 'an udder {noun}', 'about as useful as tits on a bull','a son of a gun']
-    nouns = ['chucklefuck','knucklehead','dicknut']
+    predicates = ['is a complete {noun}','is a total {noun}','is an outright {noun}', 'is an absolute {noun}', 'is an udder {noun}', 'can go piss up a rope', 'about as useful as tits on a bull','a son of a gun']
+    predicate_nouns = ['chucklefuck','knucklehead','dicknut']
 
-    phrase = '{exclamation}! {which} {subject} is {descriptor}'.format(
+    phrase = '{exclamation}! {which} {subject} {predicate}'.format(
         exclamation=choice(exclamations),
         which=choice(which),
         subject=choice(subjects),
-        descriptor=choice(descriptors).format(noun=choice(nouns))
+        predicate=choice(predicates).format(noun=choice(predicate_nouns))
     )
     return phrase
 

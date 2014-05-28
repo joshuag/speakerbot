@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+      <div class="page-header">
+        <h1>Admin</h1>
+      </div>
+      <div class="row">
+        <form action="/spadmin" method="post">
+        <div class="col-sm-3">
+          <div class="list-group" id="people">
+          	{% for person in people %}
+            <a class="list-group-item" data-name="{{ person.name }}" data-theme="{{ person.theme_song }}">
+              {{ person.name }}
+            </a>
+            {% endfor %}
+            <div class="list-group-item">
+                <div class="input-group">
+                  <input type="text" class="form-control" maxlength="250" placeholder="New person..." name="person-name" id="person-name">
+                  <div class="input-group-btn">
+                      <button class="btn btn-default"><i class="glyphicon glyphicon-plus"></i></button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.col-sm-8 -->
+        </form>
+      </div>
+{% endblock %}

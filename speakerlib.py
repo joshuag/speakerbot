@@ -76,6 +76,9 @@ def niceify_number(i):
     k=i%10
     return "%d%s" % (i,"tsnrhtdd"[(i/10%10!=1)*(k<4)*k::4])
 
+def minimize_string(s):
+    return ''.join(c.lower() for c in s if not c.isspace())
+
 def queue_speech_for_tweet(*args, **kwargs):
 
     text = kwargs["speech_text"]
