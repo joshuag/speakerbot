@@ -77,7 +77,7 @@ def niceify_number(i):
     return "%d%s" % (i,"tsnrhtdd"[(i/10%10!=1)*(k<4)*k::4])
 
 def minimize_string(s):
-    if isinstance(s, (str, unicode):
+    if isinstance(s, (str, unicode)):
         return ''.join(c.lower() for c in s if not c.isspace())
     return s
 
