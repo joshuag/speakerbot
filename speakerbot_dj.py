@@ -57,16 +57,19 @@ class SpeakerbotDJ:
             user = self.extract_email_field(email_body, 'User')
             door = self.extract_email_field(email_body, 'Door')
             if not user:
+                print "No user"
                 continue
             user = minimize_string(user)
             door = minimize_string(door)
             #lookup theme song based on user
             if not self.theme_songs.get(user):
                 print "Unrecognized user:", user
+                print self.theme_songs
                 continue
             real_name, theme_song, play_ok = self.theme_songs[user]
 
             if not theme_song or not play_ok:
+                print "No theme song or play_ok"
                 continue
             if door in ['mezstairdevhall','nstair2labdrb1n1mezz']:
                 print 'queue now'
