@@ -153,9 +153,9 @@ class Speakerbot(object):
 
         self.tts.say_classy(speech_text)
 
-    def add_sound_to_db(self, name, path):
-        
-        self.db.execute("INSERT INTO sounds VALUES (?, ?, ?, ?)", (name, path, 0, 0))
+    def add_sound_to_db(self, name, path, base_cost=0):
+
+        self.db.execute("INSERT INTO sounds (name, path, votes, cost, base_cost) VALUES (?, ?, ?, ?, ?)", (name, path, 0, base_cost, base_cost))
 
         self.load_sounds()
 

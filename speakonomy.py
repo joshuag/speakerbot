@@ -80,6 +80,16 @@ class Speakonomy:
         expiration_timestamp = expiration_datetime.strftime("%s")
         self.db.execute("UPDATE bank_account SET free_play_timeout=?", [expiration_timestamp,])
 
+    def get_sound_base_cost(self, sound_path):
+        try:
+            sound_size = os.stat(sound_path).st_size
+            sound_cost = int(sound_size/1024 * 0.0854455 - 0.0953288 + 0.5)
+            if sound_cost < 1:
+                sound_cost = 1
+        except:
+            sound_cost = 0
+        return sound_cost
+
     def set_sound_base_costs(self, sound_dir="sounds"):
         assert self.speakerbot != None
         if not self.speakerbot.sounds:
@@ -88,15 +98,7 @@ class Speakonomy:
         for sound_name in self.speakerbot.sounds:
             
             sound_path = '{}/{}'.format(sound_dir, self.speakerbot.sounds[sound_name][0])
-            sound_cost = os.stat(sound_path).st_size
-
-            try:
-                sound_size = os.stat(sound_path).st_size
-                sound_cost = int(sound_size/1024 * 0.0854455 - 0.0953288 + 0.5)
-                if sound_cost < 1:
-                    sound_cost = 1
-            except:
-                sound_cost = 0
+            sound_cost = self.get_sound_base_cost(sound_path)
 
             self.db.execute("UPDATE sounds SET base_cost={} where name='{}'".format(sound_cost, sound_name))
 
