@@ -74,7 +74,7 @@ def price_is_right(sb, wager):
     if winner:
         se.play(choice(win_sounds))
         if speakonomy.is_active():
-            speakonomy.deposit_funds(wager*20)
+            speakonomy.deposit_funds(wager*win_multiplier)
         return "You win a new car. And {} speakerbucks!".format(wager*win_multiplier)
     else:
         se.play(choice(lose_sounds))
