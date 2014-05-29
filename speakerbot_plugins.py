@@ -209,13 +209,5 @@ def urban(sb, text):
 
 
 def random_utterance(sb):
-    
-    path = getcwd() + "/speech/"
-    
-    files = [ f for f in listdir(path) if isfile(join(path,f)) ]
-
-    file_path = choice(files)
-
-    se = SoundEffect()
-
-    se.play_sound(path + file_path)
+    db = SpeakerDB()
+    return db.get_random_utterance()

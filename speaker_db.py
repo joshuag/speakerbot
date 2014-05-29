@@ -118,6 +118,15 @@ class SpeakerDB(base_db):
 
         return votes
 
+    def get_random_utterance(self):
+        #if this gets slow, it's because it selects the whole table first
+        cursor = self.execute("SELECT speech_text FROM snippets ORDER BY Random() LIMIT 1")
+
+        result = cursor.next()
+
+        return result["speech_text"]
+
+
     def get_people(self):
 
         return self.execute("select * from person order by name")
