@@ -55,7 +55,15 @@ def price_is_right(sb, wager):
 
         rng = range(12,20)
 
-        win_multiplier = choice(range(2,20))
+        base_range = range(2,20)
+
+        new_range = base_range * 2
+
+        new_range.append(69)
+
+        print new_range
+
+        win_multiplier = choice(new_range)
 
         if choice(range(1,20)) == 7:
             lost_it_all = True
