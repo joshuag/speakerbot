@@ -47,7 +47,6 @@ class SpeakerbotDJ:
             print 'Unknown error'
             return
         if len(messages[0]) == 0:
-            print 'No new mail'
             return
 
         for message_number in messages[0].split(' '):
@@ -97,5 +96,8 @@ if __name__ == "__main__":
         if (dt.datetime.now()-dj.last_theme_cache_time).total_seconds() >= 60:
             dj.cache_theme_songs()            
 
-        dj.check_for_entrance()
+        try:
+            dj.check_for_entrance()
+        except Exception as e:
+            print str(e)
         sleep(2)
