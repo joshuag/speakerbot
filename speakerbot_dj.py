@@ -68,6 +68,7 @@ class SpeakerbotDJ:
                 print "Unrecognized user:", user
                 print self.theme_songs
                 continue
+            print "USER: [{}] DOOR: [{}]".format(user, door)
             real_name, theme_song, play_ok = self.theme_songs[user]
 
             if not theme_song or not play_ok:
