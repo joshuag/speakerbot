@@ -55,7 +55,15 @@ def price_is_right(sb, wager):
 
         rng = range(12,20)
 
-        win_multiplier = choice(range(2,20))
+        base_range = range(2,20)
+
+        new_range = base_range * 2
+
+        new_range.append(69)
+
+        print new_range
+
+        win_multiplier = choice(new_range)
 
         if choice(range(1,20)) == 7:
             lost_it_all = True
@@ -74,7 +82,7 @@ def price_is_right(sb, wager):
     if winner:
         se.play(choice(win_sounds))
         if speakonomy.is_active():
-            speakonomy.deposit_funds(wager*20)
+            speakonomy.deposit_funds(wager*win_multiplier)
         return "You win a new car. And {} speakerbucks!".format(wager*win_multiplier)
     else:
         se.play(choice(lose_sounds))
@@ -210,13 +218,5 @@ def urban(sb, text):
 
 
 def random_utterance(sb):
-    
-    path = getcwd() + "/speech/"
-    
-    files = [ f for f in listdir(path) if isfile(join(path,f)) ]
-
-    file_path = choice(files)
-
-    se = SoundEffect()
-
-    se.play_sound(path + file_path)
+    db = SpeakerDB()
+    return db.get_random_utterance()
