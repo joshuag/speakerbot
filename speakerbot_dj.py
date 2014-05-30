@@ -55,6 +55,9 @@ class SpeakerbotDJ:
 
             user = self.extract_email_field(email_body, 'User')
             door = self.extract_email_field(email_body, 'Door')
+            # date = self.extract_email_field(email_body, 'Date')
+            # time = self.extract_email_field(email_body, 'Time')
+            # entry_time = dt.datetime.strptime(date+' '+time, '%m/%d/%y %I:%M:%S %p EDT')
             if not user:
                 print "No user"
                 continue

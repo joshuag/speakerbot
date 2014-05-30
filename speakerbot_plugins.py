@@ -108,15 +108,16 @@ def dave(sb):
 
 def josh(sb):
     exclamations = ['Oh nuts on nuts.', 'Heavens to betsy','Jiminy Crickets','Hells bells','Holy hell','Son of a gun','Balls on a hat','Poop in a bucket','God damnit', 'Goodness gracious','Sweet Moses']
-    which = ['this','that']
+    gripe_recipient = ['Django']
     subjects = ['dude','guy','girl','woman','man']
+    gripe_recipient.extend(['this {}'.format(s) for s in subjects])
+    gripe_recipient.extend(['that {}'.format(s) for s in subjects])
     predicates = ['can go eat a nutsack', 'gets my knickers in a twist', 'is a complete {noun}','is a total {noun}','is an outright {noun}', 'is an absolute {noun}', 'is an udder {noun}', 'can go piss up a rope', 'about as useful as tits on a bull','a son of a gun']
     predicate_nouns = ['chucklefuck','knucklehead','dicknut','scallywag']
 
-    phrase = '{exclamation}! {which} {subject} {predicate}'.format(
+    phrase = '{exclamation}! {gripe_recipient} {predicate}'.format(
         exclamation=choice(exclamations),
-        which=choice(which),
-        subject=choice(subjects),
+        gripe_recipient=choice(gripe_recipient),
         predicate=choice(predicates).format(noun=choice(predicate_nouns))
     )
     return phrase
