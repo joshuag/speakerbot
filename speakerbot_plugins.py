@@ -38,10 +38,15 @@ def price_is_right(sb, wager):
     lost_it_all = False
     win_multiplier = 20
 
+    speakonomy = Speakonomy()
+    if wager == 'MAX':
+        wager = speakonomy.get_speakerbuck_balance()
+    elif wager == 'MAX69':
+        wager = speakonomy.get_speakerbuck_balance()
+        wager = wager - wager % 69
     wager = int(wager)
     if wager <= 0:
         return "Nice try wiseguy"
-    speakonomy = Speakonomy()
     if speakonomy.is_active():
         if not speakonomy.check_affordability(cost=wager):
             return "Not enough speakerbucks to spin"
