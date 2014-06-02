@@ -39,7 +39,8 @@ def parse_and_route_speech(speakerbot, text):
         'dave':dave,
         'spin':price_is_right,
         'suspense':random_drumroll,
-        'urban': urban
+        'urban': urban,
+        'comment': random_comment
     }
     
     token = None

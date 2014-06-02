@@ -44,7 +44,11 @@ def price_is_right(sb, wager):
     elif wager == 'MAX69':
         wager = speakonomy.get_speakerbuck_balance()
         wager = wager - wager % 69
-    wager = int(wager)
+    try:
+        wager = int(wager)
+    except:
+        return "Fuckstick, you can't wager strings"
+
     if wager <= 0:
         return "Nice try wiseguy"
     if speakonomy.is_active():
@@ -220,7 +224,9 @@ def urban(sb, text):
     else:
         return "The definition for %s: %s" % (text, defn)
 
-
+def random_comment(sb):
+    db = SpeakerDB()
+    return db.get_random_comment()
 
 def random_utterance(sb):
     db = SpeakerDB()
