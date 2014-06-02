@@ -47,7 +47,7 @@ def price_is_right(sb, wager):
     try:
         wager = int(wager)
     except:
-        return "Fuckstick, you can't wager strings"
+        return "Fuckstick, you can't wager %s" % wager
 
     if wager <= 0:
         return "Nice try wiseguy"
