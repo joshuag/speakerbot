@@ -39,9 +39,9 @@ def price_is_right(sb, wager):
     win_multiplier = 20
 
     speakonomy = Speakonomy()
-    if wager == 'MAX':
+    if wager.upper() == 'MAX':
         wager = speakonomy.get_speakerbuck_balance()
-    elif wager == 'MAX69':
+    elif wager.upper() == 'MAX69':
         wager = speakonomy.get_speakerbuck_balance()
         wager = wager - wager % 69
     try:
@@ -64,24 +64,10 @@ def price_is_right(sb, wager):
 
         rng = range(12,20)
 
-        base_range = range(2,20)
-
-        new_range = base_range * 2
-
-        new_range.append(69)
-
-        new_range = new_range * 2
-
-        new_range.append(6900)
-
-        print new_range
-
-        win_multiplier = choice(new_range)
+        win_multiplier = choice(range(2,20) * 2 + [69, 69, 6900])
 
         if choice(range(1,20)) == 7:
             lost_it_all = True
-
-
 
     if choice(rng) == 15:
         winner = True
@@ -96,7 +82,9 @@ def price_is_right(sb, wager):
         se.play(choice(win_sounds))
         if speakonomy.is_active():
             speakonomy.deposit_funds(wager*win_multiplier)
-        return "You win a new car. And {} speakerbucks!".format(wager*win_multiplier)
+        outstr = "You win a new car. And {} speakerbucks!".format(wager*win_multiplier)
+        if lost_it_all:
+            outstr += "You also cheated death."
     else:
         se.play(choice(lose_sounds))
         if lost_it_all:
