@@ -120,7 +120,7 @@ class SpeakerDB(base_db):
 
     def get_random_comment(self):
         #if this gets slow, it's because it selects the whole table first
-        cursor = self.execute("SELECT comment FROM image_comments ORDER BY Random() LIMIT 1")
+        cursor = self.execute("SELECT distinct comment FROM image_comments ORDER BY Random() LIMIT 1")
 
         result = cursor.next()
 
