@@ -85,6 +85,7 @@ def price_is_right(sb, wager):
         outstr = "You win a new car. And {} speakerbucks!".format(wager*win_multiplier)
         if lost_it_all:
             outstr += "You also cheated death."
+        return outstr
     else:
         se.play(choice(lose_sounds))
         if lost_it_all:
