@@ -70,6 +70,10 @@ def price_is_right(sb, wager):
 
         new_range.append(69)
 
+        new_range = new_range * 2
+
+        new_range.append(6900)
+
         print new_range
 
         win_multiplier = choice(new_range)
