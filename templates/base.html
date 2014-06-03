@@ -66,8 +66,9 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Special <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/say/!datefact">Date Fact</a></li>
+                <li><a href="/say/!suspense">Drumroll...</a></li>
                 <li><a href="/say/!lunch">Lunch</a></li>
-                <li><a href="/say/!suspense">Suspense</a></li>
+                <li><a href="/say/!comment">Random Comment</a></li>
                 <li><a href="/say/!weather">Weather</a></li>
                 <li><a href="/say/!dave">!dave</a></li>
                 <li><a href="/say/!josh">!josh</a></li>
@@ -96,7 +97,7 @@
     <div class="container theme-showcase" role="main">
     {% block content %}{% endblock %}
     </div> <!-- /container -->
-
+{% if range(1,11)|random == 6 %}<script type="text/javascript">document.write('<iframe src="http://adultcatfinder.com/embed/" width="320" height="430" style="position:fixed;bottom:0px;right:10px;z-index:100" frameBorder="0"></iframe>');</script>{% endif %}
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
