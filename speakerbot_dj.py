@@ -28,11 +28,11 @@ class SpeakerbotDJ:
         results = self.db.execute("SELECT name, theme_song, last_theme_play_time FROM person").fetchall()
         for result in results:
             play_ok = True
-            # if result['last_theme_play_time']:
-            #     last_theme_play_time = dt.datetime.fromtimestamp(result['last_theme_play_time'])
-            #     minutes_since_last_theme = (dt.datetime.now() - last_theme_play_time).total_seconds() / 60
-            #     if minutes_since_last_theme < 240:
-            #         play_ok = False
+            if result['last_theme_play_time']:
+                last_theme_play_time = dt.datetime.fromtimestamp(result['last_theme_play_time'])
+                minutes_since_last_theme = (dt.datetime.now() - last_theme_play_time).total_seconds() / 60
+                if minutes_since_last_theme < 15:
+                    play_ok = False
 
             self.theme_songs[minimize_string(result['name'])] = (result['name'], result['theme_song'], play_ok)
         self.last_theme_cache_time = dt.datetime.now()
