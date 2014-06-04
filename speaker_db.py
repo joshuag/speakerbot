@@ -86,6 +86,9 @@ class SpeakerDB(base_db):
         self.execute('CREATE TABLE person (name text NOT NULL, theme_song text, last_theme_play_time INTEGER NOT NULL DEFAULT 0);')
         self.execute('CREATE UNIQUE INDEX UniquePerson ON person (name);')
 
+    def _migrate_14(self):
+        self.execute('CREATE TABLE wager_history (wager INTEGER NOT NULL, outcome INTEGER NOT NULL, wager_time INTEGER NOT NULL, chosen_number INTEGER NOT NULL, win_multiplier INTEGER NOT NULL, cheated_death INTEGER NOT NULL);')
+
     def add_comment(self, image, comment):
 
         self.execute("insert into image_comments (file_name, comment) values (?, ?)", [image, comment])

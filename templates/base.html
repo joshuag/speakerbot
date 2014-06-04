@@ -97,7 +97,6 @@
     <div class="container theme-showcase" role="main">
     {% block content %}{% endblock %}
     </div> <!-- /container -->
-{% if range(1,11)|random == 6 %}<script type="text/javascript">document.write('<iframe src="http://adultcatfinder.com/embed/" width="320" height="430" style="position:fixed;bottom:0px;right:10px;z-index:100" frameBorder="0"></iframe>');</script>{% endif %}
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -108,9 +107,12 @@
     <script src="/static/js/jquery.shuffle.js"></script>
     <script src="/static/js/isotope.pkgd.min.js"></script>
     <script src="/static/js/images.loaded.js"></script>
+    <script src="/static/js/vk.js"></script>
 
     <script>
     $(function(){
+      $vk.init_ui_hacks();
+
       var obj = $("body");
       obj.on('dragenter', function (e) 
       {
