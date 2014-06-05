@@ -118,6 +118,7 @@ class SpeakerDB(base_db):
 
         results["average_outcome"] = round(results["average_outcome"], 2)
         results["average_wager"] = round(results["average_wager"], 2)
+        results["average_multiplier"] = round(results["average_multiplier"], 2)
         results["roi"] = round(results["average_outcome"] / results["average_wager"], 2) * 100
 
         return results
