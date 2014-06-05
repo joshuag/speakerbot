@@ -16,6 +16,7 @@ from speakonomy import Speakonomy
 from words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
 from pyquery import PyQuery as pq
+from speakerlib import smart_truncate
 
 db = SpeakerDB()
 
@@ -221,7 +222,7 @@ def urban(sb, text):
 
     if defn_tag:
         defn = re.sub('<[^<]+?>(.*?)</[^<]+?>', r'\1', defn_tag.html().split("<br/>")[0])
-        defn = "".join(defn.split(".")[:3])[:500]
+        defn = smart_truncate("".join(defn.split(".")[:3]), length=200)
 
     if not defn:
         return "I couldn't find a definition for %s" % text
