@@ -17,6 +17,8 @@ from words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
 from pyquery import PyQuery as pq
 
+db = SpeakerDB()
+
 def get_mashape_api(url):
     api_key = config["mashape_api_key"]
     headers={
@@ -37,6 +39,8 @@ def price_is_right(sb, wager):
 
     lost_it_all = False
     win_multiplier = 20
+    outstr = None
+    cheated_death = 0
 
     speakonomy = Speakonomy()
     if wager.upper() == 'MAX':
@@ -69,7 +73,8 @@ def price_is_right(sb, wager):
         if choice(range(1,20)) == 7:
             lost_it_all = True
 
-    if choice(rng) == 15:
+    chosen_number = choice(rng)
+    if chosen_number == 15:
         winner = True
     else:
         winner = False
@@ -79,22 +84,28 @@ def price_is_right(sb, wager):
     se.play("price-big-wheel.mp3")
 
     if winner:
+        outcome = wager*win_multiplier
         se.play(choice(win_sounds))
         if speakonomy.is_active():
-            speakonomy.deposit_funds(wager*win_multiplier)
+            speakonomy.deposit_funds(outcome)
         outstr = "You win a new car. And {} speakerbucks!".format(wager*win_multiplier)
         if lost_it_all:
             outstr += "You also cheated death."
-        return outstr
+            cheated_death = 1
     else:
+        outcome = wager * -1
         se.play(choice(lose_sounds))
         if lost_it_all:
+            outcome = speakonomy.get_speakerbuck_balance() * -1
             speakonomy.withdraw_funds(speakonomy.get_speakerbuck_balance())
-            return "You risked it all for sexy times. And lost."
+            outstr = "You risked it all for sexy times. And lost."
+
+    db.record_wager(wager, outcome, chosen_number, win_multiplier, cheated_death)
+
+    return outstr
 
 
 def jon(sb):
-    db = SpeakerDB()
     results = db.execute("SELECT * FROM snippets where votes > 1 order by rowid desc limit 10")
 
     speech_list = [result["speech_text"] for result in results]
@@ -218,9 +229,7 @@ def urban(sb, text):
         return "The definition for %s: %s" % (text, defn)
 
 def random_comment(sb):
-    db = SpeakerDB()
     return db.get_random_comment()
 
 def random_utterance(sb):
-    db = SpeakerDB()
     return db.get_random_utterance()

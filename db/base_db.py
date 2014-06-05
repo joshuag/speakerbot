@@ -1,4 +1,5 @@
 import sqlite3
+from collections import OrderedDict
 
 class base_db(object):
 
@@ -16,7 +17,7 @@ class base_db(object):
 
     def row_factory(self, cursor, row):
 
-        row_dict = {}
+        row_dict = OrderedDict()
         for idx, column in enumerate(cursor.description):
             row_dict[column[0]] = row[idx]
         return row_dict
@@ -70,9 +71,3 @@ class base_db(object):
             return 0
 
         return int(result["version"])
-
-
-
-if __name__ == "__main__":
-    db = DB()
-    #db.run_migrations()

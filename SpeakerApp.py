@@ -1,8 +1,6 @@
 from flask import Flask, redirect, url_for,  render_template, request 
 import datetime
 
-import zc.lockfile
-
 from eventrecorder import EventRecorder
 from Speakerbot import Speakerbot
 from speaker_db import SpeakerDB
@@ -25,7 +23,6 @@ sb.attach_listener("say_classy", queue_speech_for_tweet)
 sb.attach_listener("play", queue_sound_for_tweet)
 sb.attach_listener("play", speakonomy.sell_sound)
 sb.attach_listener("play", evr.record_sound_event)
-
 sb.attach_interrogator("play", stub_interrogator)
 
 #sb.attach_mangler("say_classy", stub_mangler)
@@ -145,6 +142,16 @@ def top_images():
     images = db.get_top_images(num_images=num_images)
     return render_template("images.html", images=images, speakonomy=speakonomy)
 
+@app.route('/spinstats')
+def spinstats():
+
+    now = datetime.datetime.now()
+    midnight = datetime.datetime(now.year, now.month, now.day).strftime("%s") 
+
+    aggregate_stats = db.get_aggregate_wager_stats()
+    today_aggregate_stats = db.get_aggregate_wager_stats(start=midnight)
+
+    return render_template("spinstats.html", aggregate_stats=aggregate_stats, today_aggregate_stats=today_aggregate_stats, speakonomy=speakonomy)
 
 @app.route('/play_sound/<sound_name>')
 def play_sound(sound_name):

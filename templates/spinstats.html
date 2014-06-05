@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+      <div class="page-header">
+        <h1>Tell them what they won, Roddy!</h1>
+      </div>
+      <div class="row">
+        <div class="col-sm-3">
+          <h2>today</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                {% for key in today_aggregate_stats %}
+                  <th>{{ key.replace("_"," ") }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {% for key in today_aggregate_stats %}
+                <td>{{ today_aggregate_stats[key] }}</td>
+                {% endfor %}
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>all time</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                {% for key in aggregate_stats %}
+                  <th>{{ key.replace("_"," ") }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {% for key in aggregate_stats %}
+                <td>{{ aggregate_stats[key] }}</td>
+                {% endfor %}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-sm-9">
+        </div>
+      </div>
+{% endblock %}

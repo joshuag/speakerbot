@@ -1,5 +1,6 @@
 from db.base_db import base_db
 import sqlite3
+import datetime as dt
 
 class SpeakerDB(base_db):
 
@@ -88,6 +89,38 @@ class SpeakerDB(base_db):
 
     def _migrate_14(self):
         self.execute('CREATE TABLE wager_history (wager INTEGER NOT NULL, outcome INTEGER NOT NULL, wager_time INTEGER NOT NULL, chosen_number INTEGER NOT NULL, win_multiplier INTEGER NOT NULL, cheated_death INTEGER NOT NULL);')
+
+    def record_wager(self, wager, outcome, chosen_number, win_multiplier, cheated_death):
+        wager_time = dt.datetime.now().strftime("%s")
+
+        self.execute("INSERT INTO wager_history (wager, outcome, wager_time, chosen_number, win_multiplier, cheated_death) VALUES (?, ?, ?, ?, ?, ?)", [wager, outcome, wager_time, chosen_number, win_multiplier, cheated_death])
+
+    def get_wager_history(self, limit=50):
+
+        return self.execute ("select * from wager_history LIMIT ?", [limit])
+
+    def get_aggregate_wager_stats(self, start=0, end=4000000000):
+
+        results = self.execute("""
+                SELECT 
+                    AVG(wager) as average_wager, 
+                    AVG(outcome) as average_outcome, 
+                    MAX(wager) as max_wager, 
+                    SUM(wager) as total_wagered, 
+                    SUM(outcome) as total_winnings, 
+                    AVG(win_multiplier) as average_multiplier,
+                    SUM(cheated_death) as cheated_death
+                FROM 
+                wager_history
+                where wager_time > ? and wager_time < ?
+                """, [start, end])
+        results = results.next()
+
+        results["average_outcome"] = round(results["average_outcome"], 2)
+        results["average_wager"] = round(results["average_wager"], 2)
+        results["roi"] = round(results["average_outcome"] / results["average_wager"], 2) * 100
+
+        return results
 
     def add_comment(self, image, comment):
 
