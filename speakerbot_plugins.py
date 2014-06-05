@@ -209,8 +209,8 @@ def urban(sb, text):
     defn = ""
 
     if defn_tag:
-        defn = re.sub('<[^<]+?>(.*?)</[^<]+?>', r'\1', defn_tag.html().split("<br/>")[0])[:500]
-        defn = "".join(defn.split(".")[:3])
+        defn = re.sub('<[^<]+?>(.*?)</[^<]+?>', r'\1', defn_tag.html().split("<br/>")[0])
+        defn = "".join(defn.split(".")[:3])[:500]
 
     if not defn:
         return "I couldn't find a definition for %s" % text
