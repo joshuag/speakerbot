@@ -107,7 +107,7 @@ class SpeakerDB(base_db):
                     AVG(outcome) as average_outcome, 
                     MAX(wager) as max_wager, 
                     SUM(wager) as total_wagered, 
-                    SUM(outcome) as total_winnings, 
+                    SUM(outcome) as net_winnings, 
                     AVG(win_multiplier) as average_multiplier,
                     SUM(cheated_death) as cheated_death
                 FROM 
