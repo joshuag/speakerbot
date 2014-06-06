@@ -104,6 +104,8 @@ def price_is_right(sb, wager):
         if lost_it_all:
             outstr += "You also cheated death."
             cheated_death = 1
+
+        outstr += added_message
     else:
         outcome = wager * -1
         se.play(choice(lose_sounds))
@@ -114,7 +116,7 @@ def price_is_right(sb, wager):
 
     db.record_wager(lucky_number, wager, outcome, chosen_number, win_multiplier, cheated_death)
 
-    return outstr + added_message
+    return outstr
 
 
 def jon(sb):
