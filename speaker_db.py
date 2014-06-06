@@ -90,6 +90,8 @@ class SpeakerDB(base_db):
     def _migrate_14(self):
         self.execute('CREATE TABLE wager_history (wager INTEGER NOT NULL, outcome INTEGER NOT NULL, wager_time INTEGER NOT NULL, chosen_number INTEGER NOT NULL, win_multiplier INTEGER NOT NULL, cheated_death INTEGER NOT NULL);')
 
+
+
     def record_wager(self, wager, outcome, chosen_number, win_multiplier, cheated_death):
         wager_time = dt.datetime.now().strftime("%s")
 
@@ -100,16 +102,18 @@ class SpeakerDB(base_db):
         return self.execute ("select datetime(wager_time, 'unixepoch') as wager_time, wager, outcome, chosen_number, win_multiplier, cheated_death from wager_history order by wager_time desc LIMIT ?", [limit])
 
     def get_number_occurence(self):
-        return self.execute("select chosen_number, count(chosen_number) as occurences from wager_history group by chosen_number")
+        return self.execute("select chosen_number, count(chosen_number) as occurences, sum(case when outcome < 1 then 1 else 0 end) as negative_outcomes, sum(case when outcome > 1 then 1 else 0 end)  as successful_outcomes from wager_history group by chosen_number")
 
     def get_multiplier_occurence(self):
-        return self.execute("select win_multiplier, count(win_multiplier) as occurences from wager_history group by win_multiplier")
+        return self.execute("select win_multiplier, count(win_multiplier) as occurences, sum(case when outcome < 1 then 1 else 0 end) as negative_outcomes, sum(case when outcome > 1 then 1 else 0 end)  as successful_outcomes from wager_history group by win_multiplier")
 
     def get_wagers_and_outcomes_by_day(self, limit=30):
 
         return self.execute("select date(wager_time, 'unixepoch') as wager_date, sum(wager) as amount_wagered, sum(outcome) as outcome from wager_history group by date(wager_time, 'unixepoch') limit ?", [limit])
 
+    def get_wagers_by_outcome(self, limit=10):
 
+        return self.execute("select wager, sum(case when outcome > 1 then 1 else 0 end)  as successful_outcomes, sum(case when outcome < 1 then 1 else 0 end) as negative_outcomes from wager_history group by wager limit ?", [limit])
 
 
     def get_aggregate_wager_stats(self, start=0, end=4000000000):

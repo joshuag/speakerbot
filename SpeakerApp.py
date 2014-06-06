@@ -154,6 +154,7 @@ def spinstats():
     number_occurence = db.get_number_occurence()
     multiplier_occurence = db.get_multiplier_occurence()
     wagers_and_outcomes = db.get_wagers_and_outcomes_by_day()
+    wagers_by_outcome = db.get_wagers_by_outcome()
 
     return render_template("spinstats.html", 
             aggregate_stats=aggregate_stats, 
@@ -162,6 +163,7 @@ def spinstats():
             number_occurence=number_occurence,
             multiplier_occurence=multiplier_occurence,
             wagers_and_outcomes=wagers_and_outcomes,
+            wagers_by_outcome=wagers_by_outcome,
             speakonomy=speakonomy)
 
 @app.route('/play_sound/<sound_name>')
