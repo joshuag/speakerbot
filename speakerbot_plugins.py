@@ -78,8 +78,10 @@ def price_is_right(sb, wager):
         if choice(range(1,20)) == 7:
             lost_it_all = True
 
+    lucky_number = choice(rng)
+
     chosen_number = choice(rng)
-    if chosen_number == 15:
+    if chosen_number == lucky_number:
         winner = True
     else:
         winner = False
