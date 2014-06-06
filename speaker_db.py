@@ -129,10 +129,10 @@ class SpeakerDB(base_db):
                 """, [start, end])
         try:
             results = results.next()
-            results["average_outcome"] = round(results["average_outcome"], 2)
-            results["average_wager"] = round(results["average_wager"], 2)
-            results["average_multiplier"] = round(results["average_multiplier"], 2)
-            results["roi"] = str(round(results["average_outcome"] / results["average_wager"], 2) * 100) + "%"
+            results["average_outcome"] = int(round(results["average_outcome"]))
+            results["average_wager"] = int(round(results["average_wager"]))
+            results["average_multiplier"] = int(round(results["average_multiplier"]))
+            results["roi"] = str(int(round(results["average_outcome"] / results["average_wager"], 2) * 100)) + "%"
         except:
             results = None
             pass
