@@ -1,3 +1,51 @@
+{% macro render_dict_table(dict, missing_message="No records found", additional_class="", additional_attributes="") %}
+    {% if dict %}
+        <table class="table {{additional_class}}" {% for attribute in additional_attributes %}{{attribute}}="{{additional_attributes[attribute]}}"{% endfor %}>
+          <thead>
+            <tr>
+              {% for key in dict %}
+                <th>{{ key.replace("_"," ") }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% for key in dict %}
+              <td>{{ dict[key] }}</td>
+              {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+        {% else %}
+          <b>{{missing_message}}</b>
+    {% endif %}
+{% endmacro %}
+
+{% macro render_rs_table(rs, missing_message="No records found", additional_class="", additional_attributes="") %}
+    {% if rs %}
+        <table class="table {{additional_class}}" {% for attribute in additional_attributes %}{{attribute}}="{{additional_attributes[attribute]}}"{% endfor %}>
+          <thead>
+            <tr>
+              {% for keys in rs.description %}
+                <th>{{ keys[0].replace("_"," ") }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for dict in rs %}
+              <tr>
+                {% for key in dict %}
+                <td>{{ dict[key] }}</td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <b>{{missing_message}}</b>
+    {% endif %}
+{% endmacro %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -32,6 +80,9 @@
       }
       body { 
         padding-top: 65px; 
+      }
+      .hidden{
+        display:none;
       }
     {% block css %}
     {% endblock %}
@@ -108,6 +159,8 @@
     <script src="/static/js/jquery.shuffle.js"></script>
     <script src="/static/js/isotope.pkgd.min.js"></script>
     <script src="/static/js/images.loaded.js"></script>
+    <script src="/static/js/highcharts/js/highcharts.js"></script>
+    <script src="/static/js/highchartstable.js"></script>
     <script src="/static/js/vk.js"></script>
 
     <script>

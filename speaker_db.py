@@ -97,7 +97,20 @@ class SpeakerDB(base_db):
 
     def get_wager_history(self, limit=50):
 
-        return self.execute ("select * from wager_history LIMIT ?", [limit])
+        return self.execute ("select datetime(wager_time, 'unixepoch') as wager_time, wager, outcome, chosen_number, win_multiplier, cheated_death from wager_history order by wager_time desc LIMIT ?", [limit])
+
+    def get_number_occurence(self):
+        return self.execute("select chosen_number, count(chosen_number) as occurences from wager_history group by chosen_number")
+
+    def get_multiplier_occurence(self):
+        return self.execute("select win_multiplier, count(win_multiplier) as occurences from wager_history group by win_multiplier")
+
+    def get_wagers_and_outcomes_by_day(self, limit=30):
+
+        return self.execute("select date(wager_time, 'unixepoch') as wager_date, sum(wager) as amount_wagered, sum(outcome) as outcome from wager_history group by date(wager_time, 'unixepoch') limit ?", [limit])
+
+
+
 
     def get_aggregate_wager_stats(self, start=0, end=4000000000):
 
@@ -119,7 +132,7 @@ class SpeakerDB(base_db):
             results["average_outcome"] = round(results["average_outcome"], 2)
             results["average_wager"] = round(results["average_wager"], 2)
             results["average_multiplier"] = round(results["average_multiplier"], 2)
-            results["roi"] = round(results["average_outcome"] / results["average_wager"], 2) * 100
+            results["roi"] = str(round(results["average_outcome"] / results["average_wager"], 2) * 100) + "%"
         except:
             results = None
             pass

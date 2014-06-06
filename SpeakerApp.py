@@ -150,8 +150,19 @@ def spinstats():
 
     aggregate_stats = db.get_aggregate_wager_stats()
     today_aggregate_stats = db.get_aggregate_wager_stats(start=midnight)
+    recent_spins = db.get_wager_history(20)
+    number_occurence = db.get_number_occurence()
+    multiplier_occurence = db.get_multiplier_occurence()
+    wagers_and_outcomes = db.get_wagers_and_outcomes_by_day()
 
-    return render_template("spinstats.html", aggregate_stats=aggregate_stats, today_aggregate_stats=today_aggregate_stats, speakonomy=speakonomy)
+    return render_template("spinstats.html", 
+            aggregate_stats=aggregate_stats, 
+            today_aggregate_stats=today_aggregate_stats, 
+            recent_spins=recent_spins,
+            number_occurence=number_occurence,
+            multiplier_occurence=multiplier_occurence,
+            wagers_and_outcomes=wagers_and_outcomes,
+            speakonomy=speakonomy)
 
 @app.route('/play_sound/<sound_name>')
 def play_sound(sound_name):

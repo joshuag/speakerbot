@@ -1,51 +1,31 @@
 {% extends "base.html" %}
+{% block javascript %}
+  $("table.highchart").highchartTable();
+{% endblock %}
 {% block content %}
       <div class="page-header">
         <h1>Tell them what they won, Roddy!</h1>
       </div>
       <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-6">
           <h2>today</h2>
-          {% if today_aggregate_stats %}
-          <table class="table">
-            <thead>
-              <tr>
-                {% for key in today_aggregate_stats %}
-                  <th>{{ key.replace("_"," ") }}</th>
-                {% endfor %}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                {% for key in today_aggregate_stats %}
-                <td>{{ today_aggregate_stats[key] }}</td>
-                {% endfor %}
-              </tr>
-            </tbody>
-          </table>
-          {% else %}
-            <b>No spins for today</b>
-          {% endif %}
+          {{ render_dict_table(today_aggregate_stats, missing_message="No spins yet today")}}
 
           <h2>all time</h2>
-          <table class="table">
-            <thead>
-              <tr>
-                {% for key in aggregate_stats %}
-                  <th>{{ key.replace("_"," ") }}</th>
-                {% endfor %}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                {% for key in aggregate_stats %}
-                <td>{{ aggregate_stats[key] }}</td>
-                {% endfor %}
-              </tr>
-            </tbody>
-          </table>
+          {{ render_dict_table(aggregate_stats, missing_message="No spins yet") }}          
+          <h2>Recent History</h2>
+          {{ render_rs_table(recent_spins, missing_message="No spins yet") }}
+          {{ render_rs_table(number_occurence, missing_message="No spins yet", additional_class="highchart hidden", additional_attributes={'data-graph-container':'#occurence-graph','data-graph-type':'column'}) }}
+          {{ render_rs_table(multiplier_occurence, missing_message="No spins yet", additional_class="highchart hidden", additional_attributes={'data-graph-container':'#multiplier-graph','data-graph-type':'column'}) }}
+          {{ render_rs_table(wagers_and_outcomes, missing_message="No spins yet", additional_class="highchart hidden", additional_attributes={'data-graph-container':'#wagers-outcomes-graph','data-graph-type':'line'}) }}
         </div>
-        <div class="col-sm-9">
+        <div class="col-sm-6">
+            <h2>Wagers &amp; Outcomes</h2>
+            <div id="wagers-outcomes-graph"></div>
+            <h2>Multipliers</h2>
+            <div id="multiplier-graph"></div>
+            <h2>Random Numbers</h2>
+            <div id="occurence-graph"></div>
         </div>
       </div>
 {% endblock %}
