@@ -46,6 +46,7 @@ def price_is_right(sb, wager):
     win_multiplier = 20
     outstr = None
     cheated_death = 0
+    added_message = ""
 
     speakonomy = Speakonomy()
     if wager.upper() == 'MAX':
@@ -79,9 +80,13 @@ def price_is_right(sb, wager):
             lost_it_all = True
 
     lucky_number = choice(rng)
-
     chosen_number = choice(rng)
-    if chosen_number == lucky_number:
+
+    if chosen_number == lucky_number or wager == lucky_number:
+        if wager == lucky_number:
+            chosen_number = wager
+            win_multiplier = choice(range(2,20) * 4 + [200, 400, 600, 800, 1000])
+            added_message = "And you manually chose the lucky number, you sly dog."
         winner = True
     else:
         winner = False
@@ -109,7 +114,7 @@ def price_is_right(sb, wager):
 
     db.record_wager(wager, outcome, chosen_number, win_multiplier, cheated_death)
 
-    return outstr
+    return outstr + added_message
 
 
 def jon(sb):
