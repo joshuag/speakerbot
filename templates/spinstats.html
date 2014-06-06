@@ -6,6 +6,7 @@
       <div class="row">
         <div class="col-sm-3">
           <h2>today</h2>
+          {% if today_aggregate_stats %}
           <table class="table">
             <thead>
               <tr>
@@ -22,6 +23,9 @@
               </tr>
             </tbody>
           </table>
+          {% else %}
+            <b>No spins for today</b>
+          {% endif %}
 
           <h2>all time</h2>
           <table class="table">

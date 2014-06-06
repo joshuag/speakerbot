@@ -114,12 +114,15 @@ class SpeakerDB(base_db):
                 wager_history
                 where wager_time > ? and wager_time < ?
                 """, [start, end])
-        results = results.next()
-
-        results["average_outcome"] = round(results["average_outcome"], 2)
-        results["average_wager"] = round(results["average_wager"], 2)
-        results["average_multiplier"] = round(results["average_multiplier"], 2)
-        results["roi"] = round(results["average_outcome"] / results["average_wager"], 2) * 100
+        try:
+            results = results.next()
+            results["average_outcome"] = round(results["average_outcome"], 2)
+            results["average_wager"] = round(results["average_wager"], 2)
+            results["average_multiplier"] = round(results["average_multiplier"], 2)
+            results["roi"] = round(results["average_outcome"] / results["average_wager"], 2) * 100
+        except:
+            results = None
+            pass
 
         return results
 

@@ -21,13 +21,6 @@ def create_deferred(function, *args, **kwargs):
 
     return _exec
 
-#http://stackoverflow.com/a/250373
-def smart_truncate(content, length=100, suffix='...'):
-    if len(content) <= length:
-        return content
-    else:
-        return ' '.join(content[:length+1].split(' ')[0:-1]) + suffix
-
 @lock
 def parse_and_route_speech(speakerbot, text):
     

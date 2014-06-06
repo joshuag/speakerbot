@@ -3,9 +3,7 @@ import json
 from os import listdir, getcwd
 from os.path import isfile, join
 
-
 from random import choice
-
 
 import requests
 import re
@@ -16,9 +14,15 @@ from speakonomy import Speakonomy
 from words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
 from pyquery import PyQuery as pq
-from speakerlib import smart_truncate
 
 db = SpeakerDB()
+
+#http://stackoverflow.com/a/250373
+def smart_truncate(content, length=100, suffix='...'):
+    if len(content) <= length:
+        return content
+    else:
+        return ' '.join(content[:length+1].split(' ')[0:-1]) + suffix
 
 def get_mashape_api(url):
     api_key = config["mashape_api_key"]
