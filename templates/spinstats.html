@@ -19,8 +19,11 @@
           {{ render_rs_table(multiplier_occurence, missing_message="No spins yet", additional_class="highchart hidden", additional_attributes={'data-graph-container':'#multiplier-graph','data-graph-type':'area'}) }}
           {{ render_rs_table(wagers_and_outcomes, missing_message="No spins yet", additional_class="highchart hidden", additional_attributes={'data-graph-container':'#wagers-outcomes-graph','data-graph-type':'line'}) }}
           {{ render_rs_table(wagers_by_outcome, missing_message="No spins yet", additional_class="highchart hidden", additional_attributes={'data-graph-container':'#wagers-by-outcome-graph','data-graph-type':'area'}) }}
+          {{ render_rs_table(lucky_numbers, missing_message="No spins yet", additional_class="highchart hidden", additional_attributes={'data-graph-container':'#lucky-by-outcome-graph','data-graph-type':'area'}) }}
         </div>
         <div class="col-sm-6">
+            <h2>Lucky Numbers by Outcome</h2>
+            <div id="lucky-by-outcome-graph"></div>
             <h2>Multipliers by Outcome</h2>
             <div id="multiplier-graph"></div>
             <h2>Random Numbers by Outcome</h2>

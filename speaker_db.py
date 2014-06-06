@@ -105,8 +105,7 @@ class SpeakerDB(base_db):
         return self.execute ("select datetime(wager_time, 'unixepoch') as wager_time, lucky_number, wager, outcome, chosen_number, win_multiplier, cheated_death from wager_history order by wager_time desc LIMIT ?", [limit])
 
     def get_lucky_numbers(self):
-        pass
-
+        return self.execute("select lucky_number, count(lucky_number) as occurences, sum(case when outcome < 1 then 1 else 0 end) as negative_outcomes, sum(case when outcome > 1 then 1 else 0 end)  as successful_outcomes from wager_history where lucky_number <> 0 group by lucky_number")
 
     def get_number_occurence(self):
         return self.execute("select chosen_number, count(chosen_number) as occurences, sum(case when outcome < 1 then 1 else 0 end) as negative_outcomes, sum(case when outcome > 1 then 1 else 0 end)  as successful_outcomes from wager_history group by chosen_number")
