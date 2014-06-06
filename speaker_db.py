@@ -90,16 +90,19 @@ class SpeakerDB(base_db):
     def _migrate_14(self):
         self.execute('CREATE TABLE wager_history (wager INTEGER NOT NULL, outcome INTEGER NOT NULL, wager_time INTEGER NOT NULL, chosen_number INTEGER NOT NULL, win_multiplier INTEGER NOT NULL, cheated_death INTEGER NOT NULL);')
 
+    def _migrate_15(self):
+        self.execute("ALTER table wager_history ADD COLUMN lucky_number INTEGER NOT NULL DEFAULT 0")
 
 
-    def record_wager(self, wager, outcome, chosen_number, win_multiplier, cheated_death):
+
+    def record_wager(self, lucky_number, wager, outcome, chosen_number, win_multiplier, cheated_death):
         wager_time = dt.datetime.now().strftime("%s")
 
         self.execute("INSERT INTO wager_history (wager, outcome, wager_time, chosen_number, win_multiplier, cheated_death) VALUES (?, ?, ?, ?, ?, ?)", [wager, outcome, wager_time, chosen_number, win_multiplier, cheated_death])
 
     def get_wager_history(self, limit=50):
 
-        return self.execute ("select datetime(wager_time, 'unixepoch') as wager_time, wager, outcome, chosen_number, win_multiplier, cheated_death from wager_history order by wager_time desc LIMIT ?", [limit])
+        return self.execute ("select datetime(wager_time, 'unixepoch') as wager_time, lucky_number, wager, outcome, chosen_number, win_multiplier, cheated_death from wager_history order by wager_time desc LIMIT ?", [limit])
 
     def get_number_occurence(self):
         return self.execute("select chosen_number, count(chosen_number) as occurences, sum(case when outcome < 1 then 1 else 0 end) as negative_outcomes, sum(case when outcome > 1 then 1 else 0 end)  as successful_outcomes from wager_history group by chosen_number")

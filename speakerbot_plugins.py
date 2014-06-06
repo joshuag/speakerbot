@@ -85,8 +85,8 @@ def price_is_right(sb, wager):
     if chosen_number == lucky_number or wager == lucky_number:
         if wager == lucky_number:
             chosen_number = wager
-            win_multiplier = choice(range(2,20) * 4 + [200, 400, 600, 800, 1000])
-            added_message = "And you manually chose the lucky number, you sly dog."
+            win_multiplier = choice(range(2,20) + [200, 400, 600, 800, 1000])
+            added_message = "And your wager matched the lucky number, you sly dog."
         winner = True
     else:
         winner = False
@@ -112,7 +112,7 @@ def price_is_right(sb, wager):
             speakonomy.withdraw_funds(speakonomy.get_speakerbuck_balance())
             outstr = "You risked it all for sexy times. And lost."
 
-    db.record_wager(wager, outcome, chosen_number, win_multiplier, cheated_death)
+    db.record_wager(lucky_number, wager, outcome, chosen_number, win_multiplier, cheated_death)
 
     return outstr + added_message
 
