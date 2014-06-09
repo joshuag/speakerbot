@@ -107,10 +107,11 @@ def price_is_right(sb, wager):
 
     if winner:
         outcome = wager*win_multiplier
+        prizes = ["a new car","a european vacation", "a deluxe horse trailer", "new jet skis", "a trip to the moon", "a large fry", "a bucket of golden nuggets", "gender neutral servant robots", "Abe Lincoln's death mask"]
         se.play(choice(win_sounds))
         if speakonomy.is_active():
             speakonomy.deposit_funds(outcome)
-        outstr = "You win a new car. And {} speakerbucks!".format(outcome)
+        outstr = "You win {prize}. And {outcome} speakerbucks!".format({"outcome":outcome,"prize":choice(prizes)})
         if lost_it_all:
             outstr += "You also cheated death."
             cheated_death = 1
