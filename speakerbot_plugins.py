@@ -93,8 +93,8 @@ def price_is_right(sb, wager):
                 added_message = "The wager, chosen number, lucky number and win multiplier all matched. It's a megabucks bonanza!"
             elif chosen_number == wager:
                 #Triply lucky
-                win_multiplier = win_multiplier * 3
-                added_message += "And the chosen number matched too! You are three times as lucky!"
+                win_multiplier = win_multiplier * 30
+                added_message += "And the chosen number matched too! You are thirty times as lucky!"
 
         winner = True
     else:
@@ -151,13 +151,13 @@ def dave(sb):
     return choice(options)
 
 def josh(sb):
-    exclamations = ['Oh nuts on nuts.', 'Heavens to betsy','Jiminy Crickets','Hells bells','Holy hell','Son of a gun','Balls on a hat','Poop in a bucket','God damnit', 'Goodness gracious','Sweet Moses']
+    exclamations = ['Oh nuts on nuts.', 'Heavens to betsy','Jiminy Crickets','Hells bells','Holy hell','Son of a gun','Balls on a hat','Poop in a bucket','God damnit', 'Goodness gracious','Sweet Moses', 'Geez um crow', 'Cheese and Rice',]
     gripe_recipient = ['Django']
     subjects = ['dude','guy','girl','woman','man']
     gripe_recipient.extend(['this {}'.format(s) for s in subjects])
     gripe_recipient.extend(['that {}'.format(s) for s in subjects])
     predicates = ['can go eat a nutsack', 'gets my knickers in a twist', 'is a complete {noun}','is a total {noun}','is an outright {noun}', 'is an absolute {noun}', 'is an udder {noun}', 'can go piss up a rope', 'about as useful as tits on a bull','a son of a gun']
-    predicate_nouns = ['fuckstick', 'chucklefuck','knucklehead','dicknut','scallywag']
+    predicate_nouns = ['fuckstick', 'chucklefuck', 'knucklehead', 'dicknut', 'scallywag', 'shithead', 'waste of skin']
 
     phrase = '{exclamation}! {gripe_recipient} {predicate}'.format(
         exclamation=choice(exclamations),
