@@ -87,6 +87,15 @@ def price_is_right(sb, wager):
             chosen_number = wager
             win_multiplier = choice(range(2,20) + [200, 400, 600, 800, 1000, 10000])
             added_message = "And your wager matched the lucky number, you sly dog."
+
+            if chosen_number == wager and win_multiplier == wager:
+                win_multiplier = win_multiplier * 1000
+                added_message = "The wager, chosen number, lucky number and win multiplier all matched. It's a bonanza!"
+            elif chosen_number == wager:
+                #Triply lucky
+                win_multiplier = win_multiplier * 3
+                added_message += "And the chosen number matched too! You are three times as lucky!"
+
         winner = True
     else:
         winner = False
