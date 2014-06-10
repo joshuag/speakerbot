@@ -194,7 +194,9 @@
     }
     function spin_the_wheel() {
       wager = prompt('Enter your speakerbuck wager:', '50');
-      window.location ='/say/!spin%20'+wager;
+      if (wager){
+        window.location ='/say/!spin%20'+wager;
+      }
     }
     {% block javascript %}{% endblock %}
   </script>
