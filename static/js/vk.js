@@ -22,7 +22,7 @@ var vk = (function(){
 
     Func.prototype.init_ui_hacks = function(){
         //this.fartscroll();
-        var choice = this.choice(this.range(1,10));
+        var choice = this.choice(this.range(1,30));
         
         if(choice == 6){
             $("body").append('<iframe src="http://adultcatfinder.com/embed/" width="320" height="430" style="position:fixed;bottom:0px;right:10px;z-index:100" frameBorder="0"></iframe>');

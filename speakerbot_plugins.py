@@ -111,7 +111,7 @@ def price_is_right(sb, wager):
         se.play(choice(win_sounds))
         if speakonomy.is_active():
             speakonomy.deposit_funds(outcome)
-        outstr = "You win {prize}. And {outcome} speakerbucks!".format({"outcome":outcome,"prize":choice(prizes)})
+        outstr = "You win {prize}. And {outcome} speakerbucks!".format(outcome=outcome,prize=choice(prizes))
         if lost_it_all:
             outstr += "You also cheated death."
             cheated_death = 1
