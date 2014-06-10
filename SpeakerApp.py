@@ -202,7 +202,8 @@ def say(text=None):
 
     parse_and_route_speech(sb, text)
 
-    return redirect(request.referrer) or redirect(url_for("home"))    
+    redir = request.referrer or url_for("home")
+    return redirect(redir)  
 
 if __name__ == '__main__':
     app.run('0.0.0.0',port=8080)
