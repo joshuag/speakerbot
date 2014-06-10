@@ -126,23 +126,24 @@ class SpeakerDB(base_db):
 
         results = self.execute("""
                 SELECT 
-                    AVG(wager) as average_wager, 
-                    AVG(outcome) as average_outcome, 
-                    MAX(wager) as max_wager, 
-                    SUM(wager) as total_wagered, 
-                    SUM(outcome) as net_winnings, 
-                    AVG(win_multiplier) as average_multiplier,
-                    SUM(cheated_death) as cheated_death
+                    count(*) as spins,
+                    AVG(wager) as avg_wgr, 
+                    AVG(outcome) as avg_out, 
+                    MAX(wager) as max_wgr, 
+                    SUM(wager) as ttl_wgr, 
+                    SUM(outcome) as net_win, 
+                    AVG(win_multiplier) as avg_multi,
+                    SUM(cheated_death) as cheat_death
                 FROM 
                 wager_history
                 where wager_time > ? and wager_time < ?
                 """, [start, end])
         try:
             results = results.next()
-            results["average_outcome"] = int(round(results["average_outcome"]))
-            results["average_wager"] = int(round(results["average_wager"]))
-            results["average_multiplier"] = int(round(results["average_multiplier"]))
-            results["roi"] = str(int(round(results["average_outcome"] / results["average_wager"], 2) * 100)) + "%"
+            results["avg_out"] = int(round(results["avg_out"]))
+            results["avg_wgr"] = int(round(results["avg_wgr"]))
+            results["avg_multi"] = int(round(results["avg_multi"]))
+            results["roi"] = str(int(round(results["avg_out"] / results["avg_wgr"], 2) * 100)) + "%"
         except:
             results = None
             pass
