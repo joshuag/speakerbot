@@ -115,7 +115,7 @@ class SpeakerDB(base_db):
 
     def get_wagers_and_outcomes_by_day(self, limit=30):
 
-        return self.execute("select date(wager_time, 'unixepoch') as wager_date, sum(wager) as amount_wagered, sum(outcome) as outcome from wager_history group by date(wager_time, 'unixepoch') limit ?", [limit])
+        return self.execute("select date(wager_time, 'unixepoch') as wager_date, case when sum(wager) > 30000 then 29999 else sum(wager) end as amount_wagered, case when sum(outcome) > 30000 then 29999 when sum(outcome) < -30000 then -29999 else sum(outcome) end as outcome from wager_history group by date(wager_time, 'unixepoch') limit ?", [limit])
 
     def get_wagers_by_outcome(self, limit=15):
 
@@ -126,23 +126,24 @@ class SpeakerDB(base_db):
 
         results = self.execute("""
                 SELECT 
-                    AVG(wager) as average_wager, 
-                    AVG(outcome) as average_outcome, 
-                    MAX(wager) as max_wager, 
-                    SUM(wager) as total_wagered, 
-                    SUM(outcome) as net_winnings, 
-                    AVG(win_multiplier) as average_multiplier,
-                    SUM(cheated_death) as cheated_death
+                    count(*) as spins,
+                    AVG(wager) as avg_wgr, 
+                    AVG(outcome) as avg_out, 
+                    MAX(wager) as max_wgr, 
+                    SUM(wager) as ttl_wgr, 
+                    SUM(outcome) as net_win, 
+                    AVG(win_multiplier) as avg_multi,
+                    SUM(cheated_death) as cheat_death
                 FROM 
                 wager_history
                 where wager_time > ? and wager_time < ?
                 """, [start, end])
         try:
             results = results.next()
-            results["average_outcome"] = int(round(results["average_outcome"]))
-            results["average_wager"] = int(round(results["average_wager"]))
-            results["average_multiplier"] = int(round(results["average_multiplier"]))
-            results["roi"] = str(int(round(results["average_outcome"] / results["average_wager"], 2) * 100)) + "%"
+            results["avg_out"] = int(round(results["avg_out"]))
+            results["avg_wgr"] = int(round(results["avg_wgr"]))
+            results["avg_multi"] = int(round(results["avg_multi"]))
+            results["roi"] = str(int(round(results["avg_out"] / results["avg_wgr"], 2) * 100)) + "%"
         except:
             results = None
             pass

@@ -73,6 +73,7 @@
       }
       .sound {
         max-height: 40px;
+        clear:left;
       }
       .sound-cost {
         color: orange;
@@ -93,13 +94,14 @@
     <!-- Optional theme -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 
+
   </head>
 
   <body role="document">
 
     <!-- Fixed navbar -->
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
+      <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -146,7 +148,7 @@
       </div>
     </div>
 
-    <div class="container theme-showcase" role="main">
+    <div class="container-fluid theme-showcase" role="main">
     {% block content %}{% endblock %}
     </div> <!-- /container -->
 
@@ -188,11 +190,13 @@
       });
     })
     function handleFileUpload(files, obj){
-      alert("foo")
+      
     }
     function spin_the_wheel() {
       wager = prompt('Enter your speakerbuck wager:', '50');
-      window.location ='/say/!spin%20'+wager;
+      if (wager){
+        window.location ='/say/!spin%20'+wager;
+      }
     }
     {% block javascript %}{% endblock %}
   </script>
