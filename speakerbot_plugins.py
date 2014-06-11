@@ -153,7 +153,7 @@ def dave(sb):
     return choice(options)
 
 def josh(sb):
-    exclamations = ['Oh nuts on nuts.', 'Heavens to betsy','Jiminy Crickets','Hells bells','Holy hell','Son of a gun','Balls on a hat','Poop in a bucket','God damnit', 'Goodness gracious','Sweet Moses', 'Geez um crow', 'Cheese and Rice',]
+    exclamations = ['Shit on a stick', 'Oh nuts on nuts.', 'Heavens to betsy','Jiminy Crickets','Hells bells','Holy hell','Son of a gun','Balls on a hat','Poop in a bucket','God damnit', 'Goodness gracious','Sweet Moses', 'Geez um crow', 'Cheese and Rice',]
     gripe_recipient = ['Django']
     subjects = ['dude','guy','girl','woman','man']
     gripe_recipient.extend(['this {}'.format(s) for s in subjects])
