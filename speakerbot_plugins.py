@@ -54,7 +54,7 @@ def price_is_right(sb, wager):
 
     print wager_list
 
-    if len(wager_list) > 1 and wager_list[1] == "silent" and choice(range(1,4)) != 4:
+    if len(wager_list) > 1 and wager_list[1] == "silent" and choice(range(1,5)) != 4:
         silent = True
 
     speakonomy = Speakonomy()
@@ -112,7 +112,7 @@ def price_is_right(sb, wager):
 
     se = SoundEffect()
 
-    if not silent: se.play("price-big-wheel.mp3")
+    if winner or not silent: se.play("price-big-wheel.mp3")
 
     if winner:
         outcome = wager*win_multiplier
