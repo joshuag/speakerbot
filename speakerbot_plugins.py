@@ -50,9 +50,7 @@ def price_is_right(sb, wager):
     added_message = ""
 
     wager_list = wager.split(" ")
-    wager = wager[0]
-
-    print wager_list
+    wager = wager_list[0]
 
     if len(wager_list) > 1 and wager_list[1] == "silent" and choice(range(1,5)) != 4:
         silent = True
