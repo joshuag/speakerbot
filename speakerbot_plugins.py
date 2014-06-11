@@ -45,8 +45,17 @@ def price_is_right(sb, wager):
     lost_it_all = False
     win_multiplier = 20
     outstr = None
+    silent = False
     cheated_death = 0
     added_message = ""
+
+    wager_list = wager.split(" ")
+    wager = wager[0]
+
+    print wager_list
+
+    if len(wager_list) > 1 and wager_list[1] == "silent" and choice(range(1,4)) != 4:
+        silent = True
 
     speakonomy = Speakonomy()
     if wager.upper() == 'MAX':
@@ -103,11 +112,11 @@ def price_is_right(sb, wager):
 
     se = SoundEffect()
 
-    se.play("price-big-wheel.mp3")
+    if not silent: se.play("price-big-wheel.mp3")
 
     if winner:
         outcome = wager*win_multiplier
-        prizes = ["a new car","a european vacation", "a deluxe horse trailer", "new jet skis", "a trip to the moon", "a large fry", "a bucket of golden nuggets", "gender neutral servant robots", "Abe Lincoln's death mask"]
+        prizes = ["a new car","a european vacation", "a deluxe horse trailer", "new jet skis", "a trip to the moon", "a large fry", "a bucket of golden nuggets", "gender neutral servant robots", "Abraham Lincoln's death mask"]
         se.play(choice(win_sounds))
         if speakonomy.is_active():
             speakonomy.deposit_funds(outcome)
@@ -119,7 +128,7 @@ def price_is_right(sb, wager):
         outstr += added_message
     else:
         outcome = wager * -1
-        se.play(choice(lose_sounds))
+        if not silent: se.play(choice(lose_sounds))
         if lost_it_all:
             outcome = speakonomy.get_speakerbuck_balance() * -1
             speakonomy.withdraw_funds(speakonomy.get_speakerbuck_balance())
