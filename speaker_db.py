@@ -194,6 +194,7 @@ class SpeakerDB(base_db):
         #if this gets slow, it's because it selects the whole table first
 
         if seed:
+            seed = '%' + seed + '%'
             cursor = self.execute("SELECT speech_text FROM snippets where speech_text like ? ORDER BY Random() LIMIT 1", [seed])
         else:
             cursor = self.execute("SELECT speech_text FROM snippets ORDER BY Random() LIMIT 1")
