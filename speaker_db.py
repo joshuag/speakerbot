@@ -164,7 +164,10 @@ class SpeakerDB(base_db):
 
     def get_top_images(self, num_images=20, order="desc"):
 
-        return self.execute("select * from images order by votes ? limit ?", [order, num_images])
+        if order == "desc":
+            return self.execute("select * from images order by votes desc limit ?", [num_images])
+        else:
+            return self.execute("select * from images order by votes asc limit ?", [num_images])
 
     def get_image_votes(self, image):
 
@@ -194,8 +197,8 @@ class SpeakerDB(base_db):
         #if this gets slow, it's because it selects the whole table first
 
         if seed:
-            seed = '%' + seed + '%'
-            cursor = self.execute("SELECT speech_text FROM snippets where speech_text like ? ORDER BY Random() LIMIT 1", [seed])
+            sql_seed = '%' + seed + '%'
+            cursor = self.execute("SELECT speech_text FROM snippets where speech_text like ? ORDER BY Random() LIMIT 1", [sql_seed])
         else:
             cursor = self.execute("SELECT speech_text FROM snippets ORDER BY Random() LIMIT 1")
 
