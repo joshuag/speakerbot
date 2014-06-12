@@ -40,7 +40,8 @@ def parse_and_route_speech(speakerbot, text):
         'spin':price_is_right,
         'suspense':random_drumroll,
         'urban': urban,
-        'comment': random_comment
+        'comment': random_comment,
+        'wiki':wiki
     }
     
     token = None

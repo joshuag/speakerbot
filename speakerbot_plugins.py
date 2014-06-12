@@ -260,6 +260,16 @@ def urban(sb, text):
     else:
         return "The definition for %s: %s" % (text, defn)
 
+def wiki(sb):
+
+    page = requests.get("http://en.wikipedia.org/wiki/Special:Random")
+
+    page = pq(page.text)
+
+    text = choice(pq(page("#mw-content-text")[0]).text().split("."))
+
+    return text
+
 def random_comment(sb):
     return db.get_random_comment()
 
