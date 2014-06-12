@@ -1,5 +1,8 @@
-from flask import Flask, redirect, url_for,  render_template, request 
 import datetime
+import os
+
+from flask import Flask, redirect, url_for,  render_template, request 
+from werkzeug.utils import secure_filename
 
 from eventrecorder import EventRecorder
 from Speakerbot import Speakerbot
@@ -30,6 +33,11 @@ sb.attach_interrogator("play", stub_interrogator)
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
+app.config['UPLOAD_FOLDER'] = os.path.relpath('sounds')
+
+@app.context_processor
+def inject_speakonomy():
+    return dict(speakonomy=speakonomy)
 
 @app.route('/')
 @app.route('/home/<image>')
@@ -51,10 +59,31 @@ def home(image=None):
             message=message,
             votes=votes,
             comments=comments,
-            speakonomy=speakonomy,
             last_withdrawal_time=last_withdrawal_time,
             speakerbucks_per_minute=speakerbucks_per_minute,
             random_title=parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")
+            )
+
+@app.route('/upload', methods=["GET", "POST"])
+def upload_sound():
+    message = None
+    if request.method == 'POST':
+        name = request.form.get('sound_name')
+        f = request.files['file']
+        filename = secure_filename(f.filename)
+        sound_fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        f.save(sound_fp)
+        sound_seconds = get_mp3_seconds(sound_fp)
+        if sound_seconds > 15:
+            message = 'This sound is {} seconds! Must be 15 seconds or less.'.format(sound_seconds)
+        else:
+            base_cost = speakonomy.get_sound_base_cost(sound_fp)
+            sb.add_sound_to_db(name, filename, base_cost)
+            os.system('normalize "{}"')
+
+    return render_template(
+            "upload.html", 
+            message=message,
             )
 
 @app.route('/theme-songs', methods=["GET", "POST"])
@@ -67,7 +96,6 @@ def theme_songs():
             "themesongs.html", 
             sounds=sorted(sb.load_sounds().keys()), 
             people=db.get_people(),
-            speakonomy=speakonomy,
             )
 
 @app.route('/spadmin', methods=["GET", "POST"])
@@ -82,7 +110,6 @@ def admin():
     return render_template(
             "admin.html", 
             people=db.get_people(),
-            speakonomy=speakonomy,
             )
 
 @app.route('/image/<image>/upboat')
@@ -165,8 +192,7 @@ def spinstats():
             multiplier_occurence=multiplier_occurence,
             wagers_and_outcomes=wagers_and_outcomes,
             wagers_by_outcome=wagers_by_outcome,
-            lucky_numbers=lucky_numbers,
-            speakonomy=speakonomy)
+            lucky_numbers=lucky_numbers)
 
 @app.route('/play_sound/<sound_name>')
 def play_sound(sound_name):
