@@ -190,11 +190,19 @@ class SpeakerDB(base_db):
 
         return result["comment"]
 
-    def get_random_utterance(self):
+    def get_random_utterance(self, seed=None):
         #if this gets slow, it's because it selects the whole table first
-        cursor = self.execute("SELECT speech_text FROM snippets ORDER BY Random() LIMIT 1")
 
-        result = cursor.next()
+        if seed:
+            cursor = self.execute("SELECT speech_text FROM snippets where speech_text like ? ORDER BY Random() LIMIT 1", [seed])
+        else:
+            cursor = self.execute("SELECT speech_text FROM snippets ORDER BY Random() LIMIT 1")
+
+        try:
+            result = cursor.next()
+        except StopIteration:
+            if seed:
+                return "It seems as though nobody has mentioned %s" % seed
 
         return result["speech_text"]
 

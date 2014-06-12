@@ -242,23 +242,24 @@ def run_filters(text):
 
     return text
 
-def urban(sb, text):
-
-    page = requests.get("http://www.urbandictionary.com/define.php?term=%s" % text)
+def define(sb, text):
+    page = requests.get("http://www.dictionary.com/browse/%s" % text)
 
     page = pq(page.text)
 
-    defn_tag = page("div.meaning")
-    defn = ""
+    defn_tag = page(".dndata")
 
     if defn_tag:
-        defn = re.sub('<[^<]+?>(.*?)</[^<]+?>', r'\1', defn_tag.html().split("<br/>")[0])
-        defn = smart_truncate("".join(defn.split(".")[:3]), length=200)
+        defn = page(defn_tag[0]).text()
 
     if not defn:
         return "I couldn't find a definition for %s" % text
     else:
         return "The definition for %s: %s" % (text, defn)
+
+def urban(sb, text):
+
+    return define(sb, text)
 
 def wiki(sb):
 
@@ -273,5 +274,5 @@ def wiki(sb):
 def random_comment(sb):
     return db.get_random_comment()
 
-def random_utterance(sb):
-    return db.get_random_utterance()
+def random_utterance(sb, seed=None):
+    return db.get_random_utterance(seed=seed)
