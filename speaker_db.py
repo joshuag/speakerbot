@@ -115,7 +115,7 @@ class SpeakerDB(base_db):
 
     def get_wagers_and_outcomes_by_day(self, limit=30):
 
-        return self.execute("select date(wager_time, 'unixepoch') as wager_date, case when sum(wager) > 30000 then 29999 else sum(wager) end as amount_wagered, case when sum(outcome) > 30000 then 29999 when sum(outcome) < -30000 then -29999 else sum(outcome) end as outcome from wager_history group by date(wager_time, 'unixepoch') limit ?", [limit])
+        return self.execute("select date(wager_time, 'unixepoch') as wager_date, case when sum(wager) > 100000 then 100000 else sum(wager) end as amount_wagered, case when sum(outcome) > 100000 then 100000 when sum(outcome) < -100000 then -100000 else sum(outcome) end as outcome from wager_history group by date(wager_time, 'unixepoch') limit ?", [limit])
 
     def get_wagers_by_outcome(self, limit=15):
 
