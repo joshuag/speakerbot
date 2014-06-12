@@ -142,6 +142,14 @@ def top_images():
     images = db.get_top_images(num_images=num_images)
     return render_template("images.html", images=images, speakonomy=speakonomy)
 
+@app.route('/images/worst')
+def worst_images():
+
+    num_images = request.args.get("num", 25)
+
+    images = db.get_top_images(num_images=num_images, order="asc")
+    return render_template("images.html", images=images, speakonomy=speakonomy)
+
 @app.route('/spinstats')
 def spinstats():
 

@@ -4,8 +4,6 @@ import requests
 
 from pyquery import PyQuery as pq
 
-from IPython import embed
-
 def grab_links(url, limit=5, found_links=None, retries=0):
 
     limit -= 1
