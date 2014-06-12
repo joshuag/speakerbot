@@ -91,17 +91,18 @@ def price_is_right(sb, wager):
 
     if chosen_number == lucky_number or wager == lucky_number:
         if wager == lucky_number:
-            win_multiplier = choice(range(6,20) + [200, 400, 600, 800, 1000, 10000])
+            new_win_multiplier = choice(range(6,20) + [200, 400, 600, 800, 1000, 10000])
             added_message = "And your wager matched the lucky number, you sly dog."
 
             if chosen_number == wager and win_multiplier == wager:
-                win_multiplier = win_multiplier * 100000
+                new_win_multiplier = new_win_multiplier * 100000
                 added_message = "The wager, chosen number, lucky number and win multiplier all matched. It's a megabucks bonanza!"
             elif chosen_number == wager:
                 #Triply lucky
-                win_multiplier = win_multiplier * 30
+                new_win_multiplier = new_win_multiplier * 30
                 added_message += "And the chosen number matched too! You are thirty times as lucky!"
 
+            win_multiplier = new_win_multiplier
             chosen_number = wager
 
         winner = True
