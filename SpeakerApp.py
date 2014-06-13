@@ -80,7 +80,7 @@ def upload_sound():
         else:
             base_cost = speakonomy.get_sound_base_cost(sound_fp)
             sb.add_sound_to_db(name, filename, base_cost)
-            subprocess.call(['mp3gain', '"{}"'.format(filename), '-r'])
+            subprocess.call(['mp3gain','-r', '"{}"'.format(filename)])
 
     return render_template(
             "upload.html", 
