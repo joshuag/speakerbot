@@ -1,6 +1,8 @@
 from os import listdir, getcwd
 from os.path import isfile, join
 from random import choice
+import re
+import subprocess
 
 import datetime
 
@@ -13,6 +15,12 @@ try:
 except ImportError:
     def lock(f):
         return f
+
+def get_mp3_seconds(path):
+    out = subprocess.check_output('mpg321 -t "{}"'.format(path), shell=True, stderr=subprocess.STDOUT)
+
+    mins, secs = re.search(r'\[(\d+):(\d+)\] Decoding', out).groups()
+    return int(mins) * 60 + int(secs)
 
 def create_deferred(function, *args, **kwargs):
 
