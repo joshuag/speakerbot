@@ -1,5 +1,5 @@
 import datetime
-import os
+import os, subprocess
 
 from flask import Flask, redirect, url_for,  render_template, request 
 from werkzeug.utils import secure_filename
@@ -66,6 +66,7 @@ def home(image=None):
 
 @app.route('/upload', methods=["GET", "POST"])
 def upload_sound():
+    #TODO: Put the sounds into their own class
     message = None
     if request.method == 'POST':
         name = request.form.get('sound_name')
@@ -79,7 +80,7 @@ def upload_sound():
         else:
             base_cost = speakonomy.get_sound_base_cost(sound_fp)
             sb.add_sound_to_db(name, filename, base_cost)
-            os.system('normalize "{}"')
+            subprocess.call(['mp3gain', '"{}"'.format(filename), '-r'])
 
     return render_template(
             "upload.html", 
