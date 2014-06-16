@@ -121,6 +121,10 @@ class SpeakerDB(base_db):
 
         return self.execute("select wager, sum(case when outcome > 1 then 1 else 0 end)  as successful_outcomes, sum(case when outcome < 1 then 1 else 0 end) as negative_outcomes from wager_history group by wager order by count(wager) desc limit ?", [limit])
 
+    def get_lucky_and_chosen_cooccurence(self):
+
+        return self.execute("select lucky.number, lucky.lucky_number, chosen.chosen_number from (select chosen_number as number, sum(chosen_number) as chosen_number, null as lucky_number from wager_history group by chosen_number) chosen inner join (select lucky_number as number, null as chosen_number, sum(lucky_number) as lucky_number from wager_history group by lucky_number) lucky on lucky.number=chosen.number")
+
 
     def get_aggregate_wager_stats(self, start=0, end=4000000000):
 
