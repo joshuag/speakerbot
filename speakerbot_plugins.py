@@ -99,7 +99,7 @@ def price_is_right(sb, wager):
                 added_message = "The wager, chosen number, lucky number and win multiplier all matched. It's a megabucks bonanza!"
             elif chosen_number == wager:
                 #Triply lucky
-                new_win_multiplier = new_win_multiplier * 30
+                new_win_multiplier = new_win_multiplier * 300
                 added_message += "And the chosen number matched too! You are thirty times as lucky!"
 
             win_multiplier = new_win_multiplier
