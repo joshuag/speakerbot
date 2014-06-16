@@ -20,7 +20,7 @@
           {{ render_rs_table(wagers_and_outcomes, missing_message="No spins yet", additional_class="highchart hidden", additional_attributes={'data-graph-container':'#wagers-outcomes-graph','data-graph-type':'line'}) }}
           {{ render_rs_table(wagers_by_outcome, missing_message="No spins yet", additional_class="highchart hidden", additional_attributes={'data-graph-container':'#wagers-by-outcome-graph','data-graph-type':'area'}) }}
           {{ render_rs_table(lucky_numbers, missing_message="No spins yet", additional_class="highchart hidden", additional_attributes={'data-graph-container':'#lucky-by-outcome-graph','data-graph-type':'area'}) }}
-          {{ render_rs_table(number_cooccurrence, missing_message="No spins yet", additional_class="highchart hidden", additional_attributes={'data-graph-container':'#lucky-chosen-graph','data-graph-type':'area'}) }}
+          {{ render_rs_table(number_cooccurrence, missing_message="No spins yet", additional_class="highchart hidden", additional_attributes={'data-graph-container':'#lucky-chosen-graph','data-graph-type':'area'}, graph_map={'cooccurence':'line'}) }}
         </div>
         <div class="col-sm-6">
             <h2>Lucky and Chosen Number Co-occurence</h2>

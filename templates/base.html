@@ -21,13 +21,17 @@
     {% endif %}
 {% endmacro %}
 
-{% macro render_rs_table(rs, missing_message="No records found", additional_class="", additional_attributes="") %}
+{% macro render_rs_table(rs, missing_message="No records found", additional_class="", additional_attributes="", graph_map={}) %}
     {% if rs %}
         <table class="table {{additional_class}}" {% for attribute in additional_attributes %}{{attribute}}="{{additional_attributes[attribute]}}"{% endfor %}>
           <thead>
             <tr>
               {% for keys in rs.description %}
-                <th>{{ keys[0].replace("_"," ") }}</th>
+                {% if graph_map.get(keys[0], None) %}
+                  <th data-graph-type="{{graph_map[keys[0]]}}">{{ keys[0].replace("_"," ") }}</th>
+                {% else %}
+                  <th>{{ keys[0].replace("_"," ") }}</th>
+                {% endif %}
               {% endfor %}
             </tr>
           </thead>

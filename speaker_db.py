@@ -123,7 +123,7 @@ class SpeakerDB(base_db):
 
     def get_lucky_and_chosen_cooccurence(self):
 
-        return self.execute("select lucky.number, lucky.lucky_numero, chosen.chosen_numero from (select chosen_number as number, sum(chosen_number) as chosen_numero, null as lucky_number from wager_history group by chosen_number) chosen inner join (select lucky_number as number, null as chosen_number, sum(lucky_number) as lucky_numero from wager_history group by lucky_number) lucky on lucky.number=chosen.number")
+        return self.execute("select lucky.number, lucky.lucky_number, chosen.chosen_number, case when coc.cooccurrence is null then 0 else coc.cooccurrence end as cooccurence from (select chosen_number as number, sum(chosen_number) as chosen_number, null as lucky_number from wager_history group by chosen_number) chosen inner join (select lucky_number as number, null as chosen_number, sum(lucky_number) as lucky_number from wager_history group by lucky_number) lucky on lucky.number=chosen.number left join (select lucky_number as number, count(*) as cooccurrence from wager_history where lucky_number = chosen_number group by lucky_number) coc on lucky.number=coc.number")
 
 
     def get_aggregate_wager_stats(self, start=0, end=4000000000):
