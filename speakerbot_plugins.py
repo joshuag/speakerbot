@@ -103,7 +103,6 @@ def price_is_right(sb, wager):
                 added_message += "And the chosen number matched too! You are thirty times as lucky!"
 
             win_multiplier = new_win_multiplier
-            chosen_number = wager
 
         winner = True
     else:
