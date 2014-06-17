@@ -10,7 +10,7 @@ function select_user(d) {
   $(d).addClass('active');
   theme = $(d).attr("data-theme");
   $('#song-label').html(theme);
-  $("a[data-name="+theme+"]").addClass('active');
+  $("a[data-name='"+theme+"'']").addClass('active');
   $('#user').val($(d).attr("data-name"));
   $('#song').val(theme);
 }
