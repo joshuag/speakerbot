@@ -53,7 +53,10 @@ class base_db(object):
                 return self
 
             def next(self):
-                return self.generator.next()
+                try:
+                    return self.generator.next()
+                except StopIteration:
+                    return None
 
             def fetchone(self):
                 result = self.next()
