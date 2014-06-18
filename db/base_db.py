@@ -59,8 +59,9 @@ class base_db(object):
                 try:
                     result = self.next()
                 except StopIteration:
-                    if not result:
-                        result = None
+                    print self.results
+                    result = {}
+
                 return result
             def fetchall(self):
                 return self.results
