@@ -56,10 +56,8 @@ class base_db(object):
                 return self.generator.next()
 
             def fetchone(self):
-                try:
-                    result = self.next()
-                except StopIteration:
-                    result = None 
+                result = self.next()
+                print result
                 return result
             def fetchall(self):
                 return self.results
