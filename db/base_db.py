@@ -1,5 +1,6 @@
 import sqlite3
 import MySQLdb
+import re
 
 from collections import OrderedDict
 
@@ -73,6 +74,15 @@ class base_db(object):
         
         self.version = version
         self.execute("update db_version set version = ?", [version])
+
+    def fix_for_mysql(self, statement):
+
+        statement = statement.replace("?","%s")
+        statement = re.sub("random\(\)","RAND()", statement, flags=re.I)
+
+        print statement
+
+        return statement
     
     def execute(self, statement, query_vars=None):
 
@@ -81,8 +91,8 @@ class base_db(object):
 
         if self.settings['driver'] == "mysql":
             cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
-            print statement.replace("?","%s")
-            cursor.execute(statement.replace("?","%s"), tuple(query_vars))
+            statement = self.fix_for_mysql(statement)
+            cursor.execute(statement, tuple(query_vars))
             result = self.rs_generator(cursor.fetchall())
 
         if self.settings['driver'] == "sqlite3":

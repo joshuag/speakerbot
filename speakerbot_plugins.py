@@ -138,7 +138,7 @@ def price_is_right(sb, wager):
 
 
 def jon(sb):
-    results = db.execute("SELECT * FROM snippets where votes > 1 order by rowid desc limit 10")
+    results = db.execute("SELECT * FROM snippets where votes > 1 order by votes desc limit 10")
 
     speech_list = [result["speech_text"] for result in results]
 
