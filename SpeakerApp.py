@@ -10,9 +10,13 @@ from speaker_db import SpeakerDB
 from speakerlib import *
 from speakonomy import Speakonomy
 
+print "loading speakerbot"
 sb = Speakerbot()
+print "loading speakonomy"
 speakonomy = Speakonomy(sb)
+print "loading speakerdb"
 db = SpeakerDB()
+print "initializing event recorder"
 evr = EventRecorder(db=db)
 
 def stub_interrogator(*args, **kwargs):
@@ -34,6 +38,8 @@ sb.attach_interrogator("play", stub_interrogator)
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['UPLOAD_FOLDER'] = os.path.relpath('sounds')
+
+print "I'm ready"
 
 @app.context_processor
 def inject_speakonomy():

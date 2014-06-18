@@ -71,7 +71,7 @@ class Speakonomy:
 
     def sell_sound(self, sound_name, **kwargs):
         if self.is_active():
-            cost = self.db.execute("SELECT cost FROM sounds WHERE name=?", [sound_name,]).fetchone()['cost']
+            cost = int(self.db.execute("SELECT cost FROM sounds WHERE name=?", [sound_name,]).fetchone()['cost'])
             self.withdraw_funds(cost)
             self.db.execute("UPDATE sounds set cost=cost*2 where name=?", [sound_name,])
 

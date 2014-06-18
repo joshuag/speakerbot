@@ -1,13 +1,29 @@
 import sqlite3
+import MySQLdb
+
 from collections import OrderedDict
 
 class base_db(object):
 
-    def __init__(self, db_path=None):
+    def __init__(self, settings=None):
 
-        self.conn = sqlite3.connect(db_path, check_same_thread=False)
+        if settings and type(settings) == "str":
+            db_path = settings
+            settings = {
+                'driver':'sqlite3',
+                'db_path':db_path
+            }
 
-        self.conn.row_factory = self.row_factory
+        self.settings = settings
+
+        if self.settings['driver'] == "sqlite3":
+
+            self.conn = sqlite3.connect(db_path, check_same_thread=False)
+            self.conn.row_factory = self.mysql_row_factory
+
+        if self.settings['driver'] == "mysql":
+            self.conn = MySQLdb.connect(host=self.settings['host'], user=self.settings['user'], passwd=self.settings['pass'], db=self.settings['database'])
+            self.conn.cursor().execute("SET AUTOCOMMIT=1;")
 
         self.version = self.get_version()
 
@@ -22,6 +38,33 @@ class base_db(object):
             row_dict[column[0]] = row[idx]
         return row_dict
 
+    def rs_generator(self, results):
+
+        class ResultSet(object):
+            def __init__(self, results=None):
+                self.results = results
+                self.generator = self.self_generator()
+
+            def self_generator(self):
+                for result in self.results:
+                    yield result
+
+            def __iter__(self):
+                return self
+
+            def next(self):
+                return self.generator.next()
+
+            def fetchone(self):
+                result = self.next()
+                print result
+                return result
+            def fetchall(self):
+                return self.results
+
+        r = ResultSet(results)
+        return r
+
     def update_version(self, version):
         
         self.version = version
@@ -32,8 +75,16 @@ class base_db(object):
         if not query_vars:
             query_vars = []
 
-        result = self.conn.execute(statement, query_vars)
-        self.conn.commit()
+        if self.settings['driver'] == "mysql":
+            cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+            print statement.replace("?","%s")
+            cursor.execute(statement.replace("?","%s"), tuple(query_vars))
+            result = self.rs_generator(cursor.fetchall())
+
+        if self.settings['driver'] == "sqlite3":
+
+            result = self.conn.execute(statement, query_vars)
+            self.conn.commit()
 
         return result
 
@@ -52,7 +103,6 @@ class base_db(object):
         for elem in dir(self):
 
             if elem[:8] == "_migrate":
-                migration_number = elem[9:]
                 migrations.append(getattr(self, elem))
 
         migrations.sort(key=lambda f: int(f.__name__[9:]))
@@ -62,7 +112,7 @@ class base_db(object):
     def get_version(self):
 
         try:
-            version_cursor = self.execute("select rowid, version from db_version limit 1")
+            version_cursor = self.execute("select version from db_version limit 1")
             result = version_cursor.next()
         except sqlite3.OperationalError:
             return 0

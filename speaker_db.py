@@ -2,11 +2,18 @@ from db.base_db import base_db
 import sqlite3
 import datetime as dt
 
+from config import config
+
 class SpeakerDB(base_db):
 
-    def __init__(self, db_path="speakerbot.db"):
+    def __init__(self, db_path=None):
 
-        super(SpeakerDB, self).__init__(db_path=db_path)
+        db_settings = config.get("database", None)
+
+        if not db_settings and db_path:
+            db_settings = db_path
+
+        super(SpeakerDB, self).__init__(settings=db_settings)
 
     def _migrate_0(self):
 
