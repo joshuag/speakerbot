@@ -60,7 +60,7 @@ def home(image=None):
 
     return render_template(
             "home.html", 
-            sounds=sb.load_sounds(), 
+            sounds=sb.load_sounds(score_cutoff=-50), 
             image=image, 
             message=message,
             votes=votes,
@@ -144,6 +144,15 @@ def downvote_image(image):
     speakonomy.deposit_funds(5)
 
     return redirect(url_for("home", message="Thank you for voting, have 5 speakerbucks"))
+
+
+@app.route('/downvote-sound', methods=["POST"])
+def downvote_sound():
+    if request.form.get('downvote_sound'):
+        sound_name = request.form.get('downvote_sound')
+        db.execute("update sounds set downvotes=downvotes+1 where name=?", [sound_name])
+
+    return redirect(url_for("home", message="Thank you for downvoting, you little twerp."))
 
 @app.route('/image/<image>/nsfw')
 def flag_image(image):

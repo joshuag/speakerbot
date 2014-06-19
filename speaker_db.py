@@ -100,6 +100,10 @@ class SpeakerDB(base_db):
     def _migrate_15(self):
         self.execute("ALTER table wager_history ADD COLUMN lucky_number INTEGER NOT NULL DEFAULT 0")
 
+    def _migrate_16(self):
+
+        self.execute("ALTER table sounds add column downvotes INTEGER NOT NULL DEFAULT 0")
+
 
 
     def record_wager(self, lucky_number, wager, outcome, chosen_number, win_multiplier, cheated_death):

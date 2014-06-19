@@ -1,4 +1,5 @@
 import os
+import math
 import subprocess
 
 from collections import OrderedDict
@@ -121,14 +122,19 @@ class Speakerbot(object):
         self.se = SoundEffect()
         self.tts = TextToSpeech()
 
-    def load_sounds(self):
+    def get_sound_score(self, sound):
+        return int(sound["votes"]-sound["downvotes"]*math.pi*3)
+
+    def load_sounds(self, score_cutoff=None):
 
         self.sounds = OrderedDict()
 
         sound_list = self.db.execute("SELECT * from sounds order by votes desc, name asc")
 
         for sound in sound_list:
-            self.sounds[sound["name"]] = (sound["path"], sound["votes"], sound["cost"])
+            if score_cutoff and self.get_sound_score(sound) < score_cutoff:
+                continue
+            self.sounds[sound["name"]] = (sound["path"], sound["votes"], sound["cost"], sound["downvotes"], self.get_sound_score(sound))
 
         return self.sounds
 

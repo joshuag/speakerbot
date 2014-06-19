@@ -7,8 +7,7 @@ from collections import OrderedDict
 class base_db(object):
 
     def __init__(self, settings=None):
-
-        if settings and type(settings) == "str":
+        if settings and isinstance(settings, str):
             db_path = settings
             settings = {
                 'driver':'sqlite3',
