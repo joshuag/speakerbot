@@ -48,7 +48,6 @@ class base_db(object):
 
             def self_generator(self):
                 for result in self.results:
-                    print "yielding"
                     yield result
 
             def __iter__(self):
