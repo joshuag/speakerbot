@@ -19,7 +19,7 @@ class base_db(object):
 
         if self.settings['driver'] == "sqlite3":
 
-            self.conn = sqlite3.connect(db_path, check_same_thread=False)
+            self.conn = sqlite3.connect(self.settings["db_path"], check_same_thread=False)
             self.conn.row_factory = self.mysql_row_factory
 
         if self.settings['driver'] == "mysql":
@@ -49,8 +49,6 @@ class base_db(object):
                 self.generator = self.self_generator()
                 self.description = self.cursor.description
 
-                print self.description
-
             def generate_results(self, row_factory):
                 results = []
                 for row in self.raw_results:
@@ -72,6 +70,7 @@ class base_db(object):
                 try:
                     result = self.generator.next()
                 except StopIteration:
+                    print self.description
                     result = None
 
                 return result
