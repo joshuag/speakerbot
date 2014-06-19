@@ -34,6 +34,11 @@ def get_mashape_api(url):
 
 def random_drumroll(sb):
 
+    speakonomy = Speakonomy()
+    if speakonomy.is_active():
+        if not speakonomy.check_affordability(cost=20):
+            return "Not enough speakerbucks for drumroll"
+
     sb.play("drumroll")
     
     sound = choice(sb.sounds.keys())
