@@ -90,6 +90,7 @@ class base_db(object):
         statement = re.sub("random\(\)","RAND()", statement, flags=re.I)
         statement = re.sub(r"datetime\((\w+?), 'unixepoch'\)", r"from_unixtime(\1, '%%Y %%D %%M %%h:%%i:%%s')", statement, flags=re.I)
         statement = re.sub(r"date\((\w+?), 'unixepoch'\)", r"from_unixtime(\1, '%%Y %%D %%M')", statement, flags=re.I)
+        statement = statement.replace(" INT)", " SIGNED)")
 
         print statement
 
