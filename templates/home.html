@@ -6,6 +6,7 @@ $(document).ready(function() {
   $grid.on('done.shuffle', function() {
       $(".sound").css("width", "100%");
     });
+  change_sort('score');
 });
 function capitaliseFirstLetter(string)
 {
@@ -32,17 +33,18 @@ $('#sort_by').popover()
         <div class="col-sm-3">
           <div style="height:20px; font-size: 10px;">Last sound: {{ speakonomy.get_last_withdrawal_time().strftime('%A @ %H:%M %p') }} (+{{ speakerbucks_per_minute }})<div class="pull-right">Sort: <a id="sort_by" href="#" type="button" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-content='<a href="#" onclick=change_sort("cost")>Cost</a><br>
             <a href="#" onclick=change_sort("name")>Name</a><br>
-          <a href="#" onclick=change_sort("plays")>Plays</a>'>Plays</a></div></div>
+          <a href="#" onclick=change_sort("plays")>Plays</a><br>
+          <a href="#" onclick=change_sort("score")>Score</a>'>Score</a></div></div>
           <div class="list-group" id="sounds">
           	{% for sound in sounds %}
-            <a class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound)}}" data-cost="{{ sounds[sound][2] }}" data-name="{{ sound }}" data-score="{{ sounds[sound][4] }}">
+            <a class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound)}}" data-cost="{{ sounds[sound][2] }}" data-name="{{ sound }}" data-score="-{{ sounds[sound][4] }}">
                 <div class="downvote-button" onclick="downvote('{{ sound }}'); return false;"><span class="glyphicon glyphicon-thumbs-down"></span></div>
               {{ sound }}
               <span class="badge alert-default" title="{{ sounds[sound][1] }} plays, {{ sounds[sound][3] }} downvotes">{{ sounds[sound][4]}}</span>
               <p class="pull-right sound-cost">{% if speakonomy.is_active() %}{{ "{:,}".format(sounds[sound][2]) }} <span class="glyphicon glyphicon-bullhorn"></span>{% else %}FREE{% endif %} </p>
             </a>
             {% endfor %}
-            <form action="/downvote-sound" id="downvote-form" method="post"><input type="hidden" id="downvote-sound" name="downvote_sound" value=""/>
+            <form action="/downvote-sound" id="downvote-form" method="post"><input type="hidden" id="downvote-sound" name="downvote_sound" value=""></form>
           </div>
         </div><!-- /.col-sm-8 -->
         <div class="col-sm-9">
@@ -82,4 +84,5 @@ $('#sort_by').popover()
           </div>
         </div>
       </div>
+      
 {% endblock %}
