@@ -43,14 +43,15 @@ class base_db(object):
 
         class ResultSet(object):
             def __init__(self, results=None):
-                print results
                 self.results = results
                 self.generator = self.self_generator()
                 self.description = []
 
-                if results[0]:
+                try:
                     for key in results[0].keys():
                         self.description.append((key,))
+                except:
+                    pass
 
             def self_generator(self):
                 for result in self.results:
