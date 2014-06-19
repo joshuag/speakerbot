@@ -60,8 +60,7 @@ class base_db(object):
                 try:
                     result = self.next()
                 except StopIteration:
-                    print self.results
-                    result = {}
+                    result = None
 
                 return result
             def fetchall(self):
