@@ -39,19 +39,24 @@ class base_db(object):
             row_dict[column[0]] = row[idx]
         return row_dict
 
-    def rs_generator(self, results):
+    def rs_generator(self, cursor):
 
         class ResultSet(object):
-            def __init__(self, results=None):
-                self.results = results
+            def __init__(self, cursor=None, row_factory=None):
+                self.cursor = cursor
+                self.raw_results = self.cursor.fetchall()
+                self.results = self.generate_results(row_factory)
                 self.generator = self.self_generator()
-                self.description = []
+                self.description = self.cursor.description
 
-                try:
-                    for key in results[0].keys():
-                        self.description.append((key,))
-                except:
-                    pass
+                print self.description
+
+            def generate_results(self, row_factory):
+                results = []
+                for row in self.raw_results:
+                    results.append(row_factory(self.cursor, row))
+
+                return results
 
             def self_generator(self):
                 for result in self.results:
@@ -73,7 +78,7 @@ class base_db(object):
             def fetchall(self):
                 return self.results
 
-        r = ResultSet(results)
+        r = ResultSet(cursor, row_factory=self.row_factory)
         return r
 
     def update_version(self, version):
@@ -98,10 +103,10 @@ class base_db(object):
             query_vars = []
 
         if self.settings['driver'] == "mysql":
-            cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+            cursor = self.conn.cursor()
             statement = self.fix_for_mysql(statement)
             cursor.execute(statement, tuple(query_vars))
-            result = self.rs_generator(cursor.fetchall())
+            result = self.rs_generator(cursor)
 
         if self.settings['driver'] == "sqlite3":
 
