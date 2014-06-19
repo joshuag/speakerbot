@@ -21,15 +21,20 @@ class base_db(object):
             self.conn = sqlite3.connect(self.settings["db_path"], check_same_thread=False)
             self.conn.row_factory = self.row_factory
 
-        if self.settings['driver'] == "mysql":
-            self.conn = MySQLdb.connect(host=self.settings['host'], user=self.settings['user'], passwd=self.settings['pass'], db=self.settings['database'])
-            self.conn.cursor().execute("SET AUTOCOMMIT=1;")
-
         self.version = self.get_version()
 
         self.migrations = self.get_migrations()
 
         self.run_migrations()
+
+    def open_connection(self):
+        if self.settings['driver'] == "mysql":
+            self.conn = MySQLdb.connect(host=self.settings['host'], user=self.settings['user'], passwd=self.settings['pass'], db=self.settings['database'])
+            self.conn.cursor().execute("SET AUTOCOMMIT=1;")
+
+    def close_connection(self):
+        if self.settings['driver'] == "mysql":
+            self.conn.close()
 
     def row_factory(self, cursor, row):
 
@@ -98,6 +103,8 @@ class base_db(object):
     
     def execute(self, statement, query_vars=None):
 
+        self.open_connection()
+
         if not query_vars:
             query_vars = []
 
@@ -113,6 +120,8 @@ class base_db(object):
             result = self.conn.execute(statement, query_vars)
             self.conn.commit()
 
+        self.close_connection()
+        
         return result
 
     def run_migrations(self):
