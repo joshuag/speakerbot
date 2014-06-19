@@ -7,8 +7,7 @@ from collections import OrderedDict
 class base_db(object):
 
     def __init__(self, settings=None):
-
-        if settings and type(settings) == "str":
+        if settings and isinstance(settings, str):
             db_path = settings
             settings = {
                 'driver':'sqlite3',
@@ -20,7 +19,7 @@ class base_db(object):
         if self.settings['driver'] == "sqlite3":
 
             self.conn = sqlite3.connect(db_path, check_same_thread=False)
-            self.conn.row_factory = self.mysql_row_factory
+            self.conn.row_factory = self.row_factory
 
         if self.settings['driver'] == "mysql":
             self.conn = MySQLdb.connect(host=self.settings['host'], user=self.settings['user'], passwd=self.settings['pass'], db=self.settings['database'])

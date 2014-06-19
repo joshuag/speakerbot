@@ -21,6 +21,10 @@ function change_sort(type) {
     });
 
 }
+function downvote(name) {
+  $('#downvote-sound').val(name);
+  $('#downvote-form').submit();
+}
 $('#sort_by').popover()
 {% endblock %}
 {% block content %}
@@ -31,12 +35,14 @@ $('#sort_by').popover()
           <a href="#" onclick=change_sort("plays")>Plays</a>'>Plays</a></div></div>
           <div class="list-group" id="sounds">
           	{% for sound in sounds %}
-            <a class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound)}}" data-cost="{{ sounds[sound][2] }}" data-name="{{ sound }}">
+            <a class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound)}}" data-cost="{{ sounds[sound][2] }}" data-name="{{ sound }}" data-score="{{ sounds[sound][4] }}">
+                <div class="downvote-button" onclick="downvote('{{ sound }}'); return false;"><span class="glyphicon glyphicon-thumbs-down"></span></div>
               {{ sound }}
-              <span class="badge alert-default">{{ sounds[sound][1]}}</span>
+              <span class="badge alert-default" title="{{ sounds[sound][1] }} plays, {{ sounds[sound][3] }} downvotes">{{ sounds[sound][4]}}</span>
               <p class="pull-right sound-cost">{% if speakonomy.is_active() %}{{ "{:,}".format(sounds[sound][2]) }} <span class="glyphicon glyphicon-bullhorn"></span>{% else %}FREE{% endif %} </p>
             </a>
             {% endfor %}
+            <form action="/downvote-sound" id="downvote-form" method="post"><input type="hidden" id="downvote-sound" name="downvote_sound" value=""/>
           </div>
         </div><!-- /.col-sm-8 -->
         <div class="col-sm-9">
