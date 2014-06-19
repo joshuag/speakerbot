@@ -43,8 +43,14 @@ class base_db(object):
 
         class ResultSet(object):
             def __init__(self, results=None):
+                print results
                 self.results = results
                 self.generator = self.self_generator()
+                self.description = []
+
+                if results[0]:
+                    for key in results[0].keys():
+                        self.description.append((key,))
 
             def self_generator(self):
                 for result in self.results:
@@ -78,6 +84,8 @@ class base_db(object):
 
         statement = statement.replace("?","%s")
         statement = re.sub("random\(\)","RAND()", statement, flags=re.I)
+        statement = re.sub(r"datetime\((\w+?), 'unixepoch'\)", r"from_unixtime(\1, '%%Y %%D %%M %%h:%%i:%%s')", statement, flags=re.I)
+        statement = re.sub(r"date\((\w+?), 'unixepoch'\)", r"from_unixtime(\1, '%%Y %%D %%M')", statement, flags=re.I)
 
         print statement
 
