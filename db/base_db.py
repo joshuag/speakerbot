@@ -105,6 +105,7 @@ class base_db(object):
             statement = self.fix_for_mysql(statement)
             cursor.execute(statement, tuple(query_vars))
             result = self.rs_generator(cursor)
+            cursor.close()
 
         if self.settings['driver'] == "sqlite3":
 
