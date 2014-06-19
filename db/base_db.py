@@ -48,6 +48,7 @@ class base_db(object):
 
             def self_generator(self):
                 for result in self.results:
+                    print "yielding"
                     yield result
 
             def __iter__(self):
@@ -58,7 +59,7 @@ class base_db(object):
 
             def fetchone(self):
                 try:
-                    result = self.next()
+                    result = self.generator.next()
                 except StopIteration:
                     result = None
 
