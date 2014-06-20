@@ -4,9 +4,20 @@ $(document).ready(function() {
   var $grid = $('#sounds');
 
   $grid.on('done.shuffle', function() {
-      $(".sound").css("width", "100%");
+      $(".list-group-item").css("width", "100%");
     });
   change_sort('score');
+
+  $('#filter_box').on('keyup change', function() {
+  var val = this.value.toLowerCase();
+  $grid.shuffle('shuffle', function($el, shuffle) {
+    if ($el.hasClass('sticky')) {
+      return true;
+    }
+    var text = $.trim( $el.text() ).toLowerCase();
+    return text.indexOf(val) !== -1;
+  });
+});
 });
 function capitaliseFirstLetter(string)
 {
@@ -26,7 +37,15 @@ function downvote(name) {
   $('#downvote-sound').val(name);
   $('#downvote-form').submit();
 }
-$('#sort_by').popover()
+function filter(element) {
+        var value = $(element).val();
+
+        $('#sounds > .sound:not(:contains(' + value + '))').hide(); 
+        $('#sounds > .sound:contains(' + value + ')').show();
+        change_sort('plays');
+    }
+
+$('#sort_by').popover();
 {% endblock %}
 {% block content %}
       <div class="row">
@@ -36,6 +55,9 @@ $('#sort_by').popover()
           <a href="#" onclick=change_sort("plays")>Plays</a><br>
           <a href="#" onclick=change_sort("score")>Score</a>'>Score</a></div></div>
           <div class="list-group" id="sounds">
+            <div class="list-group-item sticky">
+              <input class="filter-box" type="text" id="filter_box" placeholder="Filter...">
+            </div>
           	{% for sound in sounds %}
             <a class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound)}}" data-cost="{{ sounds[sound][2] }}" data-name="{{ sound }}" data-score="{{ -1*sounds[sound][4] }}">
                 <div class="downvote-button" onclick="downvote('{{ sound }}'); return false;"><span class="glyphicon glyphicon-thumbs-down"></span></div>
