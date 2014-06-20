@@ -26,6 +26,8 @@ class Speakonomy:
 
     def get_free_play_timeout(self):
         expiration_timestamp = self.db.execute("SELECT free_play_timeout FROM bank_account").fetchone()['free_play_timeout']
+
+        print dt.datetime.fromtimestamp(expiration_timestamp)
         return dt.datetime.fromtimestamp(expiration_timestamp)
 
     def get_last_withdrawal_time(self, include_sbpm=False):

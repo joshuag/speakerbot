@@ -104,8 +104,6 @@ class SpeakerDB(base_db):
 
         self.execute("ALTER table sounds add column downvotes INTEGER NOT NULL DEFAULT 0")
 
-
-
     def record_wager(self, lucky_number, wager, outcome, chosen_number, win_multiplier, cheated_death):
         wager_time = dt.datetime.now().strftime("%s")
 

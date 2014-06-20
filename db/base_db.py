@@ -49,11 +49,13 @@ class base_db(object):
 
         class ResultSet(object):
             def __init__(self, cursor=None, row_factory=None):
+                print "initializing cursor"
                 self.cursor = cursor
                 self.raw_results = self.cursor.fetchall()
                 self.results = self.generate_results(row_factory)
                 self.generator = self.self_generator()
                 self.description = self.cursor.description
+                print self.description
 
             def generate_results(self, row_factory):
                 results = []
