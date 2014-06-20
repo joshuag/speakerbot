@@ -60,7 +60,7 @@ def home(image=None):
 
     return render_template(
             "home.html", 
-            sounds=sb.load_sounds(score_cutoff=-50000), 
+            sounds=sb.load_sounds(score_cutoff=-50), 
             image=image, 
             message=message,
             votes=votes,
