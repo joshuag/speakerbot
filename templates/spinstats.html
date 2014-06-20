@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+{% block pagescripts %}
+    <script src="/static/js/highcharts/js/highcharts.js"></script>
+    <script src="/static/js/highchartstable.js"></script>
+{% endblock %}
 {% block javascript %}
   $("table.highchart").highchartTable();
 {% endblock %}

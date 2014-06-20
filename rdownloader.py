@@ -1,8 +1,20 @@
 import sys, os, mimetypes, time
 
 import requests
-
 from pyquery import PyQuery as pq
+from PIL import Image
+ 
+ 
+def extract_static_frame(gif_path, out_folder):
+    frame = Image.open(gif_path)
+    try:
+        frame.seek(0)
+    except EOFError:
+        break;
+    
+    frame.save( '%s/%s-static.gif' % (out_folder, os.path.basename(gif_path), 'GIF'))
+        
+    return True
 
 def grab_links(url, limit=5, found_links=None, retries=0):
 
@@ -158,6 +170,8 @@ def download_image(url, path, file_type=None):
             for chunk in r.iter_content(1024):
 
                 f.write(chunk)
+
+    extract_static_frame(file_path, path)
 
 
 def prep_ground(username_or_url, limit):

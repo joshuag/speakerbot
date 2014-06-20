@@ -1,19 +1,41 @@
 {% extends "base.html" %}
+{% block pagescripts %}
+    <script src="/static/js/isotope.pkgd.min.js"></script>
+    <script src="/static/js/images.loaded.js"></script>
+{% endblock %}
 {% block javascript %}
   var $container = $('#images');
+  $("img.item").hover(
+      function(){
+        elem = $(this);
+        url = elem.attr("src")
+        if(url.indexOf("-static.gif") > 0){
+          elem.attr("src", url.replace("-static.gif",""));
+        }
+      }
+  );
+  $("img.item").mouseleave(
+      function(){
+        elem = $(this);
+        url = elem.attr("src")
+        if(url.indexOf("-static.gif") < 0){
+          elem.attr("src", url + "-static.gif");
+        }
+      }
+  );
   $container.imagesLoaded(function() {
     $container.isotope({ "itemSelector": ".item", "masonry": { "columnWidth": 100 }});
   });
 {% endblock %}
 {% block content %}
       <div class="page-header">
-        <h1></h1>
+        <h1>Hover to start the action</h1>
       </div>
       <div class="row">
         <div class="col-sm-12">
           <div id="images">
             {% for image in images %}
-                <a href="/home/{{ image["file_name"] }}"><img class="item" style="max-width:300px;" src="/static/r_gifs/{{ image["file_name"] }}" /></a>
+                <a href="/home/{{ image["file_name"] }}"><img class="item" style="max-width:300px;" src="http://speakerbot.local/static/r_gifs/{{ image["file_name"] }}-static.gif" /></a>
             {% endfor %}
           </div>
         </div>

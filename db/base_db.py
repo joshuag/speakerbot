@@ -55,6 +55,9 @@ class base_db(object):
 
             def generate_results(self, row_factory):
                 results = []
+                if len(self.raw_results) == 0:
+                    #Sometimes the query returns nothing? No idea why.
+                    self.raw_results = self.cursor.fetchall()
                 for row in self.raw_results:
                     results.append(row_factory(self.cursor, row))
 
@@ -74,7 +77,7 @@ class base_db(object):
                 try:
                     result = self.generator.next()
                 except StopIteration:
-                    print self.description
+                    print "didn't get results"
                     result = None
 
                 return result
