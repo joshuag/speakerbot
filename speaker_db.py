@@ -238,6 +238,19 @@ class SpeakerDB(base_db):
 
         self.execute("DELETE FROM person WHERE name = ?", [name,])
 
+    def check_nsfw(self, image):
+
+        nsfw = 0
+        try:
+            cursor = self.execute("select nsfw from images where file_name=?", [image])
+            result = cursor.next()
+            nsfw = int(result["nsfw"])
+        except:
+            pass
+
+        return nsfw == 1
+
+
     def check_appropriate(self, image):
         appropriate = True
         try:
@@ -253,7 +266,7 @@ class SpeakerDB(base_db):
             else:
                 votes = 0
 
-            if nsfw == 1 or votes < 0:
+            if nsfw == 1 or votes < -3:
                 appropriate = False
 
         except sqlite3.OperationalError:

@@ -133,6 +133,10 @@ def get_image(checker_func=lambda x: True, depth=5):
     if "?" in file_path:
         file_path = get_image()
 
+    if "-static.gif" in file_path:
+        #don't want the static images
+        file_path = get_image()
+
     if not checker_func(file_path) and depth != 0:
         print "trying to get passable image"
         depth -= 1

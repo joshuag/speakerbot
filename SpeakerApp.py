@@ -55,15 +55,17 @@ def home(image=None):
 
     votes = db.get_image_votes(image)
     comments = db.get_image_comments(image)
+    nsfw = db.check_nsfw(image)
 
     last_withdrawal_time, speakerbucks_per_minute = speakonomy.get_last_withdrawal_time(include_sbpm=True)
 
     return render_template(
             "home.html", 
             sounds=sb.load_sounds(score_cutoff=-50), 
-            image=image, 
+            image=image,
             message=message,
             votes=votes,
+            nsfw=nsfw,
             comments=comments,
             last_withdrawal_time=last_withdrawal_time,
             speakerbucks_per_minute=speakerbucks_per_minute,
@@ -155,9 +157,13 @@ def downvote_sound():
     return redirect(url_for("home", message="Thank you for downvoting, you little twerp."))
 
 @app.route('/image/<image>/nsfw')
-def flag_image(image):
+def toggle_nsfw(image):
     
-    db.execute("update images set nsfw=1 where file_name=?", [image])
+    nsfw_flag = 1
+    if db.check_nsfw(image):
+        nsfw_flag = 0
+
+    db.execute("update images set nsfw=? where file_name=?", [nsfw_flag, image])
 
     return redirect(url_for("home", image=image))
 

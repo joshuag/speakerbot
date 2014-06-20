@@ -21,6 +21,8 @@ class base_db(object):
             self.conn = sqlite3.connect(self.settings["db_path"], check_same_thread=False)
             self.conn.row_factory = self.row_factory
 
+        self.open_connection()
+
         self.version = self.get_version()
 
         self.migrations = self.get_migrations()
@@ -106,7 +108,7 @@ class base_db(object):
     
     def execute(self, statement, query_vars=None):
 
-        self.open_connection()
+        #self.open_connection()
 
         if not query_vars:
             query_vars = []
@@ -123,7 +125,7 @@ class base_db(object):
             result = self.conn.execute(statement, query_vars)
             self.conn.commit()
 
-        self.close_connection()
+        #self.close_connection()
         
         return result
 
