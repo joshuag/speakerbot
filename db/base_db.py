@@ -117,9 +117,11 @@ class base_db(object):
             query_vars = []
 
         if self.settings['driver'] == "mysql":
+            print "initiating query"
             cursor = self.conn.cursor()
             statement = self.fix_for_mysql(statement)
             cursor.execute(statement, tuple(query_vars))
+            print "creating cursor"
             result = self.rs_generator(cursor)
             cursor.close()
 
