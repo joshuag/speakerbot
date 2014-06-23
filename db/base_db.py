@@ -117,7 +117,9 @@ class base_db(object):
             print "initiating query"
             cursor = self.conn.cursor()
             statement = self.fix_for_mysql(statement)
+            cursor.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
             cursor.execute(statement, tuple(query_vars))
+            cursor.execute("SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;")
             print "creating cursor"
             self.conn.commit()
             result = self.rs_generator(cursor)
@@ -126,7 +128,6 @@ class base_db(object):
         if self.settings['driver'] == "sqlite3":
 
             result = self.conn.execute(statement, query_vars)
-            self.conn.commit()
 
         #self.close_connection()
         
