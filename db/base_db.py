@@ -33,6 +33,7 @@ class base_db(object):
         if self.settings['driver'] == "mysql":
             self.conn = MySQLdb.connect(host=self.settings['host'], user=self.settings['user'], passwd=self.settings['pass'], db=self.settings['database'])
             self.conn.cursor().execute("SET AUTOCOMMIT=1;")
+            self.conn.cursor().execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
 
     def close_connection(self):
         if self.settings['driver'] == "mysql":
@@ -117,9 +118,7 @@ class base_db(object):
             print "initiating query"
             cursor = self.conn.cursor()
             statement = self.fix_for_mysql(statement)
-            cursor.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
             cursor.execute(statement, tuple(query_vars))
-            cursor.execute("SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;")
             print "creating cursor"
             self.conn.commit()
             result = self.rs_generator(cursor)
