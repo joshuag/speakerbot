@@ -137,8 +137,6 @@ class base_db(object):
 
             if self.was_update_or_insert(statement):
                 self.conn.commit()
-                self.close_connection()
-                self.open_connection()
 
             result = self.rs_generator(cursor)
             cursor.close()
