@@ -106,6 +106,11 @@ class base_db(object):
         print statement
 
         return statement
+
+    def was_update_or_insert(self, statement):
+        if statement.lower().find("insert") == 0 or statement.lower().find("update") == 0:
+            return True
+        return False
     
     def execute(self, statement, query_vars=None):
 
@@ -120,7 +125,10 @@ class base_db(object):
             statement = self.fix_for_mysql(statement)
             cursor.execute(statement, tuple(query_vars))
             print "creating cursor"
-            self.conn.commit()
+
+            if self.was_update_or_insert(statement):
+                self.conn.commit()
+
             result = self.rs_generator(cursor)
             cursor.close()
 
