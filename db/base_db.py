@@ -55,7 +55,8 @@ class base_db(object):
                 self.results = self.generate_results(row_factory)
                 self.generator = self.self_generator()
                 self.description = self.cursor.description
-                print self.description
+                print "cursor description"
+                print self.description 
 
             def generate_results(self, row_factory):
                 results = []
