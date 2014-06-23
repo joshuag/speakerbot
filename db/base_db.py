@@ -21,6 +21,8 @@ class base_db(object):
             self.conn = sqlite3.connect(self.settings["db_path"], check_same_thread=False)
             self.conn.row_factory = self.row_factory
 
+        self.open_connection()
+
         self.version = self.get_version()
 
         self.migrations = self.get_migrations()
@@ -118,8 +120,6 @@ class base_db(object):
             query_vars = []
 
         if self.settings['driver'] == "mysql":
-            print "opening connection"
-            self.open_connection()
             print "initiating query"
             cursor = self.conn.cursor()
             statement = self.fix_for_mysql(statement)
@@ -128,11 +128,14 @@ class base_db(object):
 
             if self.was_update_or_insert(statement):
                 self.conn.commit()
+                print "closing connection"
+                self.close_connection()
+                print "re-opening connection"
+                self.open_connection()
 
             result = self.rs_generator(cursor)
             cursor.close()
-            print "closing connection"
-            self.close_connection()
+            
 
         if self.settings['driver'] == "sqlite3":
 
