@@ -119,6 +119,7 @@ class base_db(object):
             statement = self.fix_for_mysql(statement)
             cursor.execute(statement, tuple(query_vars))
             print "creating cursor"
+            self.conn.commit()
             result = self.rs_generator(cursor)
             cursor.close()
 
