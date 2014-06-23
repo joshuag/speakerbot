@@ -4,6 +4,10 @@ import re
 
 from collections import OrderedDict
 
+from instrument_decorators import time_instrument
+
+connection = None #global connection instance
+
 class base_db(object):
 
     def __init__(self, settings=None):
@@ -29,11 +33,15 @@ class base_db(object):
 
         self.run_migrations()
 
+    @time_instrument
     def open_connection(self):
+        global connection
         if self.settings['driver'] == "mysql":
-            self.conn = MySQLdb.connect(host=self.settings['host'], user=self.settings['user'], passwd=self.settings['pass'], db=self.settings['database'])
-            self.conn.cursor().execute("SET AUTOCOMMIT=1;")
-            self.conn.cursor().execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
+            if not connection:
+                connection = MySQLdb.connect(host=self.settings['host'], user=self.settings['user'], passwd=self.settings['pass'], db=self.settings['database'])
+                connection.cursor().execute("SET AUTOCOMMIT=1;")
+                connection.cursor().execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
+            self.conn = connection
 
     def close_connection(self):
         if self.settings['driver'] == "mysql":
@@ -50,15 +58,11 @@ class base_db(object):
 
         class ResultSet(object):
             def __init__(self, cursor=None, row_factory=None):
-                print "initializing cursor"
                 self.cursor = cursor
                 self.raw_results = self.cursor.fetchall()
                 self.results = self.generate_results(row_factory)
                 self.generator = self.self_generator()
                 self.description = self.cursor.description
-                print "cursor description"
-                print self.description 
-                print self.results
 
             def generate_results(self, row_factory):
                 results = []
@@ -103,8 +107,6 @@ class base_db(object):
         statement = re.sub(r"date\((\w+?), 'unixepoch'\)", r"from_unixtime(\1, '%%Y %%D %%M')", statement, flags=re.I)
         statement = statement.replace(" INT)", " SIGNED)")
 
-        print statement
-
         return statement
 
     def was_update_or_insert(self, statement):
@@ -112,6 +114,7 @@ class base_db(object):
             return True
         return False
     
+    @time_instrument
     def execute(self, statement, query_vars=None):
 
         #self.open_connection()
@@ -120,7 +123,6 @@ class base_db(object):
             query_vars = []
 
         if self.settings['driver'] == "mysql":
-            print "initiating query"
             cursor = self.conn.cursor()
             statement = self.fix_for_mysql(statement)
 
@@ -132,13 +134,10 @@ class base_db(object):
                 cursor = self.conn.cursor()
 
             cursor.execute(statement, tuple(query_vars))
-            print "creating cursor"
 
             if self.was_update_or_insert(statement):
                 self.conn.commit()
-                print "closing connection"
                 self.close_connection()
-                print "re-opening connection"
                 self.open_connection()
 
             result = self.rs_generator(cursor)
