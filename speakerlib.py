@@ -9,6 +9,8 @@ import datetime
 from speaker_db import SpeakerDB
 from speakerbot_plugins import *
 
+from instrument_decorators import time_instrument
+
 try:   
     from uwsgidecorators import lock
 
@@ -122,6 +124,7 @@ def play_speech(speech_func, text):
 def run_with_lock(func, *args, **kwargs):
     func(*args, **kwargs)
 
+@time_instrument
 def get_image(checker_func=lambda x: True, depth=5):
 
     path = getcwd() + "/static/r_gifs/"

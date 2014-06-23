@@ -26,20 +26,20 @@ class SpeakerDB(base_db):
         except sqlite3.OperationalError:
             pass
 
-        self.execute("insert into db_version (version) values(0)")
+        self.execute("INSERT INTO db_version (version) VALUES (0)")
 
     def _migrate_1(self):
 
-        self.execute("create table publish_queue (tweet_text text)")
+        self.execute("CREATE TABLE publish_queue (tweet_text text)")
 
     def _migrate_2(self):
 
-        self.execute("create table users (user_name text, password text)")
+        self.execute("CREATE TABLE users (user_name text, password text)")
 
     def _migrate_3(self):
 
-        self.execute("create table groups (group_id text, group_name text)")
-        self.execute("create table group_membership (group_id text, user_name text)")
+        self.execute("CREATE TABLE groups (group_id text, group_name text)")
+        self.execute("CREATE TABLE group_membership (group_id text, user_name text)")
 
         from hashlib import sha256
         group_name = "admin"
@@ -47,12 +47,12 @@ class SpeakerDB(base_db):
         sha.update(group_name)
         group_name_hexdigest = sha.hexdigest()
 
-        self.execute("insert into groups (group_id, group_name) VALUES (?, ?)", [group_name, group_name_hexdigest])
-        self.execute("insert into group_membership (group_id, user_name) VALUES (?, ?)", [group_name_hexdigest, "*"])
+        self.execute("INSERT INTO groups (group_id, group_name) VALUES (?, ?)", [group_name, group_name_hexdigest])
+        self.execute("INSERT INTO group_membership (group_id, user_name) VALUES (?, ?)", [group_name_hexdigest, "*"])
 
     def _migrate_4(self):
 
-        self.execute("delete from snippets")
+        self.execute("DELETE FROM snippets")
 
     def _migrate_5(self):
 
@@ -60,12 +60,12 @@ class SpeakerDB(base_db):
 
     def _migrate_6(self):
 
-        self.execute("delete from publish_queue")
-        self.execute("create table images (file_name text, votes integer, nsfw integer)")
+        self.execute("DELETE FROM publish_queue")
+        self.execute("CREATE TABLE images (file_name text, votes integer, nsfw integer)")
 
     def _migrate_7(self):
 
-        self.execute("create table image_comments (comment text, file_name text)")
+        self.execute("CREATE TABLE image_comments (comment text, file_name text)")
 
     def _migrate_8(self):
 
@@ -73,16 +73,16 @@ class SpeakerDB(base_db):
 
     def _migrate_9(self):
 
-        self.execute("create table bank_account (balance INTEGER)")
-        self.execute("insert into bank_account (balance) values(0)")
+        self.execute("CREATE TABLE bank_account (balance INTEGER)")
+        self.execute("INSERT INTO bank_account (balance) VALUES(0)")
 
     def _migrate_10(self):
 
-        self.execute("ALTER table bank_account add column free_play_timeout INTEGER NOT NULL DEFAULT 0")
+        self.execute("ALTER TABLE bank_account add column free_play_timeout INTEGER NOT NULL DEFAULT 0")
 
     def _migrate_11(self):
 
-        self.execute("ALTER table bank_account add column last_withdrawal_time INTEGER NOT NULL DEFAULT 0")
+        self.execute("ALTER TABLE bank_account add column last_withdrawal_time INTEGER NOT NULL DEFAULT 0")
 
     def _migrate_12(self):
 
@@ -98,11 +98,20 @@ class SpeakerDB(base_db):
         self.execute('CREATE TABLE wager_history (wager INTEGER NOT NULL, outcome INTEGER NOT NULL, wager_time INTEGER NOT NULL, chosen_number INTEGER NOT NULL, win_multiplier INTEGER NOT NULL, cheated_death INTEGER NOT NULL);')
 
     def _migrate_15(self):
-        self.execute("ALTER table wager_history ADD COLUMN lucky_number INTEGER NOT NULL DEFAULT 0")
+        self.execute("ALTER TABLE wager_history ADD COLUMN lucky_number INTEGER NOT NULL DEFAULT 0")
 
     def _migrate_16(self):
 
-        self.execute("ALTER table sounds add column downvotes INTEGER NOT NULL DEFAULT 0")
+        self.execute("ALTER TABLE sounds add column downvotes INTEGER NOT NULL DEFAULT 0")
+
+    def _migrate_17(self):
+
+        self.execute("ALTER TABLE images ADD INDEX (file_name(20))")
+
+    def _migrate_18(self):
+        self.execute("ALTER TABLE image_comments ADD INDEX (file_name(20))")
+        self.execute("ALTER TABLE sounds ADD INDEX (name(50)) USING BTREE")
+        self.execute("ALTER TABLE sounds ADD INDEX (votes) USING BTREE")
 
     def record_wager(self, lucky_number, wager, outcome, chosen_number, win_multiplier, cheated_death):
         wager_time = dt.datetime.now().strftime("%s")
