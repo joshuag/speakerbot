@@ -123,6 +123,14 @@ class base_db(object):
             print "initiating query"
             cursor = self.conn.cursor()
             statement = self.fix_for_mysql(statement)
+
+            try:
+                cursor.execute("select 1")
+            except:
+                self.close_connection()
+                self.open_connection()
+                cursor = self.conn.cursor()
+
             cursor.execute(statement, tuple(query_vars))
             print "creating cursor"
 
