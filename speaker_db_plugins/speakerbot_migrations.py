@@ -1,5 +1,4 @@
 from hashlib import sha256
-import datetime as dt
 
 def _migrate_0(self):
 
@@ -94,7 +93,6 @@ def _migrate_18(self):
     self.execute("ALTER TABLE sounds ADD INDEX (name(50)) USING BTREE")
     self.execute("ALTER TABLE sounds ADD INDEX (votes) USING BTREE")
 
-def record_wager(self, lucky_number, wager, outcome, chosen_number, win_multiplier, cheated_death):
-    wager_time = dt.datetime.now().strftime("%s")
-
-    self.execute("INSERT INTO wager_history (lucky_number, wager, outcome, wager_time, chosen_number, win_multiplier, cheated_death) VALUES (?, ?, ?, ?, ?, ?, ?)", [lucky_number, wager, outcome, wager_time, chosen_number, win_multiplier, cheated_death])
+def _migrate_19(self):
+    self.execute("ALTER TABLE images ADD INDEX (votes) USING BTREE")
+    self.execute("ALTER TABLE images ADD INDEX (nsfw) USING BTREE")

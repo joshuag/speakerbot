@@ -93,26 +93,3 @@ def play_speech(speech_func, text):
 @lock
 def run_with_lock(func, *args, **kwargs):
     func(*args, **kwargs)
-
-@time_instrument
-def get_image(checker_func=lambda x: True, depth=5):
-
-    path = getcwd() + "/static/r_gifs/"
-    
-    files = [ f for f in listdir(path) if isfile(join(path,f)) ]
-
-    file_path = choice(files)
-
-    if "?" in file_path:
-        file_path = get_image()
-
-    if "-static.gif" in file_path:
-        #don't want the static images
-        file_path = get_image()
-
-    if not checker_func(file_path) and depth != 0:
-        print "trying to get passable image"
-        depth -= 1
-        file_path = get_image(checker_func, depth)
-
-    return file_path

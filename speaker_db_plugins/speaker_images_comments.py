@@ -1,3 +1,12 @@
+from instrumentation import time_instrument
+from random import randrange
+import datetime as dt
+
+def record_wager(self, lucky_number, wager, outcome, chosen_number, win_multiplier, cheated_death):
+    wager_time = dt.datetime.now().strftime("%s")
+
+    self.execute("INSERT INTO wager_history (lucky_number, wager, outcome, wager_time, chosen_number, win_multiplier, cheated_death) VALUES (?, ?, ?, ?, ?, ?, ?)", [lucky_number, wager, outcome, wager_time, chosen_number, win_multiplier, cheated_death])
+
 def add_comment(self, image, comment):
 
     self.execute("insert into image_comments (file_name, comment) values (?, ?)", [image, comment])
@@ -79,7 +88,7 @@ def add_image(self, file_name):
         image = None
     
     if not image:
-        self.execute("INSERT INTO images (file_name) values (?)", [file_name])
+        self.execute("INSERT INTO images (file_name, votes, nsfw) values (?, 0, 0)", [file_name])
 
 def check_appropriate(self, image):
     appropriate = True
@@ -105,3 +114,12 @@ def check_appropriate(self, image):
         appropriate = True
 
     return appropriate
+
+@time_instrument
+def get_random_image(self):
+
+    image_count = self.execute("SELECT count(*) as image_count FROM images where votes > -5 and nsfw <> 1").next()["image_count"]
+
+    image_limit = randrange(0, image_count)
+
+    return self.execute("SELECT file_name FROM images where votes > -5 and nsfw <> 1 LIMIT ?, 1", [image_limit]).next()["file_name"]

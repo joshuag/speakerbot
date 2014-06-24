@@ -51,7 +51,7 @@ def home(image=None):
     message = request.args.get('message', None)
 
     if not image:
-        image = get_image(db.check_appropriate)
+        image = db.get_random_image()
 
     votes = db.get_image_votes(image)
     comments = db.get_image_comments(image)
