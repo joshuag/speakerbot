@@ -1,9 +1,10 @@
 import os, sys
 from os.path import isfile, join
+sys.path.append("..")
 
 from PIL import Image
 
-from ..speaker_db import SpeakerDB
+from speaker_db import SpeakerDB
 
 db = SpeakerDB()
 
