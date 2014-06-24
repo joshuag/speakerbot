@@ -71,8 +71,12 @@ def check_nsfw(self, image):
         return nsfw == 1
 
 def add_image(self, file_name):
-    
-    image = self.execute("select file_name from images where file_name=?", [file_name]).next()
+    image = None
+
+    try:
+        image = self.execute("select file_name from images where file_name=?", [file_name]).next()
+    except StopIteration:
+        image = None
     
     if not image:
         self.execute("INSERT INTO images (file_name) values (?)", [file_name])

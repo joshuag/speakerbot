@@ -19,6 +19,7 @@ class base_db(object):
                 'db_path':db_path
             }
 
+        print settings
         self.settings = settings
 
         if self.settings['driver'] == "sqlite3":
