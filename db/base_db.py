@@ -1,10 +1,11 @@
 import sqlite3
 import MySQLdb
+import _mysql_exceptions
 import re
 
 from collections import OrderedDict
 
-from instrument_decorators import time_instrument
+from instrumentation import time_instrument
 
 connection = None #global connection instance
 
@@ -176,7 +177,7 @@ class base_db(object):
         try:
             version_cursor = self.execute("select version from db_version limit 1")
             result = version_cursor.next()
-        except sqlite3.OperationalError:
+        except (sqlite3.OperationalError, _mysql_exceptions.ProgrammingError):
             return 0
 
         except StopIteration:

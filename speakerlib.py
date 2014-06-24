@@ -9,7 +9,7 @@ import datetime
 from speaker_db import SpeakerDB
 from speakerbot_plugins import *
 
-from instrument_decorators import time_instrument
+from instrumentation import time_instrument
 
 try:   
     from uwsgidecorators import lock
@@ -24,20 +24,13 @@ def get_mp3_seconds(path):
     mins, secs = re.search(r'\[(\d+):(\d+)\] Decoding', out).groups()
     return int(mins) * 60 + int(secs)
 
-def create_deferred(function, *args, **kwargs):
-
-    def _exec():
-        function(*args, **kwargs)
-
-    return _exec
-
 @lock
 def parse_and_route_speech(speakerbot, text):
     
     actions = {
-        'random':random_utterance,
+        'random':random,
         'dada':dada,
-        'slinging':slinging_burgers,
+        'slinging':slinging,
         'weather':weather,
         'lunch': lunch,
         'datefact':datefact,
@@ -47,10 +40,10 @@ def parse_and_route_speech(speakerbot, text):
         'jon':jon,
         'josh':josh,
         'dave':dave,
-        'spin':price_is_right,
-        'suspense':random_drumroll,
+        'spin':spin,
+        'suspense':suspense,
         'urban': urban,
-        'comment': random_comment,
+        'comment': comment,
         'wiki':wiki
     }
     
@@ -92,29 +85,6 @@ def minimize_string(s):
     if isinstance(s, (str, unicode)):
         return ''.join(c.lower() for c in s if not c.isspace())
     return s
-
-def queue_speech_for_tweet(*args, **kwargs):
-
-    text = kwargs["speech_text"]
-
-    if text[0] == "!":
-        return
-
-    if not text:
-        return
-
-    db = SpeakerDB()
-    text = text[:139]
-    db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
-
-def queue_sound_for_tweet(name, event_result):
-
-    db = SpeakerDB()
-    matched_sound = db.execute("SELECT votes FROM sounds where name=?", [name]).fetchone()
-
-    if matched_sound:
-        text = "I just played %s for the %s time" % (name, niceify_number(matched_sound["votes"]))
-        db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
 
 def play_speech(speech_func, text):
         

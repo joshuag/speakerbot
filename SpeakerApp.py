@@ -26,8 +26,8 @@ def stub_mangler(*args, **kwargs):
     return args, kwargs
 
 
-sb.attach_listener("say_classy", queue_speech_for_tweet)
-sb.attach_listener("play", queue_sound_for_tweet)
+sb.attach_listener("say_classy", EventRecorder.queue_speech_for_tweet)
+sb.attach_listener("play", EventRecorder.queue_sound_for_tweet)
 sb.attach_listener("play", speakonomy.sell_sound)
 sb.attach_listener("play", evr.record_sound_event)
 sb.attach_interrogator("play", stub_interrogator)

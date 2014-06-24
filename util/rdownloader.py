@@ -3,6 +3,7 @@ import sys, os, mimetypes, time
 import requests
 from pyquery import PyQuery as pq
 from PIL import Image
+from speaker_db import SpeakerDB
  
  
 def extract_static_frame(gif_path, out_folder):

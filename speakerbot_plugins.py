@@ -32,7 +32,7 @@ def get_mashape_api(url):
 
     return requests.get(url, headers=headers)
 
-def random_drumroll(sb):
+def suspense(sb):
 
     speakonomy = Speakonomy()
     if speakonomy.is_active():
@@ -45,7 +45,7 @@ def random_drumroll(sb):
 
     sb.play(sound)
 
-def price_is_right(sb, wager):
+def spin(sb, wager):
 
     lost_it_all = False
     win_multiplier = 20
@@ -235,7 +235,7 @@ def weather(sb):
 
     return weather_text
 
-def slinging_burgers(sb):
+def slinging(sb):
 
     verb = choice(term_map["verb"])
     
@@ -276,8 +276,8 @@ def wiki(sb):
 
     return text
 
-def random_comment(sb):
+def comment(sb):
     return db.get_random_comment()
 
-def random_utterance(sb, seed=None):
+def random(sb, seed=None):
     return db.get_random_utterance(seed=seed)

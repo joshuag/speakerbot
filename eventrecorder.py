@@ -28,3 +28,28 @@ class EventRecorder(object):
             votes = matched_sound["votes"] + 1
 
             self.db.execute("UPDATE sounds set votes=? where name=?", [votes, sound_name])
+
+    @staticmethod
+    def queue_speech_for_tweet(*args, **kwargs):
+
+        text = kwargs["speech_text"]
+
+        if text[0] == "!":
+            return
+
+        if not text:
+            return
+
+        db = SpeakerDB()
+        text = text[:139]
+        db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
+
+    @staticmethod
+    def queue_sound_for_tweet(name, event_result):
+
+        db = SpeakerDB()
+        matched_sound = db.execute("SELECT votes FROM sounds where name=?", [name]).fetchone()
+
+        if matched_sound:
+            text = "I just played %s for the %s time" % (name, niceify_number(matched_sound["votes"]))
+            db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
