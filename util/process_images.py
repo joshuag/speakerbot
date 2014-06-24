@@ -26,7 +26,7 @@ def generate_static_frames(path):
         for file in files:
                 try:
                         db.add_image(file)
-                        #extract_static_frame(path + os.sep + file, path)
+                        extract_static_frame(path + os.sep + file, path)
                 except:
                         print "sudo rm %s" % (path + os.sep + file)
 
