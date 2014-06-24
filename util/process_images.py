@@ -3,6 +3,9 @@ from os.path import isfile, join
 
 from PIL import Image
 
+from ..speaker_db import SpeakerDB
+
+db = SpeakerDB()
 
 def extract_static_frame(gif_path, out_folder):
     frame = Image.open(gif_path)
@@ -21,7 +24,7 @@ def generate_static_frames(path):
 
         for file in files:
                 try:
-                        print file
+                        db.add_image(file)
                         #extract_static_frame(path + os.sep + file, path)
                 except:
                         print "sudo rm %s" % (path + os.sep + file)

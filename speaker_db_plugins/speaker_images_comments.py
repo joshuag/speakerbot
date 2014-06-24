@@ -70,6 +70,13 @@ def check_nsfw(self, image):
 
         return nsfw == 1
 
+def add_image(self, file_name):
+    
+    image = self.execute("select file_name from images where file_name=?", [file_name]).next()
+    
+    if not image:
+        self.execute("INSERT INTO images (file_name) values (?)", [file_name])
+
 def check_appropriate(self, image):
     appropriate = True
     try:
