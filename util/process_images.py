@@ -17,11 +17,12 @@ def extract_static_frame(gif_path, out_folder):
 
 def generate_static_frames(path):
 
-        files = [ f for f in os.listdir(path) if isfile(join(path,f)) ]
+        files = [ f for f in os.listdir(path) if isfile(join(path,f)) and "-static.gif" not in f]
 
         for file in files:
                 try:
-                        extract_static_frame(path + os.sep + file, path)
+                        print file
+                        #extract_static_frame(path + os.sep + file, path)
                 except:
                         print "sudo rm %s" % (path + os.sep + file)
 
