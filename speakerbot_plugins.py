@@ -9,20 +9,15 @@ import requests
 import re
 
 from config import config
-from Speakerbot import SoundEffect
+from sounds import SoundEffect
 from speakonomy import Speakonomy
-from words import parse_and_fill_mad_lib, term_map
+from util.words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
 from pyquery import PyQuery as pq
 
-db = SpeakerDB()
+from dynamic_class import plugin
 
-#http://stackoverflow.com/a/250373
-def smart_truncate(content, length=100, suffix='...'):
-    if len(content) <= length:
-        return content
-    else:
-        return ' '.join(content[:length+1].split(' ')[0:-1]) + suffix
+db = SpeakerDB()
 
 def get_mashape_api(url):
     api_key = config["mashape_api_key"]
@@ -32,6 +27,7 @@ def get_mashape_api(url):
 
     return requests.get(url, headers=headers)
 
+@plugin
 def suspense(sb):
 
     speakonomy = Speakonomy()
@@ -45,6 +41,7 @@ def suspense(sb):
 
     sb.play(sound)
 
+@plugin
 def spin(sb, wager):
 
     lost_it_all = False
@@ -141,7 +138,7 @@ def spin(sb, wager):
 
     return outstr
 
-
+@plugin
 def jon(sb):
     results = db.execute("SELECT * FROM snippets where votes > 1 order by votes desc limit 10")
 
@@ -153,17 +150,21 @@ def jon(sb):
     else:
         return "I haven't heard enough funny things to commit a jon"
 
+@plugin
 def dada(sb):
     return parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")
 
+@plugin
 def ross(sb):
 
     return "Oh shit! I gotta get out of here!"
 
+@plugin
 def dave(sb):
     options = ['shut the fuck up', 'who gives a shit']
     return choice(options)
 
+@plugin
 def josh(sb):
     exclamations = ['Shit on a stick', 'Oh nuts on nuts.', 'Heavens to betsy','Jiminy Crickets','Hells bells','Holy hell','Son of a gun','Balls on a hat','Poop in a bucket','God damnit', 'Goodness gracious','Sweet Moses', 'Geez um crow', 'Cheese and Rice',]
     gripe_recipient = ['Django']
@@ -180,6 +181,7 @@ def josh(sb):
     )
     return phrase
 
+@plugin
 def yoda(sb, sentence):
 
     url = "https://yoda.p.mashape.com/yoda?sentence=%s" % sentence
@@ -188,10 +190,10 @@ def yoda(sb, sentence):
     
     return u"" + r.text
 
+@plugin
 def horoscope(sb, sign):
     
     url = "http://widgets.fabulously40.com/horoscope.json?sign=%s" % sign
-
     r = requests.get(url)
 
     horoscope = json.loads(r.text)["horoscope"]["horoscope"]
@@ -201,6 +203,7 @@ def horoscope(sb, sign):
 
     return text
 
+@plugin
 def datefact(sb):
 
     day = datetime.datetime.today().day
@@ -212,7 +215,7 @@ def datefact(sb):
 
     return u"" + r.text
 
-
+@plugin
 def lunch(sb):
     #TODO: Make this database driven
     places = [
@@ -225,6 +228,7 @@ def lunch(sb):
 
     return "I think you ought to go to %s for lunch" % place
 
+@plugin
 def weather(sb):
 
     r = requests.get("https://api.forecast.io/forecast/38a9c91bca816b2e960c14c1ecdcf8c6/41.4311,-81.3886")
@@ -235,19 +239,16 @@ def weather(sb):
 
     return weather_text
 
+@plugin
 def slinging(sb):
 
     verb = choice(term_map["verb"])
     
     return "Anyone who describes !verb ing as " + verb + " ing !noun should be " + verb + " ing !noun"
 
-def run_filters(text):
-    
-    text = parse_and_fill_mad_lib(text)
-
-    return text
-
+@plugin
 def define(sb, text):
+
     page = requests.get("http://www.dictionary.com/browse/%s" % text)
 
     page = pq(page.text)
@@ -262,10 +263,12 @@ def define(sb, text):
     else:
         return "The definition for %s: %s" % (text, defn)
 
+@plugin
 def urban(sb, text):
 
     return define(sb, text)
 
+@plugin
 def wiki(sb):
 
     page = requests.get("http://en.wikipedia.org/wiki/Special:Random")
@@ -276,8 +279,10 @@ def wiki(sb):
 
     return text
 
+@plugin
 def comment(sb):
     return db.get_random_comment()
 
+@plugin
 def random(sb, seed=None):
     return db.get_random_utterance(seed=seed)

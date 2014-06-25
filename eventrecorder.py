@@ -1,4 +1,5 @@
 from hashlib import sha256
+from speakerlib import niceify_number
 
 class EventRecorder(object):
 
@@ -6,7 +7,10 @@ class EventRecorder(object):
 
         self.db = db
 
-    def record_utterance(self, speech_text):
+    def record_utterance(self, speech_text, record_utterance, event_result):
+
+        if not record_utterance:
+            return
 
         sha = sha256()
         sha.update(speech_text)
@@ -29,27 +33,21 @@ class EventRecorder(object):
 
             self.db.execute("UPDATE sounds set votes=? where name=?", [votes, sound_name])
 
-    @staticmethod
-    def queue_speech_for_tweet(*args, **kwargs):
+    def queue_speech_for_tweet(self, speech_text, record_utterance, event_result):
 
-        text = kwargs["speech_text"]
+        if not record_utterance:
+            return False
 
-        if text[0] == "!":
+        if speech_text[0] == "!":
             return
 
-        if not text:
-            return
+        speech_text = speech_text[:139]
+        self.db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [speech_text])
 
-        db = SpeakerDB()
-        text = text[:139]
-        db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
+    def queue_sound_for_tweet(self, name, event_result):
 
-    @staticmethod
-    def queue_sound_for_tweet(name, event_result):
-
-        db = SpeakerDB()
-        matched_sound = db.execute("SELECT votes FROM sounds where name=?", [name]).fetchone()
+        matched_sound = self.db.execute("SELECT votes FROM sounds where name=?", [name]).fetchone()
 
         if matched_sound:
             text = "I just played %s for the %s time" % (name, niceify_number(matched_sound["votes"]))
-            db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
+            self.db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
