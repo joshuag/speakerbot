@@ -9,13 +9,17 @@ from Speakerbot import Speakerbot
 from speaker_db import SpeakerDB
 from speakerlib import *
 from speakonomy import Speakonomy
+from util.words import parse_and_fill_mad_lib
 
 print "loading speakerbot"
 sb = Speakerbot()
+
 print "loading speakonomy"
 speakonomy = Speakonomy(sb)
+
 print "loading speakerdb"
 db = SpeakerDB()
+
 print "initializing event recorder"
 evr = EventRecorder(db=db)
 
@@ -26,8 +30,9 @@ def stub_mangler(*args, **kwargs):
     return args, kwargs
 
 
-sb.attach_listener("say_classy", EventRecorder.queue_speech_for_tweet)
-sb.attach_listener("play", EventRecorder.queue_sound_for_tweet)
+sb.attach_listener("say", evr.queue_speech_for_tweet)
+sb.attach_listener("say", evr.record_utterance)
+sb.attach_listener("play", evr.queue_sound_for_tweet)
 sb.attach_listener("play", speakonomy.sell_sound)
 sb.attach_listener("play", evr.record_sound_event)
 sb.attach_interrogator("play", stub_interrogator)
@@ -234,15 +239,15 @@ def play_sound(sound_name):
     if sound_name == "rebecca-black" and datetime.datetime.today().weekday() != 4:
         sound_name = choice(sb.sounds.keys())
 
-
     #Economy - is it affordable to play?
     if not speakonomy.check_affordability(sound_name):
         return redirect(url_for("home", message="Ain't nobody got speakerbucks for that!"))
     
-    run_with_lock(sb.play, sound_name)
+    sb.play(sound_name)
+
     if sound_name == "rebecca-black":
         speakonomy.set_free_play_timeout(minutes=5)
-        parse_and_route_speech(sb, "It's Friday. Friday. So all sounds are free for the next 5 minutes.")
+        sb.say("It's Friday. Friday. So all sounds are free for the next 5 minutes.")
     return redirect(url_for("home"))
 
 @app.route('/say/')
@@ -252,13 +257,15 @@ def say(text=None):
     if not text:
         text = request.args.get('speech-text', None)
 
-    if request.args.get('record_utterance', "false") == "true" and text[0] != "!":
-        evr.record_utterance(text)
-
     if not text or len(text) > 100:
         return redirect(url_for("home"))
 
-    parse_and_route_speech(sb, text)
+    if request.args.get('record_utterance', "false") == "true":
+        record_utterance = True
+    else:
+        record_utterance = False
+
+    sb.say(text, record_utterance=record_utterance)
 
     redir = request.referrer or url_for("home")
     return redirect(redir)  

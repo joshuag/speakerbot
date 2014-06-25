@@ -3,116 +3,28 @@ import math
 import subprocess
 
 from collections import OrderedDict
-from urllib import quote_plus
 
 from listenable import listenable, event
 from speaker_db import SpeakerDB
+from dynamic_class import attach_methods, PluggableObject, MissingPluginException
+from sounds import SoundEffect
+from util.speech_providers import GoogleTextToSpeech
+from util.words import parse_and_fill_mad_lib
 
-def split_text(text, length):
+try:   
+    from uwsgidecorators import lock
 
-    split_list = [".", "!", ";", " and "]
-
-    for split in split_list:
-
-        phrases = split_and_keep(text, split)
-
-        if len(phrases) == 1 and len(phrases[0]) > length:
-            continue
-        else:
-            return phrases
-
-    if len(phrases) == 1 and len(phrases[0]) > length:
-
-        split_phrases = split_and_keep(phrases[0], " ")
-
-        out_phrase = ""
-        phrases = []
-
-        for phrase in split_phrases:
-
-            if len(out_phrase) + len(phrase) < length:
-                out_phrase = out_phrase + phrase
-            else:
-                phrases.append(out_phrase)
-                out_phrase = phrase
-
-        phrases.append(out_phrase)
-
-    return phrases
-
-def split_and_keep(text, delimiter):
-
-    split_items = text.split(delimiter)
-
-    split_list = [item + delimiter for item in split_items if item != ""]
-
-    split_list[-1] = split_list[-1].replace(delimiter, "")
-
-    return split_list
-    
-
-class TextToSpeech(object):
-
-    def __init__(self, speak_path="espeak", wpm=150):
-
-        self.speak_path = speak_path
-        self.wpm_string = "-s %s" % wpm 
-
-    def say(self, text): 
-
-        subprocess.call([self.speak_path, text, self.wpm_string])
-
-    def say_api(self, text, url_string):
-
-        if len(text) > 100:
-            phrases = split_text(text, 100)
-            for phrase in phrases:
-                self.say_api(phrase, url_string)
-
-            return
-
-        text = quote_plus(text.encode("utf-8"))
-
-        filename = "speech/%s.mp3" % text
-
-        if not os.path.isfile(filename):
-            f = open(filename, "w")
-            subprocess.call(
-                    ['curl','-A Mozilla', url_string % (text)], 
-                    stdout=f)
-
-        s = SoundEffect()
-        s.play_sound(filename)
-
-    def say_classy(self, text):
-        
-        url_string = u"http://translate.google.com/translate_tts?tl=en_gb&ie=UTF-8&q=%s"
-        self.say_api(text, url_string)
-
-
-class SoundEffect(object):
-
-    def __init__(self, sound_player="mpg321", sound_dir="sounds"):
-        self.sound_player = sound_player
-        self.path = "%s/" % sound_dir
-
-    def play(self, sound_file):
-
-        file_path = self.path + sound_file
-
-        self.play_sound(file_path)
-
-    def play_sound(self, file_path):
-
-        subprocess.call([self.sound_player, file_path])
+except ImportError:
+    def lock(f):
+        return f
 
 @listenable
-class Speakerbot(object):
+@attach_methods("speakerbot_plugins")
+class Speakerbot(PluggableObject):
 
-    def __init__(self):
+    def __init__(self, db=SpeakerDB, speech_provider=GoogleTextToSpeech):
 
-        self.db = SpeakerDB()
-        self.snippets = OrderedDict()
+        self.db = db()
         self.sounds = OrderedDict()
 
         self.listeners = {}
@@ -120,10 +32,17 @@ class Speakerbot(object):
         self.load_sounds()
 
         self.se = SoundEffect()
-        self.tts = TextToSpeech()
+        self.tts = speech_provider()
+
+    def run_filters(self, text):
+    
+        text = parse_and_fill_mad_lib(text)
+
+        return text
 
     def get_sound_score(self, sound):
         return int(sound["votes"]-sound["downvotes"]*math.pi*3)
+
 
     def load_sounds(self, score_cutoff=None):
 
@@ -138,26 +57,46 @@ class Speakerbot(object):
 
         return self.sounds
 
+    @lock
     @event
     def play(self, name):
-
         self.se.play(self.sounds[name][0])
 
-
-    def say(self, name="", speech_text=""):
-
-        if name:
-            speech_text = self.snippets[name]
-
+    def speech_provider_say(self, speech_text):
         self.tts.say(speech_text)
 
+    @lock
     @event
-    def say_classy(self, name="", speech_text=""):
+    def say(self, speech_text="", record_utterance=False):
 
-        if name:    
-            speech_text = self.snippets[name]
+        token = None
+        argument = None
 
-        self.tts.say_classy(speech_text)
+        if speech_text[0] == "!":
+            space_pos = speech_text.find(" ")
+            if space_pos > 0:
+                token = speech_text[1:space_pos]
+                argument = speech_text[space_pos:]
+            else:
+                token = speech_text[1:]
+
+            try:
+                if argument:
+                    speech_text = self.dispatch_plugin(token, argument.strip())
+                else:
+                    speech_text = self.dispatch_plugin(token)
+
+            except TypeError:
+                
+                speech_text = "I need an argument for that function, dummy."
+
+            except MissingPluginException:
+
+                speech_text = "I don't have a plugin called %s" % token
+
+        if speech_text:
+            self.speech_provider_say(self.run_filters(speech_text))
+
 
     def add_sound_to_db(self, name, path, base_cost=0):
 
