@@ -111,11 +111,6 @@ class base_db(object):
         statement = statement.replace(" INT)", " SIGNED)")
 
         return statement
-
-    def was_update_or_insert(self, statement):
-        if statement.lower().find("insert") == 0 or statement.lower().find("update") == 0:
-            return True
-        return False
     
     @time_instrument
     def execute(self, statement, query_vars=None):
@@ -132,15 +127,12 @@ class base_db(object):
             try:
                 cursor.execute("select 1")
             except:
-                print "failed up check"
                 self.close_connection()
                 self.open_connection()
                 cursor = self.conn.cursor()
 
             cursor.execute(statement, tuple(query_vars))
-
-            if self.was_update_or_insert(statement):
-                self.conn.commit()
+            self.conn.commit()
 
 
             print statement
