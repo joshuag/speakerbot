@@ -57,8 +57,8 @@ class Speakerbot(PluggableObject):
 
         return self.sounds
 
-    @event
     @lock
+    @event
     def play(self, name):
         self.se.play(self.sounds[name][0])
 
@@ -66,8 +66,8 @@ class Speakerbot(PluggableObject):
     def speech_provider_say(self, speech_text, record_utterance):
         self.tts.say(speech_text)
 
-    @event
     @lock
+    @event
     def say(self, speech_text="", record_utterance=False):
 
         token = None
