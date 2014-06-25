@@ -62,7 +62,8 @@ class Speakerbot(PluggableObject):
     def play(self, name):
         self.se.play(self.sounds[name][0])
 
-    def speech_provider_say(self, speech_text):
+    @event #we may want to record the output of the filtered speech
+    def speech_provider_say(self, speech_text, record_utterance):
         self.tts.say(speech_text)
 
     @lock
@@ -95,7 +96,7 @@ class Speakerbot(PluggableObject):
                 speech_text = "I don't have a plugin called %s" % token
 
         if speech_text:
-            self.speech_provider_say(self.run_filters(speech_text))
+            self.speech_provider_say(self.run_filters(speech_text), record_utterance)
 
 
     def add_sound_to_db(self, name, path, base_cost=0):
