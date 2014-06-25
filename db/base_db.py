@@ -3,6 +3,8 @@ import MySQLdb
 import _mysql_exceptions
 import re
 
+from pprint import PrettyPrinter as pp
+
 from collections import OrderedDict
 
 from instrumentation import time_instrument
@@ -140,6 +142,10 @@ class base_db(object):
 
             if self.was_update_or_insert(statement):
                 self.conn.commit()
+
+
+            print statement
+            pp.pprint(cursor)
 
             result = self.rs_generator(cursor)
             cursor.close()
