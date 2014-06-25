@@ -22,7 +22,7 @@ try:
                 return f(*args, **kwargs)
             finally:
                 uwsgi.unlock()
-        return lock
+        return locked
 
 except ImportError:
     def lock(f):
