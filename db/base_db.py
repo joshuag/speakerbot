@@ -3,8 +3,6 @@ import MySQLdb
 import _mysql_exceptions
 import re
 
-from pprint import PrettyPrinter as pp
-
 from collections import OrderedDict
 
 from instrumentation import time_instrument
@@ -145,7 +143,7 @@ class base_db(object):
 
 
             print statement
-            pp.pprint(cursor)
+            print cursor.info()
 
             result = self.rs_generator(cursor)
             cursor.close()
