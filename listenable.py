@@ -2,7 +2,6 @@ class NotEventException(Exception):
     pass
 
 def event(func):
-
     func.is_event = True
     return func
 
@@ -44,9 +43,10 @@ def listenable(klass):
 
     def _attach(self, event, func, handler_collection_name):
         
-        if not hasattr(getattr(self, event), "is_event"):
+        #TEMPORARILY REMOVED WHILE I FIGURE OUT HOW TO MAKE MULTIPLE DECORATORS HAPPY
+        #if not hasattr(getattr(self, event), "is_event"):
 
-            raise NotEventException("This method hasn't been decorated as an event listener")
+        #    raise NotEventException("This method hasn't been decorated as an event listener")
 
         handler_collection = getattr(self, handler_collection_name)
 
