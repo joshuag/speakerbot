@@ -47,7 +47,8 @@ class base_db(object):
 
     def close_connection(self):
         if self.settings['driver'] == "mysql":
-            self.conn.close()
+            if self.conn.open:
+                self.conn.close()
 
     def row_factory(self, cursor, row):
 
