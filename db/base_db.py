@@ -143,7 +143,7 @@ class base_db(object):
 
 
             print statement
-            print cursor.info()
+            print cursor.description
 
             result = self.rs_generator(cursor)
             cursor.close()
