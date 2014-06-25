@@ -12,7 +12,17 @@ from util.speech_providers import GoogleTextToSpeech
 from util.words import parse_and_fill_mad_lib
 
 try:   
-    from uwsgidecorators import lock
+    import uwsgi
+    def lock(f):
+        def locked(*args, **kwargs):
+            if uwsgi.i_am_the_spooler():
+                return
+            uwsgi.lock()
+            try:
+                return f(*args, **kwargs)
+            finally:
+                uwsgi.unlock()
+        return lock
 
 except ImportError:
     def lock(f):
