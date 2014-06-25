@@ -11,3 +11,8 @@ def minimize_string(s):
     if isinstance(s, (str, unicode)):
         return ''.join(c.lower() for c in s if not c.isspace())
     return s
+
+def niceify_number(i):
+    #swiped from http://codegolf.stackexchange.com/questions/4707/outputting-ordinal-numbers-1st-2nd-3rd
+    k=i%10
+    return "%d%s" % (i,"tsnrhtdd"[(i/10%10!=1)*(k<4)*k::4])

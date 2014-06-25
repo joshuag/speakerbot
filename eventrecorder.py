@@ -1,9 +1,5 @@
 from hashlib import sha256
-
-def niceify_number(i):
-    #swiped from http://codegolf.stackexchange.com/questions/4707/outputting-ordinal-numbers-1st-2nd-3rd
-    k=i%10
-    return "%d%s" % (i,"tsnrhtdd"[(i/10%10!=1)*(k<4)*k::4])
+from speakerlib import niceify_number
 
 class EventRecorder(object):
 
