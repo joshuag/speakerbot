@@ -132,6 +132,7 @@ class base_db(object):
             try:
                 cursor.execute("select 1")
             except:
+                print "failed up check"
                 self.close_connection()
                 self.open_connection()
                 cursor = self.conn.cursor()
