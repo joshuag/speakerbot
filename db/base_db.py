@@ -78,7 +78,9 @@ class base_db(object):
                 for row in self.raw_results:
                     results.append(row_factory(self.cursor, row))
 
+                self.cursor.close()
                 return results
+
 
             def self_generator(self):
                 for result in self.results:
@@ -145,7 +147,6 @@ class base_db(object):
             print cursor.description
 
             result = self.rs_generator(cursor)
-            cursor.close()
             
 
         if self.settings['driver'] == "sqlite3":
