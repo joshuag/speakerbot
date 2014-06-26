@@ -1,4 +1,4 @@
-from instrumentation import time_instrument
+from util.instrumentation import time_instrument
 from random import randrange
 import datetime as dt
 
