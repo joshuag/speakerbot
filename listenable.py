@@ -30,6 +30,7 @@ def event(method):
             return result
 
     wrapped.is_event = True
+    method.is_event = True
     return wrapped
 
 def listenable(klass):
