@@ -96,3 +96,15 @@ def _migrate_18(self):
 def _migrate_19(self):
     self.execute("ALTER TABLE images ADD INDEX (votes) USING BTREE")
     self.execute("ALTER TABLE images ADD INDEX (nsfw) USING BTREE")
+
+def _migrate_20(self):
+    self.execute("ALTER TABLE publish_queue ADD id INT NOT NULL AUTO_INCREMENT PRIMARY KEY")
+
+def _migrate_21(self):
+    self.execute("ALTER TABLE publish_queue ADD md5_hash varchar(64);")
+    self.execute("UPDATE publish_queue set md5_hash=MD5(tweet_text);")
+    self.execute("CREATE INDEX md5_hash ON publish_queue (md5_hash(64));")
+
+def _migrate_22(self):
+    self.execute("CREATE TABLE field_values (field_name VARCHAR(64) NOT NULL, field_value VARCHAR(256) NOT NULL);")
+    self.execute("CREATE INDEX field_name ON field_values (field_name) USING HASH")

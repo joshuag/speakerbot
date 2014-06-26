@@ -28,7 +28,7 @@ def event(method):
             self.dispatch_events(self._listeners, method.__name__, *args, **kwargs)
 
             return result
-            
+
     wrapped.is_event = True
     return wrapped
 
@@ -84,7 +84,7 @@ def listenable(klass):
                 args, kwargs = mangler(*args[1:], **kwargs)
                 
             except Exception as e:
-                print "Argument mangler %s failed. It reported the following: %s" % (mangler.__name__, str(e))
+                print "Argument mangler %s failed with exception %s. It reported the following: %s" % (mangler.__name__, e.__class__.__name__, str(e))
 
         return args, kwargs
         
@@ -105,7 +105,7 @@ def listenable(klass):
                     break
 
             except Exception as e:
-                print "Event listener %s failed. It reported the following: %s" % (handler.__name__, str(e))
+                print "Event listener %s failed with exception %s. It reported the following: %s" % (handler.__name__, e.__class__.__name__, str(e))
 
         return please_do_continue
 

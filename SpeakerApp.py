@@ -1,5 +1,6 @@
 import datetime
 import os, subprocess
+from hashlib import sha256
 
 from flask import Flask, redirect, url_for,  render_template, request 
 from werkzeug.utils import secure_filename

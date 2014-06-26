@@ -1,4 +1,4 @@
-from hashlib import sha256
+from hashlib import md5, sha256
 from speakerlib import niceify_number
 
 class EventRecorder(object):
@@ -41,8 +41,20 @@ class EventRecorder(object):
         if speech_text[0] == "!":
             return
 
-        speech_text = speech_text[:139]
-        self.db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [speech_text])
+        speech_text = speech_text[:139].replace("@","~")
+
+        md5_hash = md5()
+        md5_hash.update(speech_text)
+        md5_hash = md5_hash.hexdigest()
+
+        try:
+            check_existence = self.db.execute("SELECT * FROM publish_queue where md5_hash=?", [md5_hash]).next()
+        except StopIteration:
+            check_existence = False
+
+        if not check_existence:
+
+            self.db.execute("INSERT INTO publish_queue (tweet_text, md5_hash) VALUES (?, ?)", [speech_text, md5_hash])
 
     def queue_sound_for_tweet(self, name, event_result):
 
