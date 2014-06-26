@@ -28,7 +28,8 @@ def event(method):
             self.dispatch_events(self._listeners, method.__name__, *args, **kwargs)
 
             return result
-
+            
+    wrapped.is_event = True
     return wrapped
 
 def listenable(klass):
@@ -47,10 +48,9 @@ def listenable(klass):
 
     def _attach(self, event, func, handler_collection_name):
         
-        #TEMPORARILY REMOVED WHILE I FIGURE OUT HOW TO MAKE MULTIPLE DECORATORS HAPPY
-        #if not hasattr(getattr(self, event), "is_event"):
+        if not hasattr(getattr(self, event), "is_event"):
 
-        #    raise NotEventException("This method hasn't been decorated as an event listener")
+            raise NotEventException("This method hasn't been decorated as an event listener")
 
         handler_collection = getattr(self, handler_collection_name)
 
