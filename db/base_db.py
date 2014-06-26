@@ -47,8 +47,13 @@ class base_db(object):
                     db=self.settings['database'],
                     charset='utf8',
                     use_unicode=True)
-                connection.cursor().execute("SET AUTOCOMMIT=1;")
+                cursor = connection.cursor()
+                cursor.execute("SET AUTOCOMMIT=1;")
+                cursor.close()
+                cursor = connection.cursor()
                 connection.cursor().execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
+                cursor.close()
+                
             self.conn = connection
 
     def close_connection(self):
