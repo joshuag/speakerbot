@@ -2,7 +2,7 @@ from db.base_db import base_db
 import sqlite3
 import datetime as dt
 
-from dynamic_class import attach_methods
+from dynamic_class import attach_methods, Singleton
 
 from config import config
 
@@ -13,6 +13,8 @@ from config import config
         "speaker_db_plugins.people"
         )
 class SpeakerDB(base_db):
+
+    __metaclass__ = Singleton
 
     def __init__(self, db_path=None):
 

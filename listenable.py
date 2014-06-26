@@ -1,9 +1,35 @@
+from dynamic_class import Singleton
+
+
 class NotEventException(Exception):
     pass
 
-def event(func):
-    func.is_event = True
-    return func
+class GlobalEventDispatcher(object):
+    """not quite there yet"""
+    __metaclass__ = Singleton
+
+    def __init__(self):
+        pass
+
+def event(method):
+    """Must be called first in a decorator chain"""
+    def wrapped(*args, **kwargs):
+
+        self = args[0]
+
+        if self.dispatch_events(self._interrogators, method.__name__, *args, **kwargs):
+
+            args, kwargs = self.run_manglers(method.__name__, *args, **kwargs)
+
+            result = method(*args, **kwargs)
+
+            kwargs["event_result"] = result
+
+            self.dispatch_events(self._listeners, method.__name__, *args, **kwargs)
+
+            return result
+
+    return wrapped
 
 def listenable(klass):
 
@@ -18,28 +44,6 @@ def listenable(klass):
 
         TODO: Make it work with other decorators, inheritance
     """
-
-    def wrapper(method):
-
-        def wrapped(*args, **kwargs):
-
-            self = args[0]
-
-            if self.dispatch_events(self._interrogators, method.__name__, *args, **kwargs):
-
-                args, kwargs = self.run_manglers(method.__name__, *args, **kwargs)
-
-                result = method(*args, **kwargs)
-
-                kwargs["event_result"] = result
-
-                self.dispatch_events(self._listeners, method.__name__, *args, **kwargs)
-
-                return result
-
-        wrapped.is_event = True
-        return wrapped
-
 
     def _attach(self, event, func, handler_collection_name):
         
@@ -105,12 +109,6 @@ def listenable(klass):
 
         return please_do_continue
 
-    
-    for name, method in klass.__dict__.iteritems():
-
-        if hasattr(method, "is_event"):
-
-            setattr(klass, name, wrapper(method))
         
     setattr(klass, "_listeners", {})
     setattr(klass, "_interrogators", {})

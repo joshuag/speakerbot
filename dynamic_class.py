@@ -3,12 +3,22 @@
 
     Upgraded to plausible.
 """
+from importlib import import_module
+
+class Singleton(type):
+    
+    instance_list = {}
+    
+    def __call__(klass, *args, **kwargs):
+
+        if not klass in klass.instance_list:
+            klass.instance_list[klass] = super(Singleton, klass).__call__(*args, **kwargs)
+        
+        return klass.instance_list[klass]
 
 class MissingPluginException(Exception):
     pass
 
-
-from importlib import import_module
 class attach_methods(object):
 
     def __init__(self, *modules, **kwargs):
