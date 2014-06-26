@@ -10,7 +10,7 @@ class EventRecorder(object):
     def record_utterance(self, speech_text, record_utterance, event_result):
 
         if not record_utterance:
-            return
+            return False
 
         sha = sha256()
         sha.update(speech_text)
@@ -39,7 +39,7 @@ class EventRecorder(object):
             return False
 
         if speech_text[0] == "!":
-            return
+            return False
 
         speech_text = speech_text[:139].replace("@","~")
 
