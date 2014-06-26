@@ -24,6 +24,7 @@ class SpeakerTwitter(object):
 
     def publish_from_queue(self):
 
+        forbidden_words = ["nohodo", "vk", "vertical knowledge"]
         try:
             tweet_record = self.db.execute("select id, tweet_text from publish_queue limit 1").next()
         except StopIteration:
@@ -34,8 +35,14 @@ class SpeakerTwitter(object):
             tweet_id = tweet_record["id"]
 
             try:
+                tweet_this = True
+                for word in forbidden_words:
+                    if word in tweet_text.lower():
+                        tweet_this = False
 
-                self.twitter.update_status(status=tweet_text)
+                if tweet_this:
+                    self.twitter.update_status(status=tweet_text)
+                    
                 self.db.execute("delete from publish_queue where id=?", [tweet_id])
 
             except TwythonError:
@@ -50,6 +57,6 @@ if __name__ == "__main__":
         
         st.publish_from_queue()
 
-        sleep(randrange(60,180))
+        sleep(180)
         
 

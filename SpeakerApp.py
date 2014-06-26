@@ -33,7 +33,6 @@ def stub_mangler(*args, **kwargs):
 
 sb.attach_listener("speech_provider_say", evr.queue_speech_for_tweet)
 sb.attach_listener("say", evr.record_utterance)
-sb.attach_listener("play", evr.queue_sound_for_tweet)
 sb.attach_listener("play", speakonomy.sell_sound)
 sb.attach_listener("play", evr.record_sound_event)
 sb.attach_interrogator("play", stub_interrogator)
