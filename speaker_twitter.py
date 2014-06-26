@@ -31,7 +31,7 @@ class SpeakerTwitter(object):
             tweet_record = False
 
         if tweet_record:
-            tweet_text = tweet_record["tweet_text"]
+            tweet_text = unicode(tweet_record["tweet_text"])
             tweet_id = tweet_record["id"]
 
             tweet_this = True
