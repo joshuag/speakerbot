@@ -67,10 +67,13 @@ class Speakerbot(PluggableObject):
 
         return self.sounds
 
+    def _play(self, name):
+        self.se.play(self.sounds[name][0])
+
     @lock
     @event
     def play(self, name):
-        self.se.play(self.sounds[name][0])
+        self._play(name)
 
     @event #we may want to record the output of the filtered speech
     def speech_provider_say(self, speech_text, record_utterance):

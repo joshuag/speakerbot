@@ -63,7 +63,7 @@ class attach_methods(object):
 
 def plugin(func):
     def wrapped(*args, **kwargs):
-        print "Executing" + func.__name__
+        print "Executing " + func.__name__
         return func(*args, **kwargs)
 
     set_function_attribute(wrapped, "plugin", True)

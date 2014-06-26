@@ -260,18 +260,12 @@ def say(text=None):
     if not text or len(text) > 100:
         return redirect(url_for("home"))
 
-    print "here"
-
     if request.args.get('record_utterance', "false") == "true":
         record_utterance = True
     else:
         record_utterance = False
 
-    print "here 2"
-
     sb.say(text, record_utterance=record_utterance)
-
-    print "here 3"
 
     redir = request.referrer or url_for("home")
     return redirect(redir)  

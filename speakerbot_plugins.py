@@ -35,11 +35,11 @@ def suspense(sb):
         if not speakonomy.check_affordability(cost=20):
             return "Not enough speakerbucks for drumroll"
 
-    sb.play("drumroll")
+    sb._play("drumroll")
     
     sound = choice(sb.sounds.keys())
 
-    sb.play(sound)
+    sb._play(sound)
 
 @plugin
 def spin(sb, wager):
