@@ -40,7 +40,13 @@ class base_db(object):
         global connection
         if self.settings['driver'] == "mysql":
             if not connection or not connection.open:
-                connection = MySQLdb.connect(host=self.settings['host'], user=self.settings['user'], passwd=self.settings['pass'], db=self.settings['database'])
+                connection = MySQLdb.connect(
+                    host=self.settings['host'], 
+                    user=self.settings['user'], 
+                    passwd=self.settings['pass'], 
+                    db=self.settings['database'],
+                    charset='utf8',
+                    use_unicode=True)
                 connection.cursor().execute("SET AUTOCOMMIT=1;")
                 connection.cursor().execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
             self.conn = connection
