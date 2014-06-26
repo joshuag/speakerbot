@@ -49,9 +49,9 @@ def listenable(klass):
 
     def _attach(self, event, func, handler_collection_name):
         
-        if not hasattr(getattr(self, event), "is_event"):
+        #if not hasattr(getattr(self, event), "is_event"):
 
-            raise NotEventException("This method hasn't been decorated as an event listener")
+        #    raise NotEventException("This method hasn't been decorated as an event listener")
 
         handler_collection = getattr(self, handler_collection_name)
 
