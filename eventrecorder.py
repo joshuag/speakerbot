@@ -62,4 +62,12 @@ class EventRecorder(object):
 
         if matched_sound:
             text = "I just played %s for the %s time" % (name, niceify_number(matched_sound["votes"]))
-            self.db.execute("INSERT INTO publish_queue (tweet_text) VALUES (?)", [text])
+            md5_hash = md5()
+            md5_hash.update(text)
+            md5_hash = md5_hash.hexdigest()
+
+            self.db.execute("INSERT INTO publish_queue (tweet_text, md5_hash) VALUES (?, ?)", [text, md5_hash])
+
+
+
+

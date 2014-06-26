@@ -4,7 +4,6 @@ from time import sleep
 from config import config
 from speaker_db import SpeakerDB
 from Speakerbot import Speakerbot
-from speakerlib import minimize_string
 
 from twython import Twython
 from twython.exceptions import TwythonError
@@ -25,6 +24,7 @@ class SpeakerTwitter(object):
     def publish_from_queue(self):
 
         forbidden_words = ["nohodo", "vk", "vertical knowledge"]
+
         try:
             tweet_record = self.db.execute("select id, tweet_text from publish_queue limit 1").next()
         except StopIteration:
@@ -34,19 +34,22 @@ class SpeakerTwitter(object):
             tweet_text = tweet_record["tweet_text"]
             tweet_id = tweet_record["id"]
 
-            try:
-                tweet_this = True
-                for word in forbidden_words:
-                    if word in tweet_text.lower():
-                        tweet_this = False
+            tweet_this = True
+            for word in forbidden_words:
+                if word in tweet_text.lower():
+                    tweet_this = False
 
-                if tweet_this:
+            if tweet_this:
+                try:
                     self.twitter.update_status(status=tweet_text)
-                    
-                self.db.execute("delete from publish_queue where id=?", [tweet_id])
+                except TwythonError as e:
+                    print str(e)
+                    print "---------"
+                    print tweet_text
+                    pass
+                
+            self.db.execute("delete from publish_queue where id=?", [tweet_id])
 
-            except TwythonError:
-                pass
 
 
 if __name__ == "__main__":
