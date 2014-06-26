@@ -5,7 +5,7 @@ import re
 
 from collections import OrderedDict
 
-from instrumentation import time_instrument
+from util.instrumentation import time_instrument
 
 connection = None #global connection instance
 
