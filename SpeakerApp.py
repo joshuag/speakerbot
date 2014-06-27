@@ -270,8 +270,10 @@ def say(text=None):
 
     sb.say(text, record_utterance=record_utterance)
 
+    return default_redirect()
+
+def default_redirect():
     if not request.is_xhr:
-        print "foo"
         redir = request.referrer or url_for("home")
         return redirect(redir)  
     else:

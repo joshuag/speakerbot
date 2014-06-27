@@ -35,7 +35,7 @@ var vk = (function(){
 
               var url = $this.attr("data-url") || $this.attr("action") || $this.attr("href");
 
-              data = $this.attr("data-post");
+              var data = $this.attr("data-post");
 
               var event;
 
