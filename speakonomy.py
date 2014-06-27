@@ -52,7 +52,7 @@ class Speakonomy:
         return 0
 
     def is_active(self):
-        return True
+
         if self.disabled:
             return False
         if dt.datetime.today().weekday() in [5,6]:
