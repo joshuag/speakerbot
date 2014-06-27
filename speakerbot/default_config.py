@@ -8,10 +8,11 @@ config = {
         'oauth_token_secret':''
     },
     'database':{
-    	'driver':'mysql',
+    	'driver':'mysql|sqlite3',
     	'host':'',
     	'user':'',
     	'pass':'',
-    	'database':''
+    	'database':'',
+        'db_path':'' #sqlite database file name
     }
 }

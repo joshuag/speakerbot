@@ -115,27 +115,37 @@ class base_db(object):
         self.version = version
         self.execute("update db_version set version = ?", [version])
 
-    def fix_for_mysql(self, statement):
+    def fix_for_database(self, statement):
 
-        statement = statement.replace("?","%s")
-        statement = re.sub("random\(\)","RAND()", statement, flags=re.I)
-        statement = re.sub(r"datetime\((\w+?), 'unixepoch'\)", r"from_unixtime(\1, '%%Y %%D %%M %%h:%%i:%%s')", statement, flags=re.I)
-        statement = re.sub(r"date\((\w+?), 'unixepoch'\)", r"from_unixtime(\1, '%%Y %%D %%M')", statement, flags=re.I)
-        statement = statement.replace(" INT)", " SIGNED)")
+        if self.settings["driver"] == "mysql":
+            statement = statement.replace("?","%s")
+            statement = re.sub("random\(\)","RAND()", statement, flags=re.I)
+            statement = re.sub(r"datetime\((\w+?), 'unixepoch'\)", r"from_unixtime(\1, '%%Y %%D %%M %%h:%%i:%%s')", statement, flags=re.I)
+            statement = re.sub(r"date\((\w+?), 'unixepoch'\)", r"from_unixtime(\1, '%%Y %%D %%M')", statement, flags=re.I)
+            statement = statement.replace(" INT)", " SIGNED)")
 
+        if self.settings["driver"] == "sqlite3":
+            statement = re.sub(r"(\b\w+\b)\(\d+\)", r"\1", statement)
+            statement = statement.replace("NOT NULL AUTO_INCREMENT", "")
+            statement = statement.replace("USING BTREE", "")
+            statement = statement.replace("USING HASH", "")
+
+            if "alter table" in statement.lower() and "add index" in statement.lower():
+                return "select 1"
+
+        print statement
         return statement
     
     @time_instrument
     def execute(self, statement, query_vars=None):
 
-        #self.open_connection()
+        statement = self.fix_for_database(statement)
 
         if not query_vars:
             query_vars = []
 
         if self.settings['driver'] == "mysql":
             cursor = self.conn.cursor()
-            statement = self.fix_for_mysql(statement)
 
             try:
                 cursor.execute("select 1")
@@ -147,18 +157,13 @@ class base_db(object):
             cursor.execute(statement, tuple(query_vars))
             self.conn.commit()
 
-
-            print statement
-            print cursor.description
-
             result = self.rs_generator(cursor)
             
 
         if self.settings['driver'] == "sqlite3":
 
             result = self.conn.execute(statement, query_vars)
-
-        #self.close_connection()
+            self.conn.commit()
         
         return result
 

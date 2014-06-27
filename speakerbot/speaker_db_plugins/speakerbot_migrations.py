@@ -10,8 +10,11 @@ def _migrate_0(self):
     self.execute("INSERT INTO db_version (version) VALUES (0)")
 
 def _migrate_1(self):
+    if self.settings["driver"] == "mysql":
+        self.execute("CREATE TABLE publish_queue (tweet_text text)")
 
-    self.execute("CREATE TABLE publish_queue (tweet_text text)")
+    if self.settings["driver"] == "sqlite3":
+        self.execute("CREATE TABLE publish_queue (id int PRIMARY KEY, tweet_text text, MD5_HASH text)")        
 
 def _migrate_2(self):
 
@@ -54,7 +57,7 @@ def _migrate_8(self):
 def _migrate_9(self):
 
     self.execute("CREATE TABLE bank_account (balance INTEGER)")
-    self.execute("INSERT INTO bank_account (balance) VALUES(0)")
+    self.execute("INSERT INTO bank_account (balance) VALUES (0)")
 
 def _migrate_10(self):
 
@@ -98,12 +101,14 @@ def _migrate_19(self):
     self.execute("ALTER TABLE images ADD INDEX (nsfw) USING BTREE")
 
 def _migrate_20(self):
-    self.execute("ALTER TABLE publish_queue ADD id INT NOT NULL AUTO_INCREMENT PRIMARY KEY")
+    if self.settings["driver"] == 'mysql':
+        self.execute("ALTER TABLE publish_queue ADD id INT NOT NULL AUTO_INCREMENT PRIMARY KEY")
 
 def _migrate_21(self):
-    self.execute("ALTER TABLE publish_queue ADD md5_hash varchar(64);")
-    self.execute("UPDATE publish_queue set md5_hash=MD5(tweet_text);")
-    self.execute("CREATE INDEX md5_hash ON publish_queue (md5_hash(64));")
+    if self.settings["driver"] == 'mysql':
+        self.execute("ALTER TABLE publish_queue ADD md5_hash varchar(64);")
+        self.execute("UPDATE publish_queue set md5_hash=MD5(tweet_text);")
+        self.execute("CREATE INDEX md5_hash ON publish_queue (md5_hash(64));")
 
 def _migrate_22(self):
     self.execute("CREATE TABLE field_values (field_name VARCHAR(64) NOT NULL, field_value VARCHAR(256) NOT NULL);")
