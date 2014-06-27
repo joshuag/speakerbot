@@ -1,0 +1,2 @@
+recursive-include speakerbot/templates *
+recursive-include speakerbot/static *

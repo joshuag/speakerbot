@@ -38,10 +38,10 @@ nosetests.xml
 # Mac
 .DS_Store
 
-static/r_gifs
-sounds
-speech
-play
-speakerbot.db
+speakerbot/static/r_gifs
+speakerbot/sounds
+speakerbot/speech
+speakerbot/play
+speakerbot/speakerbot.db
 
-config.py
+speakerbot/config.py
