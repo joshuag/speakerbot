@@ -253,12 +253,12 @@ def play_sound(sound_name):
         sb.say("It's Friday. Friday. So all sounds are free for the next 5 minutes.")
     return redirect(url_for("home"))
 
-@app.route('/say/')
+@app.route('/say/', methods=["POST", "GET"])
 @app.route('/say/<text>')
 def say(text=None):
 
     if not text:
-        text = request.args.get('speech-text', None)
+        text = request.args.get('speech-text', None) or request.form.get("speech-text", None)
 
     if not text or len(text) > 100:
         return redirect(url_for("home"))
@@ -270,8 +270,12 @@ def say(text=None):
 
     sb.say(text, record_utterance=record_utterance)
 
-    redir = request.referrer or url_for("home")
-    return redirect(redir)  
+    if not request.is_xhr:
+        print "foo"
+        redir = request.referrer or url_for("home")
+        return redirect(redir)  
+    else:
+        return "true"
 
 if __name__ == '__main__':
     app.run('0.0.0.0',port=8080)

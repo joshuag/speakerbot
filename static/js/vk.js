@@ -18,7 +18,63 @@ var vk = (function(){
     function Func(){
         //Constructor for VK
         this.fartscroll = this._fartscroll(this);
+        this.install_jquery_plugins();
     }
+
+    Func.prototype.install_jquery_plugins = function(){
+      (function($) {
+
+        $.fn.autoajax_post = function(handler)
+          {
+            return this.each(function() {
+              if(!handler){
+                handler = function(){};
+              }
+
+              var $this = $(this);
+
+              var url = $this.attr("data-url") || $this.attr("action") || $this.attr("href");
+
+              data = $this.attr("data-post");
+
+              var event;
+
+              switch(this.tagName.toLowerCase()){
+                case "form":
+                  event = "submit";
+                  break;
+                case "a":
+                  event = "click";
+                  break;
+              }
+
+              function post_handler(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if(!data){
+                      data = this.serialize();
+                    }else{
+                      data = decodeURIComponent(data);
+                    }
+                    $.ajax(
+                        {
+                          url: url,
+                          type: "post",
+                          data: data,
+                          success: handler,
+                          error: function(){alert("There was an error.");}
+                        });
+                  }
+              $this[event](
+                $.proxy(
+                  post_handler,
+                  $this
+                ));
+            });
+
+          };
+      }(jQuery));
+    };
 
     Func.prototype.init_ui_hacks = function(){
         //this.fartscroll();
