@@ -51,16 +51,17 @@ var vk = (function(){
               function post_handler(e){
                     e.stopPropagation();
                     e.preventDefault();
+                    var post_data;
                     if(!data){
-                      data = this.serialize();
+                      post_data = this.serialize();
                     }else{
-                      data = decodeURIComponent(data);
+                      post_data = decodeURIComponent(data);
                     }
                     $.ajax(
                         {
                           url: url,
                           type: "post",
-                          data: data,
+                          data: post_data,
                           success: handler,
                           error: function(){alert("There was an error.");}
                         });
