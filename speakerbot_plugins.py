@@ -1,20 +1,15 @@
 import datetime
 import json
-from os import listdir, getcwd
-from os.path import isfile, join
-
 from random import choice
 
 import requests
-import re
+from pyquery import PyQuery as pq
 
 from config import config
 from sounds import SoundEffect
 from speakonomy import Speakonomy
 from util.words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
-from pyquery import PyQuery as pq
-
 from dynamic_class import plugin
 
 db = SpeakerDB()

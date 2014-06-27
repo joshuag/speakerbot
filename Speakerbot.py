@@ -1,7 +1,6 @@
 import os
 import math
 import subprocess
-
 from collections import OrderedDict
 
 from listenable import listenable, event

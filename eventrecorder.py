@@ -1,4 +1,5 @@
 from hashlib import md5, sha256
+
 from speakerlib import niceify_number
 
 class EventRecorder(object):

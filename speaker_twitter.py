@@ -1,12 +1,12 @@
 from random import randrange
 from time import sleep
 
+from twython import Twython
+from twython.exceptions import TwythonError
+
 from config import config
 from speaker_db import SpeakerDB
 from Speakerbot import Speakerbot
-
-from twython import Twython
-from twython.exceptions import TwythonError
 
 class SpeakerTwitter(object):
 

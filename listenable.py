@@ -17,7 +17,6 @@ def event(method):
 
         self = args[0]
 
-        print "into the wrapper"
         if self.dispatch_events(self._interrogators, method.__name__, *args, **kwargs):
 
             args, kwargs = self.run_manglers(method.__name__, *args, **kwargs)
