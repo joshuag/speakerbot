@@ -2,13 +2,17 @@ import datetime as dt
 import os
 import sys
 from speaker_db import SpeakerDB
+from dynamic_class import Singleton
+
 
 class Speakonomy:
+    __metaclass__ = Singleton
 
     def __init__(self, speakerbot=None, disabled=False):
         self.db = SpeakerDB()
         self.speakerbot = speakerbot
         self.disabled = disabled
+        self.free_play_timeout = None
 
     def check_affordability(self, sound_name=None, cost=None):
         if not self.is_active():
@@ -25,10 +29,14 @@ class Speakonomy:
         self.db.execute("UPDATE bank_account set balance=balance+{}".format(amount))
 
     def get_free_play_timeout(self):
-        expiration_timestamp = self.db.execute("SELECT free_play_timeout FROM bank_account").fetchone()['free_play_timeout']
 
-        print dt.datetime.fromtimestamp(expiration_timestamp)
-        return dt.datetime.fromtimestamp(expiration_timestamp)
+        if self.free_play_timeout:
+            return self.free_play_timeout
+
+        expiration_timestamp = self.db.execute("SELECT free_play_timeout FROM bank_account").fetchone()['free_play_timeout']
+        self.free_play_timeout = dt.datetime.fromtimestamp(expiration_timestamp)
+
+        return self.free_play_timeout
 
     def get_last_withdrawal_time(self, include_sbpm=False):
         last_withdrawal_time = self.db.execute("SELECT last_withdrawal_time FROM bank_account").fetchone()['last_withdrawal_time']
@@ -82,6 +90,8 @@ class Speakonomy:
             expiration_datetime = dt.datetime.now() + dt.timedelta(hours=hours, minutes=minutes)
         expiration_timestamp = expiration_datetime.strftime("%s")
         self.db.execute("UPDATE bank_account SET free_play_timeout=?", [expiration_timestamp,])
+
+        self.free_play_timeout = expiration_timestamp
 
     def get_sound_base_cost(self, sound_path):
         try:
