@@ -8,7 +8,7 @@ class EventRecorder(object):
 
         self.db = db
 
-    def record_utterance(self, speech_text, record_utterance, event_result):
+    def record_utterance(self, speech_text, record_utterance=False, event_result=None):
 
         if not record_utterance:
             return False
@@ -34,7 +34,7 @@ class EventRecorder(object):
 
             self.db.execute("UPDATE sounds set votes=? where name=?", [votes, sound_name])
 
-    def queue_speech_for_tweet(self, speech_text, record_utterance, event_result):
+    def queue_speech_for_tweet(self, speech_text, record_utterance=False, event_result=None):
 
         if not record_utterance:
             return False
