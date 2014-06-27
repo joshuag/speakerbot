@@ -86,15 +86,18 @@ def upload_sound():
         f = request.files['file']
         filename = secure_filename(f.filename)
         sound_fp = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        f.save(sound_fp)
-        sound_seconds = get_mp3_seconds(sound_fp)
-        if sound_seconds > 15:
-            message = 'This sound is {} seconds! Must be 15 seconds or less.'.format(sound_seconds)
+        if os.path.exists(sound_fp):
+            message = 'That sound name already exists.'
         else:
-            base_cost = speakonomy.get_sound_base_cost(sound_fp)
-            sb.add_sound_to_db(name, filename, base_cost)
-            full_sound_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), sound_fp)
-            subprocess.call(['mp3gain','-r', '{}'.format(full_sound_path)])
+            f.save(sound_fp)
+            sound_seconds = get_mp3_seconds(sound_fp)
+            if sound_seconds > 15:
+                message = 'This sound is {} seconds! Must be 15 seconds or less.'.format(sound_seconds)
+            else:
+                base_cost = speakonomy.get_sound_base_cost(sound_fp)
+                sb.add_sound_to_db(name, filename, base_cost)
+                full_sound_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), sound_fp)
+                subprocess.call(['mp3gain','-r', '{}'.format(full_sound_path)])
 
     return render_template(
             "upload.html", 
