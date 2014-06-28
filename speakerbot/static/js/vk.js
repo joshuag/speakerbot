@@ -32,20 +32,19 @@ var vk = (function(){
               }
 
               var $this = $(this);
-
               var url = $this.attr("data-url") || $this.attr("action") || $this.attr("href");
-
               var data = $this.attr("data-post");
+              var event = $this.attr("data-event");
 
-              var event;
-
-              switch(this.tagName.toLowerCase()){
-                case "form":
-                  event = "submit";
-                  break;
-                case "a":
-                  event = "click";
-                  break;
+              if(!event){
+                switch(this.tagName.toLowerCase()){
+                  case "form":
+                    event = "submit";
+                    break;
+                  case "a":
+                    event = "click";
+                    break;
+                }
               }
 
               function post_handler(e){

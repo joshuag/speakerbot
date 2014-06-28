@@ -4,6 +4,7 @@ from hashlib import sha256
 
 from flask import Flask, redirect, url_for,  render_template, request 
 from werkzeug.utils import secure_filename
+from random import choice
 
 from eventrecorder import EventRecorder
 from Speakerbot import Speakerbot
@@ -11,6 +12,7 @@ from speaker_db import SpeakerDB
 from speakerlib import *
 from speakonomy import Speakonomy
 from util.words import parse_and_fill_mad_lib
+from config import config
 
 print "loading speakerbot"
 sb = Speakerbot()
@@ -41,7 +43,7 @@ sb.attach_interrogator("play", stub_interrogator)
 
 
 app = Flask(__name__)
-app.config['DEBUG'] = True
+app.config['DEBUG'] = config.get("debug", True)
 app.config['UPLOAD_FOLDER'] = os.path.relpath('sounds')
 
 print "I'm ready"
@@ -212,28 +214,19 @@ def worst_images():
 def spinstats():
 
     now = datetime.datetime.now()
-    midnight = datetime.datetime(now.year, now.month, now.day).strftime("%s") 
-
-    aggregate_stats = db.get_aggregate_wager_stats()
+    midnight = datetime.datetime(now.year, now.month, now.day).strftime("%s")
     today_aggregate_stats = db.get_aggregate_wager_stats(start=midnight)
-    recent_spins = db.get_wager_history(20)
-    number_occurence = db.get_number_occurence()
-    multiplier_occurence = db.get_multiplier_occurence()
-    wagers_and_outcomes = db.get_wagers_and_outcomes_by_day()
-    wagers_by_outcome = db.get_wagers_by_outcome()
-    lucky_numbers = db.get_lucky_numbers()
-    number_cooccurence = db.get_lucky_and_chosen_cooccurence()
 
     return render_template("spinstats.html", 
-            aggregate_stats=aggregate_stats, 
+            aggregate_stats=db.get_aggregate_wager_stats(), 
             today_aggregate_stats=today_aggregate_stats, 
-            recent_spins=recent_spins,
-            number_occurence=number_occurence,
-            multiplier_occurence=multiplier_occurence,
-            wagers_and_outcomes=wagers_and_outcomes,
-            wagers_by_outcome=wagers_by_outcome,
-            lucky_numbers=lucky_numbers,
-            number_cooccurrence=number_cooccurence
+            recent_spins=db.get_wager_history(20),
+            number_occurence=db.get_number_occurence(),
+            multiplier_occurence=db.get_multiplier_occurence(),
+            wagers_and_outcomes=db.get_wagers_and_outcomes_by_day(),
+            wagers_by_outcome=db.get_wagers_by_outcome(),
+            lucky_numbers=db.get_lucky_numbers(),
+            number_cooccurrence=db.get_lucky_and_chosen_cooccurence()
             )
 
 @app.route('/play_sound/<sound_name>')
@@ -263,7 +256,7 @@ def say(text=None):
     if not text or len(text) > 100:
         return redirect(url_for("home"))
 
-    if request.args.get('record_utterance', "false") == "true":
+    if request.args.get('record_utterance', "false") == "true" or request.form.get('record_utterance', "false") == "true":
         record_utterance = True
     else:
         record_utterance = False

@@ -9,9 +9,8 @@ class EventRecorder(object):
         self.db = db
 
     def record_utterance(self, speech_text, record_utterance=False, event_result=None):
-
         if not record_utterance:
-            return False
+            return
 
         sha = sha256()
         sha.update(speech_text)
@@ -36,11 +35,12 @@ class EventRecorder(object):
 
     def queue_speech_for_tweet(self, speech_text, record_utterance=False, event_result=None):
 
+        print record_utterance
         if not record_utterance:
-            return False
+            return
 
         if speech_text[0] == "!":
-            return False
+            return
 
         speech_text = speech_text[:139].replace("@","~")
 

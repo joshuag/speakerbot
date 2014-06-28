@@ -1,6 +1,14 @@
-import time                                                
+import time
+
+try:
+    from config import config
+except ImportError:
+    config = {'debug':True}
 
 def time_instrument(method):
+    
+    if config["debug"] == False:
+        return method
 
     def timed_func(*args, **kw):
 

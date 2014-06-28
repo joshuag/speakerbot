@@ -19,7 +19,6 @@ class base_db(object):
                 'db_path':db_path
             }
 
-        print settings
         self.settings = settings
 
         if self.settings['driver'] == "sqlite3":
@@ -133,7 +132,6 @@ class base_db(object):
             if "alter table" in statement.lower() and "add index" in statement.lower():
                 return "select 1"
 
-        print statement
         return statement
     
     @time_instrument

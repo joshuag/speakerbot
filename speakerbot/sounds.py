@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 class SoundEffect(object):
 
@@ -14,4 +15,5 @@ class SoundEffect(object):
 
     def play_sound(self, file_path):
 
-        subprocess.call([self.sound_player, file_path])
+        with open(os.devnull, "w") as fnull:
+            subprocess.call([self.sound_player, file_path], stdout = fnull, stderr = fnull)

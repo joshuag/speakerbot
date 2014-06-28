@@ -49,9 +49,9 @@ def listenable(klass):
 
     def _attach(self, event, func, handler_collection_name):
         
-        #if not hasattr(getattr(self, event), "is_event"):
+        if not hasattr(getattr(self, event), "is_event"):
 
-        #    raise NotEventException("This method hasn't been decorated as an event listener")
+            raise NotEventException("This method hasn't been decorated as an event listener")
 
         handler_collection = getattr(self, handler_collection_name)
 
@@ -97,12 +97,14 @@ def listenable(klass):
         for handler in handler_collection.get(method_name, []):
             try:
                 #pop off the instance information. We just want the function signature
+
                 please_do_continue = handler(*args[1:], **kwargs)
-                
+
                 if please_do_continue == None:
                     please_do_continue = True
 
                 if not please_do_continue:
+                    print "The event processing was cancelled by %s" % handler.__name__
                     break
 
             except Exception as e:
