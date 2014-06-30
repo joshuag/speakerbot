@@ -12,13 +12,14 @@ class GlobalEventDispatcher(object):
         pass
 
 def event(method):
-    """Must be called first in a decorator chain"""
+    """Must be called first in a decorator chain, otherwise we lose the correct name property"""
     def wrapped(*args, **kwargs):
 
         self = args[0]
 
         if self.dispatch_events(self._interrogators, method.__name__, *args, **kwargs):
 
+            #Self will be removed and put back in the run_manglers routine.
             args, kwargs = self.run_manglers(method.__name__, *args, **kwargs)
 
             result = method(*args, **kwargs)
@@ -79,13 +80,20 @@ def listenable(klass):
 
     def run_manglers(self, method_name, *args, **kwargs):
 
+        old_self = args[0] #Get the self reference
+        args = args[1:] #Remove the self reference
+
         for mangler in self._manglers.get(method_name, []):
             try:
                 #pop off the instance information. We just want the function signature
-                args, kwargs = mangler(*args[1:], **kwargs)
+                args, kwargs = mangler(*args, **kwargs)
                 
             except Exception as e:
                 print "Argument mangler %s failed with exception %s. It reported the following: %s" % (mangler.__name__, e.__class__.__name__, str(e))
+
+        args = list(args)
+        args.insert(0, old_self)
+        args = tuple(args)
 
         return args, kwargs
         

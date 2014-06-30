@@ -60,10 +60,6 @@ def home(image=None):
     if not image:
         image = db.get_random_image()
 
-    votes = db.get_image_votes(image)
-    comments = db.get_image_comments(image)
-    nsfw = db.check_nsfw(image)
-
     last_withdrawal_time, speakerbucks_per_minute = speakonomy.get_last_withdrawal_time(include_sbpm=True)
 
     return render_template(
@@ -71,9 +67,9 @@ def home(image=None):
             sounds=sb.load_sounds(score_cutoff=-50), 
             image=image,
             message=message,
-            votes=votes,
-            nsfw=nsfw,
-            comments=comments,
+            votes=db.get_image_votes(image),
+            nsfw=db.check_nsfw(image),
+            comments=db.get_image_comments(image),
             last_withdrawal_time=last_withdrawal_time,
             speakerbucks_per_minute=speakerbucks_per_minute,
             random_title=parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")
