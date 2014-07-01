@@ -20,13 +20,18 @@ function select_song(d) {
   $('#song').val($(d).attr("data-name"));
   $('#song-label').html($(d).attr("data-name"));
 }
+function submit_song_choice() {
+  $('#validator').val(idk($('#song').val()));
+  $('#theme_song_form').submit();
+}
 {% endblock %}
 {% block content %}
       <div class="page-header">
         <h1>Theme Song Manager</h1>
       </div>
       <div class="row">
-        <form action="/theme-songs" method="post">
+          {% if message %}<div class="alert alert-warning">{{message}}</div>{% endif %}
+        <form id="theme_song_form" action="/theme-songs" method="post">
         <div class="col-sm-3">
           <div class="list-group" id="people">
           	{% for person in people %}
@@ -48,8 +53,9 @@ function select_song(d) {
         <div class="col-sm-5">
           <input type="hidden" name="user" id="user" value="">
           <input type="hidden" name="song" id="song" value="">
+          <input type="hidden" name="validator" id="validator" value="">
           Selected song: <span style="font-style:italic; color:rgb(198, 108, 106);" id="song-label">None</span><br><br>
-          <button type="submit" class="btn btn-default">Please Speakerbot, Save This Song Choice</button>
+          <button onclick="submit_song_choice()" class="btn btn-default">Please Speakerbot, Save This Song Choice</button>
         </div><!-- /.col-sm-8 -->
         </form>
       </div>

@@ -104,16 +104,23 @@ def upload_sound():
 
 @app.route('/theme-songs', methods=["GET", "POST"])
 def theme_songs():
+    message = request.args.get('message', None)
     if request.method == 'POST':
         if request.form['user'] and request.form['song']:
-            print db.get_person_for_song(request.form['song'])
-            if not db.get_person_for_song(request.form['song']):
+            if request.form['validator'] != config['unfucktion'](request.form['song']):
+                message = 'Validation failed'
+            elif db.get_person_for_song(request.form['song']):
+                message = 'That song is already assigned to a user.'
+            else:
                 db.execute("update person set theme_song=? where name=?", [request.form['song'], request.form['user']])
-        return redirect(url_for("theme_songs"))
+        else:
+            message = 'Invalid parameters'
+        return redirect(url_for("theme_songs", message=message))
     return render_template(
             "themesongs.html", 
             sounds=sorted(sb.load_sounds().keys()), 
             people=db.get_people(),
+            message=message,
             )
 
 @app.route('/spadmin', methods=["GET", "POST"])
