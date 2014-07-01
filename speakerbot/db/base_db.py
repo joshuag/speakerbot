@@ -147,6 +147,8 @@ class base_db(object):
 
             try:
                 cursor.execute("select 1")
+                cursor.close()
+                cursor = self.conn.cursor()
             except:
                 self.close_connection()
                 self.open_connection()
