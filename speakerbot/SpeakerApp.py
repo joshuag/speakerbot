@@ -4,7 +4,7 @@ from hashlib import sha256
 
 from flask import Flask, redirect, url_for,  render_template, request 
 from werkzeug.utils import secure_filename
-from random import choice
+import random
 
 from eventrecorder import EventRecorder
 from Speakerbot import Speakerbot
@@ -106,7 +106,9 @@ def upload_sound():
 def theme_songs():
     if request.method == 'POST':
         if request.form['user'] and request.form['song']:
-            db.execute("update person set theme_song=? where name=?", [request.form['song'], request.form['user']])
+            print db.get_person_for_song(request.form['song'])
+            if not db.get_person_for_song(request.form['song']):
+                db.execute("update person set theme_song=? where name=?", [request.form['song'], request.form['user']])
         return redirect(url_for("theme_songs"))
     return render_template(
             "themesongs.html", 
@@ -229,7 +231,7 @@ def spinstats():
 def play_sound(sound_name):
 
     if sound_name == "rebecca-black" and datetime.datetime.today().weekday() != 4:
-        sound_name = choice(sb.sounds.keys())
+        sound_name = random.choice(sb.sounds.keys())
 
     #Economy - is it affordable to play?
     if not speakonomy.check_affordability(sound_name):
