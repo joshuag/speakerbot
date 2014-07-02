@@ -147,6 +147,7 @@ class base_db(object):
 
             try:
                 cursor.execute("select 1")
+                self.conn.commit()
                 cursor.close()
                 cursor = self.conn.cursor()
             except:
