@@ -21,11 +21,6 @@ class base_db(object):
 
         self.settings = settings
 
-        if self.settings['driver'] == "sqlite3":
-
-            self.conn = sqlite3.connect(self.settings["db_path"], check_same_thread=False)
-            self.conn.row_factory = self.row_factory
-
         self.open_connection()
 
         self.version = self.get_version()
@@ -36,6 +31,7 @@ class base_db(object):
 
     @time_instrument
     def open_connection(self):
+        
         global connection
         if self.settings['driver'] == "mysql":
             if not connection or not connection.open:
@@ -46,14 +42,18 @@ class base_db(object):
                     db=self.settings['database'],
                     charset='utf8',
                     use_unicode=True)
-                cursor = connection.cursor()
-                cursor.execute("SET AUTOCOMMIT=1;")
-                cursor.close()
+                
+                connection.autocommit(True)
                 cursor = connection.cursor()
                 connection.cursor().execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
                 cursor.close()
                 
             self.conn = connection
+
+        if self.settings['driver'] == "sqlite3":
+
+            self.conn = sqlite3.connect(self.settings["db_path"], check_same_thread=False)
+            self.conn.row_factory = self.row_factory
 
     def close_connection(self):
         if self.settings['driver'] == "mysql":
