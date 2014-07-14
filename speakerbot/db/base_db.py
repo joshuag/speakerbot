@@ -124,6 +124,7 @@ class base_db(object):
             statement = statement.replace(" INT)", " SIGNED)")
 
         if self.settings["driver"] == "sqlite3":
+            statement = re.sub(r"FLOOR\((.*?)\)", r"CAST(\1 AS INT)", statement)
             statement = re.sub(r"(\b\w+\b)\(\d+\)", r"\1", statement)
             statement = statement.replace("NOT NULL AUTO_INCREMENT", "")
             statement = statement.replace("USING BTREE", "")
@@ -138,7 +139,6 @@ class base_db(object):
     def execute(self, statement, query_vars=None):
 
         statement = self.fix_for_database(statement)
-
         if not query_vars:
             query_vars = []
 
