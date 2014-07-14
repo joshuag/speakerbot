@@ -25,6 +25,7 @@ class SpeakerbotDJ:
         return field_match.group(1)
 
     def cache_theme_songs(self):
+        sb.load_sounds()
         results = self.db.execute("SELECT name, theme_song, last_theme_play_time FROM person").fetchall()
         for result in results:
             play_ok = True
