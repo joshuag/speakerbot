@@ -49,7 +49,7 @@ def spin(sb, wager):
     wager_list = wager.split(" ")
     wager = wager_list[0]
 
-    if len(wager_list) > 1 and wager_list[1] == "silent" and choice(range(1,5)) != 4:
+    if len(wager_list) > 1 and wager_list[1] == "silent" and choice(range(1,15)) != 4:
         silent = True
 
     speakonomy = Speakonomy()
