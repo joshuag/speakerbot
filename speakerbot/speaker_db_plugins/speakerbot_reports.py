@@ -1,6 +1,7 @@
 
+
 def get_lucky_numbers(self):
-        return self.execute("select lucky_number, count(lucky_number) as occurences, sum(case when outcome < 1 then 1 else 0 end) as negative_outcomes, sum(case when outcome > 1 then 1 else 0 end)  as successful_outcomes from wager_history where lucky_number <> 0 group by lucky_number")
+    return self.execute("select lucky_number, count(lucky_number) as occurences, sum(case when outcome < 1 then 1 else 0 end) as negative_outcomes, sum(case when outcome > 1 then 1 else 0 end)  as successful_outcomes from wager_history where lucky_number <> 0 group by lucky_number")
 
 def get_number_occurence(self):
     return self.execute("select chosen_number, count(chosen_number) as occurences, sum(case when outcome < 1 then 1 else 0 end) as negative_outcomes, sum(case when outcome > 1 then 1 else 0 end)  as successful_outcomes from wager_history group by chosen_number")
