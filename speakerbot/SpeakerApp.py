@@ -51,7 +51,7 @@ print "I'm ready"
 
 @app.context_processor
 def inject_speakonomy():
-    return dict(speakonomy=speakonomy)
+    return dict(speakonomy=speakonomy, config=config)
 
 @app.route('/')
 @app.route('/home/<image>')

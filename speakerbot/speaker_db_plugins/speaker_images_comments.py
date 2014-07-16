@@ -118,11 +118,13 @@ def check_appropriate(self, image):
 @time_instrument
 def get_random_image(self):
 
-    image_count = self.execute("SELECT count(*) as image_count FROM images where votes > -5 and nsfw <> 1").next()["image_count"]
+    min_votes = self.execute("SELECT min(votes) as min_votes FROM images where votes >= 0 and nsfw <> 1").next()["min_votes"]
+
+    image_count = self.execute("SELECT count(*) as image_count FROM images where votes = ? and nsfw <> 1", [min_votes]).next()["image_count"]
 
     if image_count == 0:
         return ""
 
     image_limit = randrange(0, image_count)
 
-    return self.execute("SELECT file_name FROM images where votes > -5 and nsfw <> 1 LIMIT ?, 1", [image_limit]).next()["file_name"]
+    return self.execute("SELECT file_name FROM images where votes between -5 and ? and nsfw <> 1 LIMIT ?, 1", [min_votes, image_limit]).next()["file_name"]
