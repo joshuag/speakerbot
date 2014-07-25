@@ -30,6 +30,9 @@ class Speakonomy:
 
     def get_free_play_timeout(self):
 
+        if self.free_play_timeout:
+            return self.free_play_timeout
+
         expiration_timestamp = self.db.execute("SELECT free_play_timeout FROM bank_account").fetchone()['free_play_timeout']
         self.free_play_timeout = dt.datetime.fromtimestamp(expiration_timestamp)
 
