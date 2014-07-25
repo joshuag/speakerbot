@@ -268,7 +268,7 @@ def say(text=None):
         record_utterance = False
 
     if ('george' in text.lower() or 'jorge' in text.lower()) and random.randint(1,2) == 1:
-        text = re.sub('jorge', 'george', flags=re.I)
+        text = re.sub('jorge|jorj', 'george', text, flags=re.I)
         text = re.sub('george', lambda x:random.choice(['alejandro','alex','dave','dickbutt','eric','gavin','george','gianni','greg','josh','matt','ross','tim','tuan']), text, flags=re.I)
 
     sb.say(text, record_utterance=record_utterance)
