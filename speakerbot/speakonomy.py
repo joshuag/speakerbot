@@ -91,7 +91,7 @@ class Speakonomy:
         expiration_timestamp = expiration_datetime.strftime("%s")
         self.db.execute("UPDATE bank_account SET free_play_timeout=?", [expiration_timestamp,])
 
-        self.free_play_timeout = dt.datetime.fromtimestamp(expiration_timestamp)
+        self.free_play_timeout = dt.datetime.fromtimestamp(float(expiration_timestamp))
 
     def get_sound_base_cost(self, sound_path):
         try:
