@@ -28,9 +28,9 @@ class Speakonomy:
         assert isinstance(amount,int)
         self.db.execute("UPDATE bank_account set balance=balance+{}".format(amount))
 
-    def get_free_play_timeout(self):
+    def get_free_play_timeout(self, force_check=False):
 
-        if self.free_play_timeout:
+        if self.free_play_timeout and not force_check:
             return self.free_play_timeout
 
         expiration_timestamp = self.db.execute("SELECT free_play_timeout FROM bank_account").fetchone()['free_play_timeout']
@@ -59,7 +59,7 @@ class Speakonomy:
             return balance['balance']
         return 0
 
-    def is_active(self):
+    def is_active(self, force_check=False):
 
         if self.disabled:
             return False
@@ -70,7 +70,7 @@ class Speakonomy:
         if current_hour < 8 or current_hour > 18:
             return False
 
-        if dt.datetime.now() < self.get_free_play_timeout():
+        if dt.datetime.now() < self.get_free_play_timeout(force_check=force_check):
             return False
 
         return True
@@ -116,9 +116,10 @@ class Speakonomy:
             self.db.execute("UPDATE sounds SET base_cost={} where name='{}'".format(sound_cost, sound_name))
 
     def withdraw_funds(self, amount):
-        self.deposit_funds(amount=-1*amount)
-        withdrawal_time = dt.datetime.now().strftime("%s")
-        self.db.execute("UPDATE bank_account SET last_withdrawal_time={}".format(withdrawal_time))    
+        if self.is_active(True):
+            self.deposit_funds(amount=-1*amount)
+            withdrawal_time = dt.datetime.now().strftime("%s")
+            self.db.execute("UPDATE bank_account SET last_withdrawal_time={}".format(withdrawal_time))    
 
     
 if __name__ == "__main__":
