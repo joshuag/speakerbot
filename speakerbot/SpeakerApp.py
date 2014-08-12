@@ -97,6 +97,7 @@ def upload_sound():
                 sb.add_sound_to_db(name, filename, base_cost)
                 full_sound_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), sound_fp)
                 subprocess.call(['mp3gain','-r', '{}'.format(full_sound_path)])
+        redirect(url_for("home", message="Your sound's been uploaded. Keep the change, ya filthy animal."))
 
     return render_template(
             "upload.html", 
