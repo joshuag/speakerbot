@@ -79,8 +79,20 @@
         max-height: 40px;
         clear:left;
       }
+      .list-group > a.disabled {
+        color: #999999;
+      }
+      .list-group > a.disabled:hover,
+      .list-group > a.disabled:focus {
+        color: #999999;
+        text-decoration: none;
+        background-color: transparent;
+        cursor: not-allowed;
+      }
       .sound-cost {
         color: orange;
+      }
+      .list-group-item .sound-cost {
         margin-right: 10px;
       }
       body { 
@@ -139,12 +151,18 @@
           <ul class="nav navbar-nav">
             <li><a href="#" onclick="spin_the_wheel()">Spin</a></li>
             <li><a href="/spinstats">Spin Stats</a></li>
-            <li><a href="/theme-songs">Theme Songs</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/theme-songs">Theme Songs</a></li>
+                <li><a href="/upload">Upload</a></li>
+              </ul>
+            </li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Special <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/say/!datefact">Date Fact</a></li>
-                <li><a href="/say/!suspense">Drumroll...</a></li>
+                <li><a href="/say/!suspense">Drumroll...<span class="pull-right sound-cost">20  <span class="glyphicon glyphicon-bullhorn"></span></span></a></li>
                 <li><a href="/say/!lunch">Lunch</a></li>
                 <li><a href="/say/!comment">Random Comment</a></li>
                 <li><a href="/say/!random">Random Utterance &lt;seed string&gt;</a></li>

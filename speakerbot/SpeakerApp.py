@@ -33,12 +33,11 @@ def stub_interrogator(*args, **kwargs):
 def stub_mangler(*args, **kwargs):
     return args, kwargs
 
-
 sb.attach_listener("say", evr.queue_speech_for_tweet)
 sb.attach_listener("say", evr.record_utterance)
 sb.attach_listener("play", speakonomy.sell_sound)
 sb.attach_listener("play", evr.record_sound_event)
-sb.attach_interrogator("play", stub_interrogator)
+sb.attach_interrogator("play", speakonomy.check_affordability)
 
 #sb.attach_mangler("say_classy", stub_mangler)
 
@@ -97,6 +96,7 @@ def upload_sound():
                 sb.add_sound_to_db(name, filename, base_cost)
                 full_sound_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), sound_fp)
                 subprocess.call(['mp3gain','-r', '{}'.format(full_sound_path)])
+                return redirect(url_for("home", message="Your sound's been uploaded. Keep the change, ya filthy animal."))
 
     return render_template(
             "upload.html", 
@@ -241,10 +241,6 @@ def play_sound(sound_name):
     if sound_name == "rebecca-black" and datetime.datetime.today().weekday() != 4:
         sound_name = random.choice(sb.sounds.keys())
 
-    #Economy - is it affordable to play?
-    if not speakonomy.check_affordability(sound_name):
-        return redirect(url_for("home", message="Ain't nobody got speakerbucks for that!"))
-    
     sb.play(sound_name)
 
     if sound_name == "rebecca-black":

@@ -14,8 +14,8 @@ class Speakonomy:
         self.disabled = disabled
         self.free_play_timeout = None
 
-    def check_affordability(self, sound_name=None, cost=None):
-        if not self.is_active():
+    def check_affordability(self, sound_name=None, cost=None, free=False):
+        if not self.is_active() or free:
             return True
         if not cost:
             cost = self.db.execute("SELECT cost FROM sounds WHERE name=?", [sound_name,]).fetchone()['cost']
@@ -80,7 +80,7 @@ class Speakonomy:
         self.db.execute("UPDATE sounds set cost=base_cost WHERE cost < base_cost")
 
     def sell_sound(self, sound_name, **kwargs):
-        if self.is_active():
+        if self.is_active() and not kwargs.get('free'):
             cost = int(self.db.execute("SELECT cost FROM sounds WHERE name=?", [sound_name,]).fetchone()['cost'])
             self.withdraw_funds(cost)
             self.db.execute("UPDATE sounds set cost=cost*2 where name=?", [sound_name,])
