@@ -6,9 +6,11 @@ from collections import OrderedDict
 from listenable import listenable, event
 from speaker_db import SpeakerDB
 from dynamic_class import attach_methods, PluggableObject, MissingPluginException
-from sounds import SoundEffect
+from sounds import Sound, SoundPlayer
 from util.speech_providers import GoogleTextToSpeech
 from util.words import parse_and_fill_mad_lib
+
+from config import config
 
 try:   
     import uwsgi
@@ -34,14 +36,17 @@ class Speakerbot(PluggableObject):
     def __init__(self, db=SpeakerDB, speech_provider=GoogleTextToSpeech):
 
         self.db = db()
+        self.sound_player = SoundPlayer(config['sound_dir'], config['sound_player'])
+        
         self.sounds = OrderedDict()
 
         self.listeners = {}
 
         self.load_sounds()
 
-        self.se = SoundEffect()
         self.tts = speech_provider()
+
+        
 
     def run_filters(self, text):
     
@@ -49,25 +54,29 @@ class Speakerbot(PluggableObject):
 
         return text
 
-    def get_sound_score(self, sound):
-        return int(sound["votes"]-sound["downvotes"]*math.pi*3)
-
-
     def load_sounds(self, score_cutoff=None):
 
         self.sounds = OrderedDict()
 
         sound_list = self.db.execute("SELECT * from sounds order by votes desc, name asc")
 
-        for sound in sound_list:
-            if score_cutoff and self.get_sound_score(sound) < score_cutoff:
+        for dbsound in sound_list:
+            sound = Sound(
+                name=dbsound["name"],
+                file_name=dbsound["path"],
+                votes=dbsound["votes"],
+                cost=dbsound["cost"],
+                downvotes=dbsound["downvotes"],
+                sound_player=self.sound_player
+            )
+            if score_cutoff and sound.get_score() < score_cutoff:
                 continue
-            self.sounds[sound["name"]] = (sound["path"], sound["votes"], sound["cost"], sound["downvotes"], self.get_sound_score(sound))
+            self.sounds[sound.name] = sound
 
         return self.sounds
 
     def _play(self, name):
-        self.se.play(self.sounds[name][0])
+        self.sounds[name].play()
 
     @lock
     @event

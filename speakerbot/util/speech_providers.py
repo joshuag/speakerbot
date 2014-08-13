@@ -3,7 +3,7 @@ import subprocess
 from urllib import quote_plus
 
 from text_manipulators import split_text
-from sounds import SoundEffect
+from sounds import SoundPlayer
 
 class GoogleTextToSpeech(object):
 
@@ -32,7 +32,7 @@ class GoogleTextToSpeech(object):
                     ['curl','-A Mozilla', self.url_string % (text)], 
                     stdout=f)
 
-        s = SoundEffect()
+        s = SoundPlayer()
         s.play_sound(filename)
 
 class EspeakTextToSpeech(object):

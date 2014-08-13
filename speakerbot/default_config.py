@@ -1,5 +1,6 @@
 """ This is default config file. Fill in and rename to config.py """
 config = {
+    'debug': False,
     'mashape_api_key': "",
     'twitter':{
         'app_key':'',
@@ -14,5 +15,7 @@ config = {
     	'pass':'',
     	'database':'',
         'db_path':'' #sqlite database file name
-    }
+    },
+    'sound_dir': 'sounds/',
+    'sound_player': 'mpg321',
 }

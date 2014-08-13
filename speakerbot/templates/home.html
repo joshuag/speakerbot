@@ -58,12 +58,12 @@ $('#sort_by').popover();
             <div class="list-group-item sticky">
               <input class="filter-box" type="text" id="filter_box" placeholder="Filter...">
             </div>
-          	{% for sound in sounds %}
-            <a class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound)}}" data-cost="{{ sounds[sound][2] }}" data-name="{{ sound }}" data-score="{{ -1*sounds[sound][4] }}">
-                <div class="downvote-button" onclick="downvote('{{ sound }}'); return false;"><span class="glyphicon glyphicon-thumbs-down"></span></div>
-              {{ sound }}
-              <span class="badge alert-default" title="{{ sounds[sound][1] }} plays, {{ sounds[sound][3] }} downvotes">{{ sounds[sound][4]}}</span>
-              <p class="pull-right sound-cost">{% if speakonomy.is_active() %}{{ "{:,}".format(sounds[sound][2]) }} <span class="glyphicon glyphicon-bullhorn"></span>{% else %}FREE{% endif %} </p>
+          	{% for sound_name, sound in sounds.iteritems() %}
+            <a class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound.name)}}" data-cost="{{ sound.cost }}" data-name="{{ sound.name }}" data-score="{{ -1*sound.get_score() }}">
+                <div class="downvote-button" onclick="downvote('{{ sound.name }}'); return false;"><span class="glyphicon glyphicon-thumbs-down"></span></div>
+              {{ sound.name }}
+              <span class="badge alert-default" title="{{ sound.votes }} plays, {{ sound.downvotes }} downvotes">{{ sound.get_score()}}</span>
+              <p class="pull-right sound-cost">{% if speakonomy.is_active() %}{{ "{:,}".format(sound.cost) }} <span class="glyphicon glyphicon-bullhorn"></span>{% else %}FREE{% endif %} </p>
             </a>
             {% endfor %}
             <form action="/downvote-sound" id="downvote-form" method="post"><input type="hidden" id="downvote-sound" name="downvote_sound" value=""></form>

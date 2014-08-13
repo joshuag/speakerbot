@@ -6,7 +6,7 @@ import requests
 from pyquery import PyQuery as pq
 
 from config import config
-from sounds import SoundEffect
+from sounds import Sound
 from speakonomy import Speakonomy
 from util.words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
@@ -105,14 +105,14 @@ def spin(sb, wager):
     else:
         winner = False
 
-    se = SoundEffect()
+    sp = sb.sound_player
 
-    if winner or not silent: se.play("price-big-wheel.mp3")
+    if winner or not silent: sp.play_sound("price-big-wheel.mp3")
 
     if winner:
         outcome = wager*win_multiplier
         prizes = ["a new car","a european vacation", "a deluxe horse trailer", "new jet skis", "a trip to the moon", "a large fry", "a bucket of golden nuggets", "gender neutral servant robots", "Abraham Lincoln's death mask"]
-        se.play(choice(win_sounds))
+        sp.play_sound(choice(win_sounds))
         if speakonomy.is_active():
             speakonomy.deposit_funds(outcome)
         outstr = "You win {prize}. And {outcome} speakerbucks!".format(outcome=outcome,prize=choice(prizes))
@@ -123,7 +123,7 @@ def spin(sb, wager):
         outstr += added_message
     else:
         outcome = wager * -1
-        if not silent: se.play(choice(lose_sounds))
+        if not silent: sp.play_sound(choice(lose_sounds))
         if lost_it_all:
             outcome = speakonomy.get_speakerbuck_balance() * -1
             speakonomy.withdraw_funds(speakonomy.get_speakerbuck_balance())
