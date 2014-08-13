@@ -24,17 +24,11 @@ def get_mashape_api(url):
 
 @plugin
 def suspense(sb):
-
-    speakonomy = Speakonomy()
-    if speakonomy.is_active():
-        if not speakonomy.check_affordability(cost=20):
-            return "Not enough speakerbucks for drumroll"
-
-    sb._play("drumroll")
+    sb.play("drumroll", free=True)
     
     sound = choice(sb.sounds.keys())
 
-    sb._play(sound)
+    sb.play(sound, free=True)
 
 @plugin
 def spin(sb, wager):
@@ -107,12 +101,12 @@ def spin(sb, wager):
 
     sp = sb.sound_player
 
-    if winner or not silent: sp.play_sound("price-big-wheel.mp3")
+    if winner or not silent: sp.play_sound("sounds/price-big-wheel.mp3")
 
     if winner:
         outcome = wager*win_multiplier
         prizes = ["a new car","a european vacation", "a deluxe horse trailer", "new jet skis", "a trip to the moon", "a large fry", "a bucket of golden nuggets", "gender neutral servant robots", "Abraham Lincoln's death mask"]
-        sp.play_sound(choice(win_sounds))
+        sp.play_sound("sounds/"+choice(win_sounds))
         if speakonomy.is_active():
             speakonomy.deposit_funds(outcome)
         outstr = "You win {prize}. And {outcome} speakerbucks!".format(outcome=outcome,prize=choice(prizes))
@@ -123,7 +117,7 @@ def spin(sb, wager):
         outstr += added_message
     else:
         outcome = wager * -1
-        if not silent: sp.play_sound(choice(lose_sounds))
+        if not silent: sp.play_sound("sounds/"+choice(lose_sounds))
         if lost_it_all:
             outcome = speakonomy.get_speakerbuck_balance() * -1
             speakonomy.withdraw_funds(speakonomy.get_speakerbuck_balance())

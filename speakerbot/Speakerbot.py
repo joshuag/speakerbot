@@ -75,7 +75,7 @@ class Speakerbot(PluggableObject):
 
     @lock
     @event
-    def play(self, name):
+    def play(self, name, **kwargs):
         self._play(name)
 
     @event #we may want to record the output of the filtered speech

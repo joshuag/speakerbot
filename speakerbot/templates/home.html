@@ -59,7 +59,7 @@ $('#sort_by').popover();
               <input class="filter-box" type="text" id="filter_box" placeholder="Filter...">
             </div>
           	{% for sound_name, sound in sounds.iteritems() %}
-            <a class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound.name)}}" data-cost="{{ sound.cost }}" data-name="{{ sound.name }}" data-score="{{ -1*sound.get_score() }}">
+            <a {% if sound.cost <= speakonomy.get_speakerbuck_balance() %}class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound.name)}}"{% else %}class="list-group-item sound disabled"{% endif %} data-cost="{{ sound.cost }}" data-name="{{ sound.name }}" data-score="{{ -1*sound.get_score() }}">
                 <div class="downvote-button" onclick="downvote('{{ sound.name }}'); return false;"><span class="glyphicon glyphicon-thumbs-down"></span></div>
               {{ sound.name }}
               <span class="badge alert-default" title="{{ sound.votes }} plays, {{ sound.downvotes }} downvotes">{{ sound.get_score()}}</span>

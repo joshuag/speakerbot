@@ -22,7 +22,7 @@ class Sound(object):
         return int(self.votes-self.downvotes*math.pi*3)
 
     def play(self):
-        self.sound_player.play_sound(self.file_name)
+        self.sound_player.play_sound(self.path)
 
 class SoundPlayer(object):
 
@@ -31,10 +31,9 @@ class SoundPlayer(object):
         if not executable:
             self.executable = config['sound_player']
 
-
     def play_sound(self, file_path):
         if not os.path.exists(file_path):
-            raise Exception("File not found")
+            raise Exception("File not found: {}".format(file_path))
         with open(os.devnull, "w") as fnull:
             subprocess.call([self.executable, file_path], stdout=fnull, stderr=fnull)
 
