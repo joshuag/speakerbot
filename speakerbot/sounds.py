@@ -13,8 +13,9 @@ class Sound(object):
         self.cost = cost
         self.downvotes = downvotes
         self.sound_player = sound_player
+        self.path = os.path.join(config['sound_dir'], file_name)
         if not sound_player:
-            self.sound_player = SoundPlayer(config['sound_dir'], config['sound_player'])
+            self.sound_player = SoundPlayer()
 
     def get_score(self):
         #Everybody loves pi
@@ -25,15 +26,16 @@ class Sound(object):
 
 class SoundPlayer(object):
 
-    def __init__(self, sound_dir, sound_player):
-        self.base_path = sound_dir
-        self.sound_player = sound_player
+    def __init__(self, executable=None):
+        self.executable = executable
+        if not executable:
+            self.executable = config['sound_player']
 
 
-    def play_sound(self, file_name):
-        file_path = os.path.join(self.base_path, file_name)
-
+    def play_sound(self, file_path):
+        if not os.path.exists(file_path):
+            raise Exception("File not found")
         with open(os.devnull, "w") as fnull:
-            subprocess.call([self.sound_player, file_path], stdout=fnull, stderr=fnull)
+            subprocess.call([self.executable, file_path], stdout=fnull, stderr=fnull)
 
 

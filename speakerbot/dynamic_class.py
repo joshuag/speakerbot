@@ -82,9 +82,8 @@ class PluggableObject(object):
         pass
 
     def dispatch_plugin(self, name, *args, **kwargs):
-        print self.plugins
         try:
             plugin = self.plugins[name]
         except KeyError:
             raise MissingPluginException("There is not a plugin installed for %s" % name)
-        plugin(self, *args, **kwargs)
+        return plugin(self, *args, **kwargs)

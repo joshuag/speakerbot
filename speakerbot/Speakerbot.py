@@ -1,6 +1,3 @@
-import os
-import math
-import subprocess
 from collections import OrderedDict
 
 from listenable import listenable, event
@@ -9,8 +6,6 @@ from dynamic_class import attach_methods, PluggableObject, MissingPluginExceptio
 from sounds import Sound, SoundPlayer
 from util.speech_providers import GoogleTextToSpeech
 from util.words import parse_and_fill_mad_lib
-
-from config import config
 
 try:   
     import uwsgi
@@ -36,8 +31,8 @@ class Speakerbot(PluggableObject):
     def __init__(self, db=SpeakerDB, speech_provider=GoogleTextToSpeech):
 
         self.db = db()
-        self.sound_player = SoundPlayer(config['sound_dir'], config['sound_player'])
-        
+        self.sound_player = SoundPlayer()
+
         self.sounds = OrderedDict()
 
         self.listeners = {}
