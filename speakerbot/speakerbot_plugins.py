@@ -6,7 +6,6 @@ import requests
 from pyquery import PyQuery as pq
 
 from config import config
-from sounds import Sound
 from speakonomy import Speakonomy
 from util.words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
@@ -24,6 +23,12 @@ def get_mashape_api(url):
 
 @plugin
 def suspense(sb):
+    speakonomy = Speakonomy()
+    if speakonomy.is_active():
+        if not speakonomy.check_affordability(cost=20):
+            return "Not enough speakerbucks for drumroll"
+        speakonomy.withdraw_funds(20)
+
     sb.play("drumroll", free=True)
     
     sound = choice(sb.sounds.keys())
