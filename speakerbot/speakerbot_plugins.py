@@ -285,8 +285,8 @@ def random(sb, seed=None):
 def scrum(sb):
     sp = sb.sound_player
     if randrange(1,5) == 3:
-        sp.play_sound("price-big-wheel-win.mp3")
+        sp.play_sound("sounds/price-big-wheel-win.mp3")
         return "There is no scrum today!"
     else:
-        sp.play_sound("tornado-siren.mp3")
+        sp.play_sound("sounds/tornado-siren.mp3")
         return "There will be a scrum today."
