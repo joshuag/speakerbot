@@ -283,7 +283,7 @@ def random(sb, seed=None):
 
 @plugin
 def scrum(sb):
-
+    sp = sb.sound_player
     if randrange(1,5) == 3:
         sp.play_sound("price-big-wheel-win.mp3")
         return "There is no scrum today!"
