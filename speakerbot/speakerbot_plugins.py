@@ -1,6 +1,6 @@
 import datetime
 import json
-from random import choice
+from random import choice, randrange
 
 import requests
 from pyquery import PyQuery as pq
@@ -280,3 +280,13 @@ def comment(sb):
 @plugin
 def random(sb, seed=None):
     return db.get_random_utterance(seed=seed)
+
+@plugin
+def scrum(sb):
+
+    if randrange(1,5) == 3:
+        sp.play_sound("price-big-wheel-win.mp3")
+        return "There is no scrum today!"
+    else:
+        sp.play_sound("tornado-siren.mp3")
+        return "There will be a scrum today."
