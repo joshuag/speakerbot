@@ -1,18 +1,20 @@
-import subprocess
+import datetime as dt
 import math
 import os
+import subprocess
 
 from config import config
 
 class Sound(object):
 
-    def __init__(self, name, file_name, votes, cost, downvotes, sound_player=None):
+    def __init__(self, name, file_name, votes, cost, downvotes, date_added, sound_player=None):
         self.name = name
         self.file_name = file_name
         self.votes = votes
         self.cost = cost
         self.downvotes = downvotes
         self.sound_player = sound_player
+        self.date_added = date_added
         self.path = os.path.join(config['sound_dir'], file_name)
         if not sound_player:
             self.sound_player = SoundPlayer()
@@ -23,6 +25,11 @@ class Sound(object):
 
     def play(self):
         self.sound_player.play_sound(self.path)
+
+    def was_recently_added(self):
+        if (dt.datetime.now() - self.date_added).total_seconds() / 60 / 60 / 24 < 7:
+            return True
+        return False
 
 class SoundPlayer(object):
 

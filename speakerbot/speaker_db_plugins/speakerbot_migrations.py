@@ -113,3 +113,6 @@ def _migrate_21(self):
 def _migrate_22(self):
     self.execute("CREATE TABLE field_values (field_name VARCHAR(64) NOT NULL, field_value VARCHAR(256) NOT NULL);")
     self.execute("CREATE INDEX field_name ON field_values (field_name) USING HASH")
+
+def _migrate_23(self):
+    self.execute("ALTER TABLE sounds ADD COLUMN date_added INTEGER NOT NULL DEFAULT 0")

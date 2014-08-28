@@ -61,7 +61,7 @@ $('#sort_by').popover();
           	{% for sound_name, sound in sounds.iteritems() %}
             <a {% if sound.cost <= speakonomy.get_speakerbuck_balance() %}class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound.name)}}"{% else %}class="list-group-item sound disabled"{% endif %} data-cost="{{ sound.cost }}" data-name="{{ sound.name }}" data-score="{{ -1*sound.get_score() }}">
                 <div class="downvote-button" onclick="downvote('{{ sound.name }}'); return false;"><span class="glyphicon glyphicon-thumbs-down"></span></div>
-              {{ sound.name }}
+              {{ sound.name }}{% if sound.was_recently_added() %}<img src='{{config.get("image_url_root","")}}/static/img/new2.gif'>{% endif %}
               <span class="badge alert-default" title="{{ sound.votes }} plays, {{ sound.downvotes }} downvotes">{{ sound.get_score()}}</span>
               <p class="pull-right sound-cost">{% if speakonomy.is_active() %}{{ "{:,}".format(sound.cost) }} <span class="glyphicon glyphicon-bullhorn"></span>{% else %}FREE{% endif %} </p>
             </a>

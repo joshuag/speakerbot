@@ -1,4 +1,5 @@
 from collections import OrderedDict
+import datetime as dt
 
 from listenable import listenable, event
 from speaker_db import SpeakerDB
@@ -62,7 +63,8 @@ class Speakerbot(PluggableObject):
                 votes=dbsound["votes"],
                 cost=dbsound["cost"],
                 downvotes=dbsound["downvotes"],
-                sound_player=self.sound_player
+                date_added=dt.datetime.fromtimestamp(dbsound["date_added"]),
+                sound_player=self.sound_player,
             )
             if score_cutoff and sound.get_score() < score_cutoff:
                 continue
@@ -116,8 +118,8 @@ class Speakerbot(PluggableObject):
 
 
     def add_sound_to_db(self, name, path, base_cost=0):
-
-        self.db.execute("INSERT INTO sounds (name, path, votes, cost, base_cost) VALUES (?, ?, ?, ?, ?)", (name, path, 0, base_cost, base_cost))
+        date_added = dt.datetime.now().strftime("%s")
+        self.db.execute("INSERT INTO sounds (name, path, votes, cost, base_cost, date_added) VALUES (?, ?, ?, ?, ?, ?)", (name, path, 0, base_cost, base_cost, date_added))
 
         self.load_sounds()
 
