@@ -49,8 +49,8 @@ app.config['UPLOAD_FOLDER'] = os.path.relpath('sounds')
 print "I'm ready"
 
 @app.context_processor
-def inject_speakonomy():
-    return dict(speakonomy=speakonomy, config=config)
+def inject_global_params():
+    return dict(speakonomy=speakonomy, config=config, current_speakerbuck_balance=speakonomy.get_speakerbuck_balance())
 
 @app.route('/')
 @app.route('/home/<image>')
