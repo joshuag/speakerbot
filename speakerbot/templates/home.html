@@ -24,9 +24,15 @@ function capitaliseFirstLetter(string)
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 function change_sort(type) {
+  var reverse = false;
+  if (type.charAt(0) == '-') {
+    reverse = true;
+    type = type.substring(1);
+  }
   $('a#sort_by').text(capitaliseFirstLetter(type));
-  $('#sort_by').popover('hide')
+  $('#sort_by').popover('hide');
   $('#sounds').shuffle('sort', {
+      reverse: reverse,
       by: function($el) {
         return $el.data(type);
       }
@@ -51,15 +57,16 @@ $('#sort_by').popover();
       <div class="row">
         <div class="col-sm-3">
           <div style="height:20px; font-size: 10px;">Last sound: {{ speakonomy.get_last_withdrawal_time().strftime('%A @ %H:%M %p') }} (+{{ speakerbucks_per_minute }})<div class="pull-right">Sort: <a id="sort_by" href="#" type="button" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-content='<a href="#" onclick=change_sort("cost")>Cost</a><br>
+            <a href="#" onclick=change_sort("-date")>Date</a><br>
             <a href="#" onclick=change_sort("name")>Name</a><br>
           <a href="#" onclick=change_sort("plays")>Plays</a><br>
           <a href="#" onclick=change_sort("score")>Score</a>'>Score</a></div></div>
           <div class="list-group" id="sounds">
-            <div class="list-group-item sticky">
+            <div class="list-group-item sticky" data-date="3333-33-33">
               <input class="filter-box" type="text" id="filter_box" placeholder="Filter...">
             </div>
           	{% for sound_name, sound in sounds.iteritems() %}
-            <a {% if sound.cost <= current_speakerbuck_balance %}class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound.name)}}"{% else %}class="list-group-item sound disabled"{% endif %} data-cost="{{ sound.cost }}" data-name="{{ sound.name }}" data-score="{{ -1*sound.get_score() }}">
+            <a {% if sound.cost <= current_speakerbuck_balance %}class="list-group-item sound" href="{{url_for("play_sound", sound_name=sound.name)}}"{% else %}class="list-group-item sound disabled"{% endif %} data-date="{{ sound.date_added }}" data-cost="{{ sound.cost }}" data-name="{{ sound.name }}" data-score="{{ -1*sound.get_score() }}">
                 <div class="downvote-button" onclick="downvote('{{ sound.name }}'); return false;"><span class="glyphicon glyphicon-thumbs-down"></span></div>
               {{ sound.name }}{% if sound.was_recently_added() %}<img src='{{config.get("image_url_root","")}}/static/img/new2.gif'>{% endif %}
               <span class="badge alert-default" title="{{ sound.votes }} plays, {{ sound.downvotes }} downvotes">{{ sound.get_score()}}</span>
