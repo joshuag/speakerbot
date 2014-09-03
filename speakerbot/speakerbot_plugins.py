@@ -10,6 +10,7 @@ from speakonomy import Speakonomy
 from util.words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
 from dynamic_class import plugin
+from mitch import quotes as mitch_quotes
 
 db = SpeakerDB()
 
@@ -290,3 +291,7 @@ def scrum(sb):
     else:
         sp.play_sound("sounds/tornado-siren.mp3")
         return "There will be a scrum today."
+
+@plugin
+def mitch(sb):
+    return choice(mitch_quotes)
