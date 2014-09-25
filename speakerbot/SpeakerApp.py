@@ -72,7 +72,7 @@ def home(image=None):
             comments=db.get_image_comments(image),
             last_withdrawal_time=last_withdrawal_time,
             speakerbucks_per_minute=speakerbucks_per_minute,
-            random_title=parse_and_fill_mad_lib("The !adjective !noun !adverb !verb the !noun.")
+            random_title="The !adjective !noun !adverb !verb the !noun."
             )
 
 @app.route('/upload', methods=["GET", "POST"])
