@@ -43,6 +43,7 @@ def spin(sb, wager):
     win_multiplier = 20
     outstr = None
     silent = False
+    double_or_nothing = False
     cheated_death = 0
     added_message = ""
 
@@ -58,6 +59,9 @@ def spin(sb, wager):
     elif wager.upper() == 'MAX69':
         wager = speakonomy.get_speakerbuck_balance()
         wager = wager - wager % 69
+    elif wager.upper() == 'DON':
+        double_or_nothing = True
+        wager = speakonomy.get_speakerbuck_balance()
     try:
         wager = int(wager)
     except:
@@ -104,6 +108,16 @@ def spin(sb, wager):
         winner = True
     else:
         winner = False
+
+    if double_or_nothing:
+        chosen_number = randrange(1,100)
+        if chosen_number < 60:
+            winner = True
+            win_multiplier = 2
+            added_message += "You went double or nothing and won. "
+        else:
+            winner = False
+            added_message += "You went double or nothing and lost. "
 
     sp = sb.sound_player
 
