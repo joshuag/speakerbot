@@ -134,6 +134,7 @@ def spin(sb, wager):
             outstr += "You also cheated death."
             cheated_death = 1
     else:
+        outstr = ""
         outcome = wager * -1
         if not silent: sp.play_sound("sounds/"+choice(lose_sounds))
         if lost_it_all:
