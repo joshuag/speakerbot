@@ -114,12 +114,10 @@ def spin(sb, wager):
         if chosen_number < 60:
             winner = True
             win_multiplier = 2
-            print "winner"
-            added_message += "You went double or nothing and won. "
+            outstr = "You went double or nothing and won. "
         else:
-            print "loser"
             winner = False
-            added_message += "You went double or nothing and lost. "
+            outstr = "You went double or nothing and lost. "
 
     sp = sb.sound_player
 
@@ -135,6 +133,7 @@ def spin(sb, wager):
         if lost_it_all:
             outstr += "You also cheated death."
             cheated_death = 1
+        outstr += added_message
     else:
         outcome = wager * -1
         if not silent: sp.play_sound("sounds/"+choice(lose_sounds))
@@ -142,8 +141,6 @@ def spin(sb, wager):
             outcome = speakonomy.get_speakerbuck_balance() * -1
             speakonomy.withdraw_funds(speakonomy.get_speakerbuck_balance())
             outstr = "You risked it all for sexy times. And lost."
-
-    outstr += added_message
 
     db.record_wager(lucky_number, wager, outcome, chosen_number, win_multiplier, cheated_death)
 
