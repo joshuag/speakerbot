@@ -25,7 +25,7 @@ class Speakonomy:
         return False
 
     def deposit_funds(self, amount=1):
-        assert isinstance(amount,int)
+        assert isinstance(amount,long)
         self.db.execute("UPDATE bank_account set balance=balance+{}".format(amount))
 
     def get_free_play_timeout(self, force_check=False):
