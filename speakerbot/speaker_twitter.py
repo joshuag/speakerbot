@@ -7,6 +7,7 @@ from twython.exceptions import TwythonError
 from config import config
 from speaker_db import SpeakerDB
 from Speakerbot import Speakerbot
+import requests
 
 class SpeakerTwitter(object):
 
@@ -33,6 +34,8 @@ class SpeakerTwitter(object):
         if tweet_record:
             tweet_text = unicode(tweet_record["tweet_text"])
             tweet_id = tweet_record["id"]
+
+            requests.post("'https://thevk.slack.com/services/hooks/slackbot?token=MSI1tk9s0IZrTRApssF5f1sC&channel=%23random'", data=tweet_text)
 
             tweet_this = True
             for word in forbidden_words:
