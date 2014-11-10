@@ -2,11 +2,19 @@ from hashlib import md5, sha256
 
 from speakerlib import niceify_number
 
+import requests
+
+from config import config
+
 class EventRecorder(object):
 
     def __init__(self, db):
 
         self.db = db
+
+    def post_to_slack(self, speech_text, **kwargs):
+        if config.get("slack_url", None):
+            requests.post(config["slack_url"], data=speech_text)
 
     def record_utterance(self, speech_text, record_utterance=False, event_result=None):
         if not record_utterance:

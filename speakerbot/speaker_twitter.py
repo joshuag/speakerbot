@@ -35,8 +35,6 @@ class SpeakerTwitter(object):
             tweet_text = unicode(tweet_record["tweet_text"])
             tweet_id = tweet_record["id"]
 
-            requests.post("https://thevk.slack.com/services/hooks/slackbot?token=MSI1tk9s0IZrTRApssF5f1sC&channel=%23random", data=tweet_text)
-
             tweet_this = True
             for word in forbidden_words:
                 if word in tweet_text.lower():
