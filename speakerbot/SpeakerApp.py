@@ -2,7 +2,7 @@ import datetime
 import os, subprocess
 from hashlib import sha256
 
-from flask import Flask, redirect, url_for,  render_template, request 
+from flask import Flask, redirect, url_for,  render_template, request, jsonify
 from werkzeug.utils import secure_filename
 import random
 import re
@@ -247,7 +247,11 @@ def play_sound(sound_name):
     if sound_name == "rebecca-black":
         speakonomy.set_free_play_timeout(minutes=5)
         sb.say("It's Friday. Friday. So all sounds are free for the next 5 minutes.")
-    return redirect(url_for("home"))
+
+    return jsonify(speakerbuck_balance=speakonomy.get_speakerbuck_balance(),
+        played_sound=sound_name,
+        played_sound_cost=sb.sounds[sound_name].cost
+        )
 
 @app.route('/say/', methods=["POST", "GET"])
 @app.route('/say/<text>')
