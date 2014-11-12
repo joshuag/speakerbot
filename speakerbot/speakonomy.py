@@ -59,6 +59,7 @@ class Speakonomy:
         return 0
 
     def is_active(self, force_check=False):
+        return True
 
         if self.disabled:
             return False

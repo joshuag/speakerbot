@@ -150,7 +150,7 @@ def upvote_image(image):
 
     speakonomy.deposit_funds(5)
 
-    return redirect(url_for("home", message="Thank you for voting, have 5 speakerbucks"))
+    return jsonify(votes=votes, speakerbuck_balance=speakonomy.get_speakerbuck_balance())
 
 @app.route('/image/<image>/downgoat')
 def downvote_image(image):
@@ -162,8 +162,12 @@ def downvote_image(image):
 
     speakonomy.deposit_funds(5)
 
-    return redirect(url_for("home", message="Thank you for voting, have 5 speakerbucks"))
+    return jsonify(votes=votes, speakerbuck_balance=speakonomy.get_speakerbuck_balance())
 
+@app.route('/new-image')
+def new_image():
+    image = db.get_random_image()
+    return jsonify(image=image, votes=db.get_image_votes(image))
 
 @app.route('/downvote-sound', methods=["POST"])
 def downvote_sound():
@@ -193,7 +197,7 @@ def comment_image(image):
         db.add_comment(image, comment)
         speakonomy.deposit_funds(10)
 
-    return redirect(url_for("home", image=image, message="Thank you for commenting, have 10 speakerbucks"))
+    return jsonify(speakerbuck_balance=speakonomy.get_speakerbuck_balance())
 
 @app.route('/images/nsfw')
 def nsfw_images():
@@ -270,11 +274,11 @@ def say(text=None):
 
     if ('george' in text.lower() or 'jorge' in text.lower()) and random.randint(1,2) == 1:
         text = re.sub('jorge|jorj', 'george', text, flags=re.I)
-        text = re.sub('george', lambda x:random.choice(['alejandro','alex','dave','dickbutt','eric','gavin','george','gianni','greg','josh','matt','ross','tim','tuan']), text, flags=re.I)
+        text = re.sub('george', lambda x:random.choice(['alejandro','alex','dickbutt','eric','george','gianni','greg','josh','matt','ross','tim','trevor','tuan']), text, flags=re.I)
 
     sb.say(text, record_utterance=record_utterance)
 
-    return default_redirect()
+    return jsonify(speakerbuck_balance=speakonomy.get_speakerbuck_balance())
 
 def default_redirect():
     if not request.is_xhr:
