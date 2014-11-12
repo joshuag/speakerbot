@@ -121,6 +121,9 @@
         width: 80%;
         outline: 0;
       }
+      .image-notification {
+        margin-top:5px;
+      }
     {% block css %}
     {% endblock %}
     </style>
@@ -161,15 +164,14 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Special <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/say/!datefact">Date Fact</a></li>
-                <li><a href="/say/!suspense">Drumroll...<span class="pull-right sound-cost">20  <span class="glyphicon glyphicon-bullhorn"></span></span></a></li>
-                <li><a href="/say/!lunch">Lunch</a></li>
-                <li><a href="/say/!comment">Random Comment</a></li>
-                <li><a href="/say/!random">Random Utterance &lt;seed string&gt;</a></li>
-                <li><a href="/say/!weather">Weather</a></li>
-                <li><a href="/say/!dave">!dave</a></li>
-                <li><a href="/say/!josh">!josh</a></li>
-                <li><a href="/say/!ross">!ross</a></li>
+                <li><a href="javascript:say('!datefact')">Date Fact</a></li>
+                <li><a href="javascript:say('!suspense')">Drumroll...<span class="pull-right sound-cost">20  <span class="glyphicon glyphicon-bullhorn"></span></span></a></li>
+                <li><a href="javascript:say('!lunch')">Lunch</a></li>
+                <li><a href="javascript:say('!comment')">Random Comment</a></li>
+                <li><a href="javascript:say('!random')">Random Utterance &lt;seed string&gt;</a></li>
+                <li><a href="javascript:say('!weather')">Weather</a></li>
+                <li><a href="javascript:say('!josh')">!josh</a></li>
+                <li><a href="javascript:say('!ross')">!ross</a></li>
               </ul>
             </li>
           </ul>
@@ -211,7 +213,13 @@
       $vk.init_ui_hacks();
 
       $("#say_form").autoajax_post(function(){$("#speech-text").val("")});
-
+      $("#comment_form").autoajax_post(function(data){
+        $('#comment-list').append('<li class="list-group-item">' + $('#image-comment').val() + '</li>');
+        $('#speakerbuck_balance').html(numberWithCommas(data.speakerbuck_balance));
+        $('#image-comment').val('')
+        addTemporaryNotification('#comment_form', 'Thank you for commenting, have 10 speakerbucks!');
+      });
+      
       var obj = $("body");
       obj.on('dragenter', function (e) 
       {
@@ -238,10 +246,37 @@
     function spin_the_wheel() {
       wager = prompt('Enter your speakerbuck wager:', '50');
       if (wager){
-        window.location ='/say/!spin%20'+wager;
+        say('!spin%20'+wager);
       }
+
+
+
     }
     {% block javascript %}{% endblock %}
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    var speakerbalance = {{speakonomy.get_speakerbuck_balance()}};
+    function evaluateAffordability(i, sound) {
+      if (speakerbalance < $(sound).data('cost')) {
+        $(sound).addClass("disabled");
+      } else {
+        $(sound).removeClass("disabled");
+      }
+    }
+    function balanceBudget(data) {
+      speakerbalance = data.speakerbuck_balance;
+      $('#speakerbuck_balance').html(numberWithCommas(speakerbalance));
+      if (data.hasOwnProperty('played_sound')) {
+        $('.sound[data-name="'+data.played_sound+'"] .cost-value').html(numberWithCommas(data.played_sound_cost));
+        $('.sound[data-name="'+data.played_sound+'"]').data('cost', data.played_sound_cost);
+      }
+      $('.sound').each(evaluateAffordability);
+    }
+
+    function say(text) {
+      jQuery.get('/say/'+text, balanceBudget)
+    }
   </script>
   </body>
 </html>

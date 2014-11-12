@@ -13,6 +13,11 @@ class EventRecorder(object):
         self.db = db
 
     def post_to_slack(self, speech_text, **kwargs):
+        
+        #Skip plugins
+        if speech_text[0] == "!":
+            return
+
         if config.get("slack_url", None):
             requests.post(config["slack_url"], data=speech_text)
 

@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block javascript %}
-var speakerbalance = {{speakonomy.get_speakerbuck_balance()}};
 $(document).ready(function() {
   var $grid = $('#sounds');
 
@@ -40,29 +39,42 @@ function change_sort(type) {
     });
 
 }
-function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+function addTemporaryNotification(after_selector, message) {
+  $(".image-notification").alert('close');
+  $(after_selector).after('<div class="alert alert-info image-notification">' + message + '</div>');
+  $(".image-notification").fadeTo(2000, 500).slideUp(500, function(){
+    $(".image-notification").alert('close');
+  });
 }
-function evaluateAffordability(i, sound) {
-  if (speakerbalance < $(sound).data('cost')) {
-    $(sound).addClass("disabled");
-  } else {
-    $(sound).removeClass("disabled");
-  }
-}
-function balanceBudget(data) {
-  speakerbalance = data.speakerbuck_balance;
-  $('#speakerbuck_balance').html(numberWithCommas(speakerbalance));
-  $('.sound[data-name="'+data.played_sound+'"] .cost-value').html(numberWithCommas(data.played_sound_cost));
-  $('.sound[data-name="'+data.played_sound+'"]').data('cost', data.played_sound_cost);
-  $('.sound').each(evaluateAffordability);
+function voteCallback(data) {
+  balanceBudget(data);
+  $('#image_votes').html(data.votes);
+  addTemporaryNotification('.random-image-toolbar', 'Thank you for voting, have 5 speakerbucks!');
 }
 function play_sound(sound_name) {
   jQuery.get('/play_sound/'+sound_name, balanceBudget)
 }
 function downvote(name) {
   $('#downvote-sound').val(name);
-  $('#downvote-form').submit();
+  $('#downvote_form').submit();
+}
+function upboat_image(name) {
+  jQuery.get('/image/'+name+'/upboat', voteCallback)
+}
+function downgoat_image(name) {
+  jQuery.get('/image/'+name+'/downgoat', voteCallback)
+}
+function new_image() {
+  jQuery.get('/new-image', function(data) {
+    $('.random-image').attr('src','{{config.get("image_url_root","")}}/static/r_gifs/'+data.image);
+    last_image = $('#image_name').val();
+    $('.random-image-toolbar a').each(function() {
+      $(this).attr('href', $(this).attr('href').replace(last_image, data.image));
+    });
+    $('#image_name').val(data.image);
+    $('#image_votes').html(data.votes);
+    $('.nsfw').removeClass("active");
+  })
 }
 function filter(element) {
         var value = $(element).val();
@@ -94,7 +106,7 @@ $('#sort_by').popover();
               <p class="pull-right sound-cost">{% if speakonomy.is_active() %}<span class="cost-value">{{ "{:,}".format(sound.cost) }}</span> <span class="glyphicon glyphicon-bullhorn"></span>{% else %}FREE{% endif %} </p>
             </a>
             {% endfor %}
-            <form action="/downvote-sound" id="downvote-form" method="post"><input type="hidden" id="downvote-sound" name="downvote_sound" value=""></form>
+            <form action="/downvote-sound" id="downvote_form" method="post"><input type="hidden" id="downvote-sound" name="downvote_sound" value=""></form>
           </div>
         </div><!-- /.col-sm-8 -->
         <div class="col-sm-9">
@@ -105,17 +117,17 @@ $('#sort_by').popover();
             </div>
             <div class="panel-body text-center">
               <img src='{{config.get("image_url_root","")}}/static/r_gifs/{{ image }}' class="random-image"/>
-
-              <h1><span class="label label-default">{{ votes }}</span></h1>
+              <input type="hidden" id="image_name" value="{{ image }}">
+              <h1><span class="label label-default" id="image_votes">{{ votes }}</span></h1>
 
               <div class="btn-group random-image-toolbar">
-                <a href="/image/{{ image }}/upboat" class="btn btn-default glyphicon glyphicon-thumbs-up"></a>
-                <a href="/image/{{ image }}/nsfw" class="btn btn-default glyphicon glyphicon-remove {%if nsfw %}active{%endif%}">nsfw</a>
-                <a href="/" class="btn btn-default glyphicon glyphicon-refresh">new</a>
-                <a href="/image/{{ image }}/downgoat" class="btn btn-default glyphicon glyphicon-thumbs-down"></a>
+                <a href="javascript:upboat_image('{{ image }}')" class="btn btn-default glyphicon glyphicon-thumbs-up"></a>
+                <a href="/image/{{ image }}/nsfw" class="btn btn-default glyphicon glyphicon-remove nsfw {%if nsfw %}active{%endif%}">nsfw</a>
+                <a href="javascript:new_image()" class="btn btn-default glyphicon glyphicon-refresh">new</a>
+                <a href="javascript:downgoat_image('{{ image }}')" class="btn btn-default glyphicon glyphicon-thumbs-down"></a>
               </div>
 
-              <form action="/comment/{{ image }}" method="post" class="comment-form">
+              <form action="/comment/{{ image }}" method="post" class="comment-form" id="comment_form">
                   <div class="input-group">
                     <input type="text" class="form-control" maxlength="250" placeholder="How does this make you feel?" name="image-comment" id="image-comment">
                     <div class="input-group-btn">
@@ -124,7 +136,7 @@ $('#sort_by').popover();
                 </div>
               </form>
 
-              <ul class="list-group">
+              <ul class="list-group" id="comment-list">
                   {% for comment in comments %}
                      <li class="list-group-item">{{ comment["comment"] }}</li>
                   {% endfor %}

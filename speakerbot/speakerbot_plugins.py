@@ -30,11 +30,11 @@ def suspense(sb):
             return "Not enough speakerbucks for drumroll"
         speakonomy.withdraw_funds(20)
 
-    sb.play("drumroll", free=True)
+    sb._play("drumroll")
     
     sound = choice(sb.sounds.keys())
 
-    sb.play(sound, free=True)
+    sb._play(sound)
 
 @plugin
 def spin(sb, wager):
