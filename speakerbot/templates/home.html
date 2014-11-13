@@ -52,29 +52,45 @@ function voteCallback(data) {
   addTemporaryNotification('.random-image-toolbar', 'Thank you for voting, have 5 speakerbucks!');
 }
 function play_sound(sound_name) {
-  jQuery.get('/play_sound/'+sound_name, balanceBudget)
+  jQuery.ajax({
+         url: '/play_sound/'+sound_name,
+         success: balanceBudget,
+         async:   false
+    });
 }
 function downvote(name) {
   $('#downvote-sound').val(name);
   $('#downvote_form').submit();
 }
 function upboat_image(name) {
-  jQuery.get('/image/'+name+'/upboat', voteCallback)
+  jQuery.ajax({
+         url: '/image/'+name+'/upboat',
+         success: voteCallback,
+         async:   false
+    });
 }
 function downgoat_image(name) {
-  jQuery.get('/image/'+name+'/downgoat', voteCallback)
+  jQuery.ajax({
+         url: '/image/'+name+'/downgoat',
+         success: voteCallback,
+         async:   false
+    });
 }
 function new_image() {
-  jQuery.get('/new-image', function(data) {
-    $('.random-image').attr('src','{{config.get("image_url_root","")}}/static/r_gifs/'+data.image);
-    last_image = $('#image_name').val();
-    $('.random-image-toolbar a').each(function() {
-      $(this).attr('href', $(this).attr('href').replace(last_image, data.image));
+  jQuery.ajax({
+         url: '/new-image',
+         success: function(data) {
+            $('.random-image').attr('src','{{config.get("image_url_root","")}}/static/r_gifs/'+data.image);
+            last_image = $('#image_name').val();
+            $('.random-image-toolbar a').each(function() {
+              $(this).attr('href', $(this).attr('href').replace(last_image, data.image));
+            });
+            $('#image_name').val(data.image);
+            $('#image_votes').html(data.votes);
+            $('.nsfw').removeClass("active");
+          },
+         async:   false
     });
-    $('#image_name').val(data.image);
-    $('#image_votes').html(data.votes);
-    $('.nsfw').removeClass("active");
-  })
 }
 function filter(element) {
         var value = $(element).val();

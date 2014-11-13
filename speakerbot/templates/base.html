@@ -275,7 +275,10 @@
     }
 
     function say(text) {
-      jQuery.get('/say/'+text, balanceBudget)
+      jQuery.ajax({
+           url: '/say/'+text,
+           async:   false
+      });
     }
   </script>
   </body>
