@@ -209,7 +209,7 @@
     <script type="text/javascript" src="/static/js/snowfall.js"></script>
     <script>
     $(document).ready( function(){
-      $(document).snowfall({flakeColor: '#ccccee', flakeCount : {{current_speakerbuck_balance}}, maxSpeed : 10});
+      $(document).snowfall({flakeColor: '#ccccee', flakeCount : 800, maxSpeed : 10, maxSize: {{current_speakerbuck_balance/100}}, maxSpeed: {{ current_speakerbuck_balance/100 )}} });
     });
     </script>
     {% block pagescripts %}{% endblock %}
