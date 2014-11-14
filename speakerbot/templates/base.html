@@ -206,10 +206,10 @@
     <script src="/static/js/jquery.shuffle.js"></script>
     <script src="/static/js/vk.js"></script>
     <script src="/static/js/vkgfy.js"></script>
-    <script type="text/javascript" src="/static/js/snowfall.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.snow.js"></script>
     <script>
     $(document).ready( function(){
-      $(document).snowfall({flakeColor: '#ccccee', flakeCount : 800, maxSpeed : 10, maxSize: {{current_speakerbuck_balance/100}} });
+      $.fn.snow({ minSize: 5, maxSize: {% if current_speakerbuck_balance < 2500 %}5{% else %}{{ current_speakerbuck_balance / 500 }}{% endif %}, newOn: 250, flakeColor: '#eeeeff' });
     });
     </script>
     {% block pagescripts %}{% endblock %}
