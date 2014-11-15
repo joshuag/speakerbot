@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block javascript %}
+function filter(element) {
+    var value = $(element).val();
+
+    $('#sounds > .sound:not(:contains(' + value + '))').hide(); 
+    $('#sounds > .sound:contains(' + value + ')').show();
+    change_sort('plays');
+}
+function add_sound() {
+  if ($('#macro_sounds .sound').length >= 5) {
+    return;
+  }
+  $('#macro_sounds').append($(this).clone().removeAttr('style'));
+  toggleSoundList();
+}
+function toggleSoundList() {
+  if ($('#macro_sounds .sound').length >= 5) {
+    $('#sounds .sound').addClass('disabled');
+  }
+  else {
+    $('#sounds .sound').removeClass('disabled');
+  }
+}
+$(document).ready(function() {
+  $("#sounds .sound").click(add_sound);
+  var removeIntent = false;
+  $('#macro_sounds').sortable({
+      over: function () {
+          removeIntent = false;
+      },
+      out: function () {
+          removeIntent = true;
+      },
+      beforeStop: function (event, ui) {
+          if(removeIntent == true){
+              ui.item.remove();
+          }
+      },
+      stop: function (event, ui) {
+          toggleSoundList();
+      }
+  });
+
+  $('#sounds').on('done.shuffle', function() {
+      $("#sounds .list-group-item").css("width", "100%");
+    });
+  $('#filter_box').on('keyup change', function() {
+    var val = this.value.toLowerCase();
+    $('#sounds').shuffle('shuffle', function($el, shuffle) {
+        if ($el.hasClass('sticky')) {
+          return true;
+        }
+        var text = $.trim( $el.text() ).toLowerCase();
+        return text.indexOf(val) !== -1;
+      });
+    });
+
+});
+
+{% endblock %}
+{% block content %}
+      <div class="page-header">
+        <h1>Macro Manager</h1>
+      </div>
+      <div class="row">
+          {% if message %}<div class="alert alert-warning">{{message}}</div>{% endif %}
+        <form id="theme_song_form" action="/theme-songs" method="post">
+        <div class="col-sm-3">
+          <h3>Choose up to 5 sounds:</h3>
+          <div class="list-group" id="sounds">
+            <div class="list-group-item sticky">
+              <input class="filter-box" type="text" id="filter_box" placeholder="Filter...">
+            </div>
+            {% for sound in sounds %}
+            <a class="list-group-item sound" data-name="{{ sound }}">
+              {{ sound }}
+            </a>
+              
+            {% endfor %}
+          </div>
+        </div><!-- /.col-sm-3 -->
+        <div class="col-sm-3">
+          <h3>Put 'em in order:</h3>
+          <div class="list-group" id="macro_sounds">
+            {% for sound in macro_sounds %}
+            <a class="list-group-item" data-name="{{ sound }}">
+              {{ sound }}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <h3>Your creation:</h3>
+          <input type="hidden" name="validator" id="validator" value="">
+          <input type=text name="macro_name">
+        </div>
+        <div class="col-sm-3">
+          <button onclick="submit_song_choice()" class="btn btn-default">It's Alive!</button>
+        </div><!-- /.col-sm-8 -->
+        </form>
+      </div>
+{% endblock %}

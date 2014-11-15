@@ -280,6 +280,14 @@ def say(text=None):
 
     return jsonify(speakerbuck_balance=speakonomy.get_speakerbuck_balance())
 
+
+@app.route('/macros/create', methods=["GET", "POST"])
+def create_macro():
+    return render_template(
+            "macros.html", 
+            sounds=sorted(sb.load_sounds().keys()), 
+            )
+
 def default_redirect():
     if not request.is_xhr:
         redir = request.referrer or url_for("home")
