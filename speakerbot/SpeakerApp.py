@@ -283,9 +283,11 @@ def say(text=None):
 
 @app.route('/macros/create', methods=["GET", "POST"])
 def create_macro():
+    sounds = sb.load_sounds()
+    template_sounds = [sounds[k] for k in sorted(sounds.keys())]
     return render_template(
             "macros.html", 
-            sounds=sorted(sb.load_sounds().keys()), 
+            sounds=template_sounds, 
             )
 
 def default_redirect():
