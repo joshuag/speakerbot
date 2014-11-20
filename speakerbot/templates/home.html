@@ -112,7 +112,7 @@ $('#sort_by').popover();
           <a href="#" onclick=change_sort("score")>Score</a>'>Score</a></div></div>
           <div class="list-group" id="sounds">
             <div class="list-group-item sticky" data-date="3333-33-33">
-              <input class="filter-box" type="text" id="filter_box" placeholder="Filter...">
+              <input class="list-group-editable-input" type="text" id="filter_box" placeholder="Filter...">
             </div>
           	{% for sound_name, sound in sounds.iteritems() %}
             <a class="list-group-item sound{% if sound.cost > current_speakerbuck_balance %} disabled{% endif %}" href="javascript:play_sound('{{sound.name}}')" data-date="{{ sound.date_added }}" data-cost="{{ sound.cost }}" data-name="{{ sound.name }}" data-score="{{ -1*sound.get_score() }}">

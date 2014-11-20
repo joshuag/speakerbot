@@ -4,6 +4,9 @@
   font-size:36px;
   white-space: nowrap;
 }
+.editable {
+  
+}
 {% endblock %}
 {% block javascript %}
 function filter(element) {
@@ -18,6 +21,10 @@ function add_sound() {
     return;
   }
   $('#macro_sounds').append($(this).clone().removeAttr('style'));
+  $('#macro_sounds .custom-text').removeAttr('disabled');
+  $('#macro_sounds .custom-text').on('keyup change', function() {
+    updateMacroCosts();
+  });
   toggleSoundList();
   updateMacroCosts();
 }
@@ -42,11 +49,17 @@ function updateMacroCosts() {
   var deduper = [];
   var total = 0;
   $('#macro_sounds .sound').each(function () {
-    name = $(this).data('name');
-    multiplier = Math.pow(2, countInArray(deduper, name));
-    cost = $(this).data('base-cost') * multiplier;
+    if ($(this).data('type') == 'speech') {
+      cost = $(this).find('.custom-text').val().replace(/[^A-Z]/gi, "").length * 5;
+    }
+    else {
+      name = $(this).data('name');
+      multiplier = Math.pow(2, countInArray(deduper, name));
+      cost = $(this).data('base-cost') * multiplier;
+      deduper.push(name);
+    }
     $('.cost-value', this).text(numberWithCommas(cost));
-    deduper.push(name);
+    
     total += cost;
   });
   $('#macro_total_cost').html(numberWithCommas(total));
@@ -107,10 +120,14 @@ $(document).ready(function() {
           <h3>Click to add a sound:</h3>
           <div class="list-group" id="sounds">
             <div class="list-group-item sticky">
-              <input class="filter-box" type="text" id="filter_box" placeholder="Filter...">
+              <input class="list-group-editable-input" type="text" id="filter_box" placeholder="Filter...">
             </div>
+            <a class="list-group-item sound sticky" data-type="speech">
+              <input class="list-group-editable-input custom-text" type="text" placeholder="💬 Custom Speech" maxlength="100" disabled>
+              <p class="pull-right sound-cost"><span class="cost-value">?? </span> <span class="glyphicon glyphicon-bullhorn"></span></p>
+            </a>
             {% for sound in sounds %}
-            <a class="list-group-item sound" data-name="{{ sound.name }}" data-base-cost="{{ sound.base_cost }}" data-length="{{ sound.seconds }}">
+            <a class="list-group-item sound" data-type="sound" data-name="{{ sound.name }}" data-base-cost="{{ sound.base_cost }}" data-length="{{ sound.seconds }}">
               {{ sound.name }}
               <p class="pull-right sound-cost"><span class="cost-value">{{ "{:,}".format(sound.base_cost) }}</span> <span class="glyphicon glyphicon-bullhorn"></span></p>
             </a>
