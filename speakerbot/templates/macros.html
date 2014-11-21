@@ -20,8 +20,10 @@ function add_sound() {
   if ($('#macro_sounds .sound').length >= 5) {
     return;
   }
-  $('#macro_sounds').append($(this).clone().removeAttr('style'));
+  clone = $(this).clone().removeAttr('style')
+  $('#macro_sounds').append(clone);
   $('#macro_sounds .custom-text').removeAttr('disabled');
+  $('input', clone).focus();
   $('#macro_sounds .custom-text').on('keyup change', function() {
     updateMacroCosts();
   });
@@ -50,7 +52,7 @@ function updateMacroCosts() {
   var total = 0;
   $('#macro_sounds .sound').each(function () {
     if ($(this).data('type') == 'speech') {
-      cost = $(this).find('.custom-text').val().replace(/[^A-Z]/gi, "").length * 5;
+      cost = $(this).find('.custom-text').val().replace(/[^A-Z]/gi, "").length * 2;
     }
     else {
       name = $(this).data('name');
@@ -115,7 +117,7 @@ $(document).ready(function() {
       </div>
       <div class="row">
           {% if message %}<div class="alert alert-warning">{{message}}</div>{% endif %}
-        <form id="theme_song_form" action="/theme-songs" method="post">
+        <form id="macro_form" action="/macros/create" method="post">
         <div class="col-sm-3">
           <h3>Click to add a sound:</h3>
           <div class="list-group" id="sounds">
@@ -148,11 +150,11 @@ $(document).ready(function() {
         <div class="col-sm-3">
           <h3>Name it:</h3>
           <input type="hidden" name="validator" id="validator" value="">
-          <input type=text name="macro_name">
+          <input type=text name="macro_name" maxlength=30 class="form-control">
         </div>
         <div class="col-sm-3">
           <h3>Create:</h3>
-          <button onclick="submit_song_choice()" class="btn btn-default">It's Alive!</button>
+          <button onclick="submit_macro()" class="btn btn-default">It's Alive!</button>
         </div><!-- /.col-sm-8 -->
         </form>
       </div>
