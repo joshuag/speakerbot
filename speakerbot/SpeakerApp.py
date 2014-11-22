@@ -6,12 +6,14 @@ from flask import Flask, redirect, url_for,  render_template, request, jsonify
 from werkzeug.utils import secure_filename
 import random
 import re
+import json
 
 from eventrecorder import EventRecorder
 from Speakerbot import Speakerbot
 from speaker_db import SpeakerDB
 from speakerlib import *
 from speakonomy import Speakonomy
+from macros import Macro
 from util.words import parse_and_fill_mad_lib
 from config import config
 
@@ -281,12 +283,41 @@ def say(text=None):
     return jsonify(speakerbuck_balance=speakonomy.get_speakerbuck_balance())
 
 
+@app.route('/macros')
+def macros():
+    macros_list = []
+    sb.load_sounds()
+    results = db.execute("SELECT name, manifest FROM macros").fetchall()
+    for result in results:
+        macros_list.append(Macro(sb, result['name'], result['manifest']))
+        
+    return render_template(
+            "macros.html", 
+            macros=macros_list
+            )
+
 @app.route('/macros/create', methods=["GET", "POST"])
 def create_macro():
+    message = request.args.get('message', None)
+    if request.method == 'POST':
+        macro_name = request.form.get('name')
+        macro_sounds = json.dumps(request.form.getlist('macro_sound[]'))
+        if macro_name and macro_sounds:
+            if 1==2 and request.form['validator'] != config['unfucktion'](request.form['song']):
+                message = 'Validation failed'
+            else:
+                db.execute("INSERT INTO macros (name, manifest) VALUES (?, ?)", [macro_name, macro_sounds])
+        else:
+            message = 'Invalid parameters'
+        return redirect(url_for("macros", message=message))
+
+    if request.method == 'POST':
+        macro_components
+        return json.dumps(request.form.getlist('macro_sound[]'), indent=4)
     sounds = sb.load_sounds()
     template_sounds = [sounds[k] for k in sorted(sounds.keys())]
     return render_template(
-            "macros.html", 
+            "macromaker.html", 
             sounds=template_sounds, 
             )
 

@@ -88,7 +88,9 @@ class Speakerbot(PluggableObject):
     @lock
     @event
     def say(self, speech_text="", record_utterance=False):
+        self._say(speech_text, record_utterance)
 
+    def _say(self, speech_text="", record_utterance=False):
         token = None
         argument = None
 

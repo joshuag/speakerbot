@@ -1,161 +1,25 @@
 {% extends "base.html" %}
-{% block css %}
-.macro-stats {
-  font-size:36px;
-  white-space: nowrap;
-}
-.editable {
-  
-}
-{% endblock %}
-{% block javascript %}
-function filter(element) {
-    var value = $(element).val();
-
-    $('#sounds > .sound:not(:contains(' + value + '))').hide(); 
-    $('#sounds > .sound:contains(' + value + ')').show();
-    change_sort('plays');
-}
-function add_sound() {
-  if ($('#macro_sounds .sound').length >= 5) {
-    return;
-  }
-  clone = $(this).clone().removeAttr('style')
-  $('#macro_sounds').append(clone);
-  $('#macro_sounds .custom-text').removeAttr('disabled');
-  $('input', clone).focus();
-  $('#macro_sounds .custom-text').on('keyup change', function() {
-    updateMacroCosts();
-  });
-  toggleSoundList();
-  updateMacroCosts();
-}
-function countInArray(array, what) {
-    var count = 0;
-    for (var i = 0; i < array.length; i++) {
-        if (array[i] === what) {
-            count++;
-        }
-    }
-    return count;
-}
-function toggleSoundList() {
-  if ($('#macro_sounds .sound').length >= 5) {
-    $('#sounds .sound').addClass('disabled');
-  }
-  else {
-    $('#sounds .sound').removeClass('disabled');
-  }
-}
-function updateMacroCosts() {
-  var deduper = [];
-  var total = 0;
-  $('#macro_sounds .sound').each(function () {
-    if ($(this).data('type') == 'speech') {
-      cost = $(this).find('.custom-text').val().replace(/[^A-Z]/gi, "").length * 2;
-    }
-    else {
-      name = $(this).data('name');
-      multiplier = Math.pow(2, countInArray(deduper, name));
-      cost = $(this).data('base-cost') * multiplier;
-      deduper.push(name);
-    }
-    $('.cost-value', this).text(numberWithCommas(cost));
-    
-    total += cost;
-  });
-  $('#macro_total_cost').html(numberWithCommas(total));
-}
-$(document).ready(function() {
-  $("#sounds .sound").click(add_sound);
-  var removeIntent = false;
-  $('#macro_sounds').sortable({
-      over: function () {
-          removeIntent = false;
-      },
-      out: function () {
-          removeIntent = true;
-      },
-      beforeStop: function (event, ui) {
-          if(removeIntent == true){
-              ui.item.remove();
-          }
-      },
-      stop: function (event, ui) {
-          toggleSoundList();
-          updateMacroCosts();
-      }
-  });
-
-  $('#sounds').on('done.shuffle', function() {
-      $("#sounds .list-group-item").css("width", "100%");
-    });
-  $('#filter_box').on('keyup change', function() {
-    var val = this.value.toLowerCase();
-    $('#sounds').shuffle('shuffle', function($el, shuffle) {
-        if ($el.hasClass('sticky')) {
-          return true;
-        }
-        var text = $.trim( $el.text() ).toLowerCase();
-        return text.indexOf(val) !== -1;
-      });
-    });
-
-});
-
-{% endblock %}
 {% block content %}
       <div class="row page-header">
         <div class="col-sm-8">
-          <h1>Magnificent Macro Maker</h1>
+          <h1>Macros</h1>
         </div>
         <div class="col-sm-4">
-          <div class="macro-stats pull-right">
-            <span class="label label-warning"><span id="macro_total_cost">0</span> <span class="glyphicon glyphicon-bullhorn"></span></span>
-          </div>
+          <a class="btn btn-primary" href="#">Create</a>
         </div>
       </div>
       <div class="row">
-          {% if message %}<div class="alert alert-warning">{{message}}</div>{% endif %}
-        <form id="macro_form" action="/macros/create" method="post">
-        <div class="col-sm-3">
-          <h3>Click to add a sound:</h3>
-          <div class="list-group" id="sounds">
-            <div class="list-group-item sticky">
-              <input class="list-group-editable-input" type="text" id="filter_box" placeholder="Filter...">
-            </div>
-            <a class="list-group-item sound sticky" data-type="speech">
-              <input class="list-group-editable-input custom-text" type="text" placeholder="💬 Custom Speech" maxlength="100" disabled>
-              <p class="pull-right sound-cost"><span class="cost-value">?? </span> <span class="glyphicon glyphicon-bullhorn"></span></p>
-            </a>
-            {% for sound in sounds %}
-            <a class="list-group-item sound" data-type="sound" data-name="{{ sound.name }}" data-base-cost="{{ sound.base_cost }}" data-length="{{ sound.seconds }}">
-              {{ sound.name }}
-              <p class="pull-right sound-cost"><span class="cost-value">{{ "{:,}".format(sound.base_cost) }}</span> <span class="glyphicon glyphicon-bullhorn"></span></p>
-            </a>
-              
-            {% endfor %}
-          </div>
-        </div><!-- /.col-sm-3 -->
-        <div class="col-sm-3">
-          <h3>Drag to order:</h3>
-          <div class="list-group" id="macro_sounds">
-            {% for sound in macro_sounds %}
-            <a class="list-group-item" data-name="{{ sound }}">
-              {{ sound }}
-            </a>
-            {% endfor %}
+        <div class="col-sm-6">
+          <div class="list-group">
+            {% for macro in macros %}
+
+          <a class="list-group-item">
+            {{ macro.name }}
+            <p class="pull-right sound-cost"><span class="cost-value">{{ "{:,}".format(macro.get_cost()) }}</span> <span class="glyphicon glyphicon-bullhorn"></span></p>
+          </a>
+            
+          {% endfor %}
           </div>
         </div>
-        <div class="col-sm-3">
-          <h3>Name it:</h3>
-          <input type="hidden" name="validator" id="validator" value="">
-          <input type=text name="macro_name" maxlength=30 class="form-control">
-        </div>
-        <div class="col-sm-3">
-          <h3>Create:</h3>
-          <button onclick="submit_macro()" class="btn btn-default">It's Alive!</button>
-        </div><!-- /.col-sm-8 -->
-        </form>
-      </div>
+      </div><!-- /.col-sm-3 -->
 {% endblock %}

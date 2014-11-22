@@ -116,3 +116,6 @@ def _migrate_22(self):
 
 def _migrate_23(self):
     self.execute("ALTER TABLE sounds ADD COLUMN date_added INTEGER NOT NULL DEFAULT 0")
+
+def _migrate_24(self):
+    self.execute("CREATE TABLE macros (name varchar(50), manifest text)")
