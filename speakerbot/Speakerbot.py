@@ -10,16 +10,30 @@ from util.words import parse_and_fill_mad_lib
 
 try:   
     import uwsgi
-    def lock(f):
-        def locked(*args, **kwargs):
+
+    class lock(object):
+        def __init__(self, f):
+
+            self.f = f
+            self.is_locked = False 
+            # This var should be thread local, so when the lock is acquired, subsequent locked functions should run ok.
+
+
+        def __call__(self, *args, **kwargs):
+            
             if uwsgi.i_am_the_spooler():
                 return
+            
+            if self.is_locked:
+                return self.f(*args, **kwargs)
+
             uwsgi.lock()
+            self.is_locked = True
             try:
-                return f(*args, **kwargs)
+                return self.f(*args, **kwargs)
             finally:
                 uwsgi.unlock()
-        return locked
+                self.is_locked = False
 
 except ImportError:
     def lock(f):
