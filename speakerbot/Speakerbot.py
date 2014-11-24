@@ -18,7 +18,6 @@ try:
             self.is_locked = False 
             # This var should be thread local, so when the lock is acquired, subsequent locked functions should run ok.
 
-
         def __call__(self, *args, **kwargs):
             
             if uwsgi.i_am_the_spooler():
