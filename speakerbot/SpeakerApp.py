@@ -38,6 +38,7 @@ def stub_mangler(*args, **kwargs):
 sb.attach_listener("say", evr.queue_speech_for_tweet)
 sb.attach_listener("say", evr.record_utterance)
 sb.attach_listener("say", evr.post_to_slack)
+sb.attach_listener("say", speakonomy.sell_saying)
 sb.attach_listener("play", speakonomy.sell_sound)
 sb.attach_listener("play", evr.record_sound_event)
 sb.attach_interrogator("play", speakonomy.check_affordability)
@@ -280,6 +281,12 @@ def say(text=None):
     sb.say(text, record_utterance=record_utterance)
 
     return jsonify(speakerbuck_balance=speakonomy.get_speakerbuck_balance())
+
+@app.route('/play-macro/<macro_name>')
+def play_macro(macro_name):
+    #TODO: Full ajax for macros
+    say('!macro {}'.format(macro_name))
+    return redirect('/macros')
 
 
 @app.route('/macros')

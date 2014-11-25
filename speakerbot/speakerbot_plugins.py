@@ -45,12 +45,11 @@ def macro(sb, macro_name):
     result = results[0]
     macro = Macro(sb, result['name'], result['manifest'])
     macro_cost = macro.get_cost()
-    #TODO: Finish this
+    
     speakonomy = Speakonomy()
     if speakonomy.is_active():
         if not speakonomy.check_affordability(cost=macro_cost):
             return "Not enough speakerbucks for macro"
-        speakonomy.withdraw_funds(macro_cost)
 
     macro.execute()
 

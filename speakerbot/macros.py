@@ -21,9 +21,9 @@ class Macro(object):
     def execute(self):
         for command_type, command_argument in self.commands:
             if command_type == 'sound':
-                self.sb._play(command_argument)
+                self.sb.play(command_argument)
             elif command_type == 'speech':
-                self.sb._say(command_argument)
+                self.sb.say(command_argument)
 
     def get_cost(self):
         total_cost = 0

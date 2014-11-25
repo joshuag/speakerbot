@@ -153,7 +153,7 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="#" onclick="spin_the_wheel()">Spin</a></li>
-            <li><a href="/spinstats">Spin Stats</a></li>
+            <li><a href="/macros">Macros</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
               <ul class="dropdown-menu">
@@ -164,6 +164,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Special <b class="caret"></b></a>
               <ul class="dropdown-menu">
+                <li><a href="/spinstats">Spin Stats</a></li>
                 <li><a href="javascript:say('!datefact')">Date Fact</a></li>
                 <li><a href="javascript:say('!suspense')">Drumroll...<span class="pull-right sound-cost">20  <span class="glyphicon glyphicon-bullhorn"></span></span></a></li>
                 <li><a href="javascript:say('!lunch')">Lunch</a></li>
@@ -278,7 +279,7 @@
     function say(text) {
       jQuery.ajax({
            url: '/say/'+text,
-           async:   false
+           async:   false,
       });
     }
   </script>
