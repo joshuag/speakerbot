@@ -13,7 +13,7 @@
           <div class="list-group">
             {% for macro in macros %}
 
-          <a class="list-group-item">
+          <a class="list-group-item" href="javascript:say('!macro {{macro.name}}')">
             {{ macro.name }}
             <p class="pull-right sound-cost"><span class="cost-value">{{ "{:,}".format(macro.get_cost()) }}</span> <span class="glyphicon glyphicon-bullhorn"></span></p>
           </a>

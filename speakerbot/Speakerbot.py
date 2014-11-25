@@ -109,7 +109,7 @@ class Speakerbot(PluggableObject):
                     speech_text = self.dispatch_plugin(token)
 
             except TypeError:
-                
+                raise
                 speech_text = "I need an argument for that function, dummy."
 
             except MissingPluginException:
