@@ -5,20 +5,6 @@
 """
 from importlib import import_module
 
-class DecoratedMethod(object):
-    def __init__(self, decorator, instance):
-        self.decorator = decorator
-        self.instance = instance
-
-    def __call__(self, *args, **kw):
-        return self.decorator(self.instance, *args, **kw)
-
-    def __getattr__(self, name):
-        return getattr(self.decorator, name)
-
-    def __repr__(self):
-        return '<bound method {} of {}>'.format(self.decorator, type(self))
-
 class Singleton(type):
     
     instance_list = {}

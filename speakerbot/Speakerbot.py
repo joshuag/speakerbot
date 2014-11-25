@@ -3,43 +3,23 @@ import datetime as dt
 
 from listenable import listenable, event
 from speaker_db import SpeakerDB
-from dynamic_class import attach_methods, PluggableObject, MissingPluginException, DecoratedMethod
+from dynamic_class import attach_methods, PluggableObject, MissingPluginException
 from sounds import Sound, SoundPlayer
 from util.speech_providers import GoogleTextToSpeech
 from util.words import parse_and_fill_mad_lib
 
 try:   
     import uwsgi
-
-    class lock(object):
-        def __init__(self, f):
-
-            self.f = f
-            self.is_locked = False 
-
-            print "init lock decorator for %s" % f.__name__
-            # This var should be thread local, so when the lock is acquired, subsequent locked functions should run ok.
-
-        def __get__(self, instance, owner):
-            if instance is None:
-                return self
-            return DecoratedMethod(self, instance)  
-
-        def __call__(self, *args, **kwargs):
-            
+    def lock(f):
+        def locked(*args, **kwargs):
             if uwsgi.i_am_the_spooler():
                 return
-            
-            if self.is_locked:
-                return self.f(*args, **kwargs)
-
             uwsgi.lock()
-            self.is_locked = True
             try:
-                return self.f(*args, **kwargs)
+                return f(*args, **kwargs)
             finally:
                 uwsgi.unlock()
-                self.is_locked = False
+        return locked
 
 except ImportError:
     def lock(f):
@@ -99,12 +79,6 @@ class Speakerbot(PluggableObject):
     @event
     def play(self, name, **kwargs):
         self._play(name)
-
-    @lock
-    @event
-    def test_play(self):
-        self._play("dry-fart")
-        self.play("dry-fart")
 
     @event #we may want to record the output of the filtered speech
     def speech_provider_say(self, speech_text, record_utterance):
