@@ -33,12 +33,12 @@ class GoogleTextToSpeech(object):
 
     def get_file(self, filename, url, retries=3):
 
-        if not os.path.isfile(filename):
+        if not os.path.isfile(filename) or os.path.getsize(filename) == 0:
             f = open(filename, "w")
             subprocess.call(
                     ['curl','-A Mozilla', url], 
                     stdout=f)
-        if os.path.getsize(filename) and retries > 0:
+        if os.path.getsize(filename) == 0 and retries > 0:
             self.get_file(filename, url, retries=retries-1)
 
 class EspeakTextToSpeech(object):
