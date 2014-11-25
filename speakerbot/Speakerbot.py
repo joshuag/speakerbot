@@ -15,15 +15,15 @@ try:
             if uwsgi.i_am_the_spooler():
                 return
 
-            if args[1].__is_locked:
+            if args[0].__is_locked:
                 return f(*args, **kwargs)
 
             uwsgi.lock()
-            args[1].__is_locked = True
+            args[0].__is_locked = True
             try:
                 return f(*args, **kwargs)
             finally:
-                args[1].__is_locked = False
+                args[0].__is_locked = False
                 uwsgi.unlock()
         return locked
 
