@@ -3,7 +3,7 @@ import datetime as dt
 
 from listenable import listenable, event
 from speaker_db import SpeakerDB
-from dynamic_class import attach_methods, PluggableObject, MissingPluginException
+from dynamic_class import attach_methods, PluggableObject, MissingPluginException, DecoratedMethod
 from sounds import Sound, SoundPlayer
 from util.speech_providers import GoogleTextToSpeech
 from util.words import parse_and_fill_mad_lib
@@ -18,11 +18,16 @@ try:
             self.is_locked = False 
             # This var should be thread local, so when the lock is acquired, subsequent locked functions should run ok.
 
+        def __get__(self, instance, owner):
+            if instance is None:
+                return self
+            return DecoratedMethod(self, instance)  
+
         def __call__(self, *args, **kwargs):
             
             if uwsgi.i_am_the_spooler():
                 return
-            print args
+            
             if self.is_locked:
                 return self.f(*args, **kwargs)
 
