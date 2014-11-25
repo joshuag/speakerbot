@@ -16,6 +16,8 @@ try:
 
             self.f = f
             self.is_locked = False 
+
+            print "init lock decorator"
             # This var should be thread local, so when the lock is acquired, subsequent locked functions should run ok.
 
         def __get__(self, instance, owner):
