@@ -24,6 +24,7 @@ try:
                 return
             
             if self.is_locked:
+                print args
                 return self.f(*args, **kwargs)
 
             uwsgi.lock()
