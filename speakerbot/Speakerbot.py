@@ -83,6 +83,11 @@ class Speakerbot(PluggableObject):
         self.sounds[name].play()
 
     @lock
+    def test_locking(self):
+        self._play("dry-fart")
+        self.play("wet-fart")
+
+    @lock
     @event
     def play(self, name, **kwargs):
         self._play(name)

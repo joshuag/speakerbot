@@ -53,6 +53,10 @@ print "I'm ready"
 def inject_global_params():
     return dict(speakonomy=speakonomy, config=config, current_speakerbuck_balance=speakonomy.get_speakerbuck_balance())
 
+@app.route('/test_locking')
+def test_locking():
+    sb.test_locking()
+
 @app.route('/')
 @app.route('/home/<image>')
 def home(image=None):
