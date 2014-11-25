@@ -75,6 +75,10 @@ def home(image=None):
             speakerbucks_per_minute=speakerbucks_per_minute,
             random_title="The !adjective !noun !adverb !verb the !noun."
             )
+@app.route('/test_locking', methods=["GET"])
+def test_locking():
+
+    sb.test_play()
 
 @app.route('/upload', methods=["GET", "POST"])
 def upload_sound():

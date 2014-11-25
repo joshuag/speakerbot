@@ -93,6 +93,12 @@ class Speakerbot(PluggableObject):
     def play(self, name, **kwargs):
         self._play(name)
 
+    @lock
+    @event
+    def test_play(self):
+        self._play("dry-fart")
+        self.play("dry-fart")
+
     @event #we may want to record the output of the filtered speech
     def speech_provider_say(self, speech_text, record_utterance):
         self.tts.say(speech_text)
