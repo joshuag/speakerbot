@@ -87,7 +87,6 @@ class Speakonomy:
             self.withdraw_funds(cost)
             self.db.execute("UPDATE sounds set cost=cost*2 where name=?", [sound_name,])
             self.speakerbot.sounds[sound_name].cost = cost * 2
-        raise Exception("Sold sound")
 
     def sell_saying(self, speech_text, **kwargs):
         if self.is_active():
