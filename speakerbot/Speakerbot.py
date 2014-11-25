@@ -22,9 +22,8 @@ try:
             
             if uwsgi.i_am_the_spooler():
                 return
-            
+            print args
             if self.is_locked:
-                print args
                 return self.f(*args, **kwargs)
 
             uwsgi.lock()
