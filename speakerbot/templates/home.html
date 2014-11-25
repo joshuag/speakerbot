@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block javascript %}
+
+/* All of this javascript code should be encapsulated in the vk.js library, but I'm not inclined to do it today */
+
 $(document).ready(function() {
   var $grid = $('#sounds');
 
@@ -19,6 +22,32 @@ $(document).ready(function() {
   });
 });
 });
+
+var is_playing = false;
+var sound_queue = []
+
+function play_sound(sound_name) {
+    sound_queue.push(sound_name)
+    play_oldest_sound()
+}
+
+function play_oldest_sound(){
+    if(sound_queue.length > 0 && !is_playing){
+      is_playing = true;
+      jQuery.ajax({
+         url: '/play_sound/'+sound_queue.shift(),
+         success: resetSoundSystem
+    });
+  }else if(is_playing){
+    setTimeout(play_oldest_sound,100);
+  }
+}
+
+function resetSoundSystem(data){
+    is_playing = false;
+    balanceBudget(data);
+}
+
 function capitaliseFirstLetter(string)
 {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -51,13 +80,7 @@ function voteCallback(data) {
   $('#image_votes').html(data.votes);
   addTemporaryNotification('.random-image-toolbar', 'Thank you for voting, have 5 speakerbucks!');
 }
-function play_sound(sound_name) {
-  jQuery.ajax({
-         url: '/play_sound/'+sound_name,
-         success: balanceBudget,
-         async:   false
-    });
-}
+
 function downvote(name) {
   $('#downvote-sound').val(name);
   $('#downvote_form').submit();

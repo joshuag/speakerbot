@@ -44,7 +44,6 @@ sb.attach_interrogator("play", speakonomy.check_affordability)
 
 #sb.attach_mangler("say_classy", stub_mangler)
 
-
 app = Flask(__name__)
 app.config['DEBUG'] = config.get("debug", True)
 app.config['UPLOAD_FOLDER'] = os.path.relpath('sounds')

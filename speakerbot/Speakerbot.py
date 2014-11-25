@@ -3,7 +3,7 @@ import datetime as dt
 
 from listenable import listenable, event
 from speaker_db import SpeakerDB
-from dynamic_class import attach_methods, PluggableObject, MissingPluginException
+from dynamic_class import attach_methods, PluggableObject, MissingPluginException, lockable_class
 from sounds import Sound, SoundPlayer
 from util.speech_providers import GoogleTextToSpeech
 from util.words import parse_and_fill_mad_lib
@@ -14,10 +14,16 @@ try:
         def locked(*args, **kwargs):
             if uwsgi.i_am_the_spooler():
                 return
+
+            if args[0].__is_locked:
+                return f(*args, **kwargs)
+
             uwsgi.lock()
+            args[0].__is_locked = True
             try:
                 return f(*args, **kwargs)
             finally:
+                args[0].__is_locked = False
                 uwsgi.unlock()
         return locked
 
@@ -25,6 +31,7 @@ except ImportError:
     def lock(f):
         return f
 
+@lockable_class # this is so gross
 @listenable
 @attach_methods("speakerbot_plugins")
 class Speakerbot(PluggableObject):

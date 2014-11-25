@@ -16,6 +16,12 @@ class Singleton(type):
         
         return klass.instance_list[klass]
 
+def lockable_class(self):
+
+    self.__is_locked = False
+
+    return self
+
 class MissingPluginException(Exception):
     pass
 
@@ -71,7 +77,6 @@ def plugin(func):
 
 def set_function_attribute(func, name, value):
     setattr(func, name, value)
-
 
 class PluggableObject(object):
 
