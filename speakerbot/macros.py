@@ -23,7 +23,7 @@ class Macro(object):
             if command_type == 'sound':
                 self.sb.play(command_argument)
             elif command_type == 'speech':
-                self.sb.say(command_argument)
+                self.sb.say(command_argument, record_utterance=False)
 
     def get_cost(self):
         total_cost = 0
