@@ -1,8 +1,10 @@
 import datetime as dt
 import os
+import re
 import sys
 from speaker_db import SpeakerDB
 from dynamic_class import Singleton
+from config import config
 
 
 class Speakonomy:
@@ -26,6 +28,7 @@ class Speakonomy:
 
     def deposit_funds(self, amount=1):
         self.db.execute("UPDATE bank_account set balance=balance+?", [amount,])
+        self.db.execute("UPDATE bank_account set balance=0 WHERE balance<0")
 
     def get_free_play_timeout(self, force_check=False):
 
@@ -59,6 +62,8 @@ class Speakonomy:
         return 0
 
     def is_active(self, force_check=False):
+        if config.get("force_speakonomy", False):
+            return True
 
         if self.disabled:
             return False
@@ -84,6 +89,11 @@ class Speakonomy:
             self.withdraw_funds(cost)
             self.db.execute("UPDATE sounds set cost=cost*2 where name=?", [sound_name,])
             self.speakerbot.sounds[sound_name].cost = cost * 2
+
+    def sell_saying(self, speech_text, **kwargs):
+        if self.is_active():
+            speech_cost = len(re.sub(r'[^a-z0-9]', '', speech_text, flags=re.I)) * 2
+            self.withdraw_funds(speech_cost)
 
     def set_free_play_timeout(self, expiration_datetime=None, hours=0, minutes=0):
         if not expiration_datetime:

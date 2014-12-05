@@ -69,6 +69,7 @@ class Speakerbot(PluggableObject):
                 file_name=dbsound["path"],
                 votes=dbsound["votes"],
                 cost=dbsound["cost"],
+                base_cost=dbsound["base_cost"],
                 downvotes=dbsound["downvotes"],
                 date_added=dt.datetime.fromtimestamp(dbsound["date_added"]),
                 sound_player=self.sound_player,
@@ -94,7 +95,9 @@ class Speakerbot(PluggableObject):
     @lock
     @event
     def say(self, speech_text="", record_utterance=False):
+        self._say(speech_text, record_utterance)
 
+    def _say(self, speech_text="", record_utterance=False):
         token = None
         argument = None
 
@@ -113,7 +116,7 @@ class Speakerbot(PluggableObject):
                     speech_text = self.dispatch_plugin(token)
 
             except TypeError:
-                
+                raise
                 speech_text = "I need an argument for that function, dummy."
 
             except MissingPluginException:

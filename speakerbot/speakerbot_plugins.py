@@ -7,6 +7,7 @@ from pyquery import PyQuery as pq
 
 from config import config
 from speakonomy import Speakonomy
+from macros import Macro
 from util.words import parse_and_fill_mad_lib, term_map
 from speaker_db import SpeakerDB
 from dynamic_class import plugin
@@ -35,6 +36,23 @@ def suspense(sb):
     sound = choice(sb.sounds.keys())
 
     sb._play(sound)
+
+@plugin
+def macro(sb, macro_name):
+    results = db.execute("SELECT * FROM macros where name = ?", (macro_name,)).fetchall()
+    if not results:
+        return "Macro not found"
+    result = results[0]
+    macro = Macro(sb, result['name'], result['manifest'])
+    macro_cost = macro.get_cost()
+    
+    speakonomy = Speakonomy()
+    if speakonomy.is_active():
+        if not speakonomy.check_affordability(cost=macro_cost):
+            return "Not enough speakerbucks for macro"
+
+    macro.execute()
+
 
 @plugin
 def spin(sb, wager):
@@ -166,13 +184,7 @@ def dada(sb):
 
 @plugin
 def ross(sb):
-
     return "Oh shit! I gotta get out of here!"
-
-@plugin
-def dave(sb):
-    options = ['shut the fuck up', 'who gives a shit']
-    return choice(options)
 
 @plugin
 def josh(sb):

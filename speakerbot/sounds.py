@@ -7,11 +7,12 @@ from config import config
 
 class Sound(object):
 
-    def __init__(self, name, file_name, votes, cost, downvotes, date_added, sound_player=None):
+    def __init__(self, name, file_name, votes, cost, base_cost, downvotes, date_added, sound_player=None):
         self.name = name
         self.file_name = file_name
         self.votes = votes
         self.cost = cost
+        self.base_cost = base_cost
         self.downvotes = downvotes
         self.sound_player = sound_player
         self.date_added = date_added

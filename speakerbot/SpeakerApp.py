@@ -6,12 +6,14 @@ from flask import Flask, redirect, url_for,  render_template, request, jsonify
 from werkzeug.utils import secure_filename
 import random
 import re
+import json
 
 from eventrecorder import EventRecorder
 from Speakerbot import Speakerbot
 from speaker_db import SpeakerDB
 from speakerlib import *
 from speakonomy import Speakonomy
+from macros import Macro
 from util.words import parse_and_fill_mad_lib
 from config import config
 
@@ -36,6 +38,7 @@ def stub_mangler(*args, **kwargs):
 sb.attach_listener("say", evr.queue_speech_for_tweet)
 sb.attach_listener("say", evr.record_utterance)
 sb.attach_listener("say", evr.post_to_slack)
+sb.attach_listener("say", speakonomy.sell_saying)
 sb.attach_listener("play", speakonomy.sell_sound)
 sb.attach_listener("play", evr.record_sound_event)
 sb.attach_interrogator("play", speakonomy.check_affordability)
@@ -278,6 +281,51 @@ def say(text=None):
     sb.say(text, record_utterance=record_utterance)
 
     return jsonify(speakerbuck_balance=speakonomy.get_speakerbuck_balance())
+
+@app.route('/play-macro/<macro_name>')
+def play_macro(macro_name):
+    #TODO: Full ajax for macros
+    say('!macro {}'.format(macro_name))
+    return redirect('/macros')
+
+
+@app.route('/macros')
+def macros():
+    macros_list = []
+    sb.load_sounds()
+    results = db.execute("SELECT name, manifest FROM macros").fetchall()
+    for result in results:
+        macros_list.append(Macro(sb, result['name'], result['manifest']))
+        
+    return render_template(
+            "macros.html", 
+            macros=macros_list
+            )
+
+@app.route('/macros/create', methods=["GET", "POST"])
+def create_macro():
+    message = request.args.get('message', None)
+    if request.method == 'POST':
+        macro_name = request.form.get('name')
+        macro_sounds = json.dumps(request.form.getlist('macro_sound[]'))
+        if macro_name and macro_sounds:
+            if 1==2 and request.form['validator'] != config['unfucktion'](request.form['song']):
+                message = 'Validation failed'
+            else:
+                db.execute("INSERT INTO macros (name, manifest) VALUES (?, ?)", [macro_name, macro_sounds])
+        else:
+            message = 'Invalid parameters'
+        return redirect(url_for("macros", message=message))
+
+    if request.method == 'POST':
+        macro_components
+        return json.dumps(request.form.getlist('macro_sound[]'), indent=4)
+    sounds = sb.load_sounds()
+    template_sounds = [sounds[k] for k in sorted(sounds.keys())]
+    return render_template(
+            "macromaker.html", 
+            sounds=template_sounds, 
+            )
 
 def default_redirect():
     if not request.is_xhr:

@@ -26,14 +26,20 @@ class GoogleTextToSpeech(object):
 
         filename = "speech/%s.mp3" % text
 
-        if not os.path.isfile(filename):
-            f = open(filename, "w")
-            subprocess.call(
-                    ['curl','-A Mozilla', self.url_string % (text)], 
-                    stdout=f)
+        self.get_file(filename, self.url_string % (text))
 
         s = SoundPlayer()
         s.play_sound(filename)
+
+    def get_file(self, filename, url, retries=3):
+
+        if not os.path.isfile(filename) or os.path.getsize(filename) == 0:
+            f = open(filename, "w")
+            subprocess.call(
+                    ['curl','-A Mozilla', url], 
+                    stdout=f)
+        if os.path.getsize(filename) == 0 and retries > 0:
+            self.get_file(filename, url, retries=retries-1)
 
 class EspeakTextToSpeech(object):
 

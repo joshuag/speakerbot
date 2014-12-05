@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+      <div class="row page-header">
+        <div class="col-sm-8">
+          <span class="h1">Macros</span>&nbsp;&nbsp;<span class="h5">Beta</span>
+        </div>
+        <div class="col-sm-4">
+          <a class="btn btn-large btn-primary" href="/macros/create">Create</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="list-group">
+            {% for macro in macros %}
+              {% with macro_cost=macro.get_cost() %}
+                <a class="list-group-item{% if macro_cost > current_speakerbuck_balance %} disabled{% endif %}" href="/play-macro/{{macro.name}}">
+                  {{ macro.name }}
+                  <p class="pull-right sound-cost"><span class="cost-value">{{ "{:,}".format(macro.get_cost()) }}</span> <span class="glyphicon glyphicon-bullhorn"></span></p>
+              </a>
+              {% endwith %}
+            
+          {% endfor %}
+          </div>
+        </div>
+      </div><!-- /.col-sm-3 -->
+{% endblock %}
