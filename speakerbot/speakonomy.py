@@ -4,6 +4,7 @@ import re
 import sys
 from speaker_db import SpeakerDB
 from dynamic_class import Singleton
+from config import config
 
 
 class Speakonomy:
@@ -61,7 +62,8 @@ class Speakonomy:
         return 0
 
     def is_active(self, force_check=False):
-        return True
+        if config.get("force_speakonomy", False):
+            return True
 
         if self.disabled:
             return False
