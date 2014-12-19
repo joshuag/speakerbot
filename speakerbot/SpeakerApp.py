@@ -122,7 +122,7 @@ def theme_songs():
         return redirect(url_for("theme_songs", message=message))
     return render_template(
             "themesongs.html", 
-            sounds=sorted(sb.load_sounds().keys()), 
+            sounds=sorted(sb.load_sounds(base_cost_cutoff=1000).keys()), 
             people=db.get_people(),
             message=message,
             )

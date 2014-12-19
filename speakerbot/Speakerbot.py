@@ -57,7 +57,7 @@ class Speakerbot(PluggableObject):
 
         return text
 
-    def load_sounds(self, score_cutoff=None):
+    def load_sounds(self, score_cutoff=None, base_cost_cutoff=None):
 
         self.sounds = OrderedDict()
 
@@ -75,6 +75,8 @@ class Speakerbot(PluggableObject):
                 sound_player=self.sound_player,
             )
             if score_cutoff and sound.get_score() < score_cutoff:
+                continue
+            if base_cost_cutoff and sound.base_cost > base_cost_cutoff:
                 continue
             self.sounds[sound.name] = sound
 
