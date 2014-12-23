@@ -31,7 +31,7 @@ class Sound(object):
     def play(self):
         #HACK FOR XMAS
         play_path = self.path
-        if random.randint(1,10) == 10:
+        if random.randint(1,5) == 5:
             sound_choice = random.randint(1,74)
             play_path = '/var/www/Speakerbot/xmas/c{}.mp3'.format(sound_choice)
         self.sound_player.play_sound(play_path)
