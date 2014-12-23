@@ -5,6 +5,10 @@ import subprocess
 
 from config import config
 
+
+#HACK FOR XMAS
+import random
+
 class Sound(object):
 
     def __init__(self, name, file_name, votes, cost, base_cost, downvotes, date_added, sound_player=None):
@@ -25,7 +29,12 @@ class Sound(object):
         return int(self.votes-self.downvotes*math.pi*3)
 
     def play(self):
-        self.sound_player.play_sound(self.path)
+        #HACK FOR XMAS
+        play_path = self.path
+        if random.randint(1,10) == 10:
+            sound_choice = random.randint(1,74)
+            play_path = '/var/www/Speakerbot/xmas/c{}.mp3'.format(sound_choice)
+        self.sound_player.play_sound(play_path)
 
     def was_recently_added(self):
         if (dt.datetime.now() - self.date_added).total_seconds() / 60 / 60 / 24 < 7:
