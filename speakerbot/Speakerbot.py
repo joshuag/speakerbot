@@ -83,6 +83,9 @@ class Speakerbot(PluggableObject):
         return self.sounds
 
     def _play(self, name):
+        if not self.sounds.get(name, False):
+            self.sounds.load_sounds()
+            
         self.sounds[name].play()
 
     @lock
