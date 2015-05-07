@@ -24,7 +24,7 @@ class SpeakerTwitter(object):
 
     def publish_from_queue(self):
 
-        forbidden_words = ["nohodo", "vk", "vertical knowledge", "d "]
+        forbidden_words = ["nohodo", "vk", "vertical knowledge", "d ", "rape", "raping", "rapeing", "rapin"]
 
         try:
             tweet_record = self.db.execute("select id, tweet_text from publish_queue limit 1").next()
