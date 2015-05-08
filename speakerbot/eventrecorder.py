@@ -40,7 +40,6 @@ class EventRecorder(object):
 
 
     def post_to_slack(self, speech_text, record_utterance=False, **kwargs):
-        return
         #Skip plugins
         if speech_text[0] == "!":
             return
