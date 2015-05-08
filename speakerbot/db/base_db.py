@@ -19,6 +19,8 @@ class base_db(object):
                 'db_path':db_path
             }
 
+        self.statement_count = 0
+
         self.settings = settings
 
         self.open_connection()
@@ -28,8 +30,6 @@ class base_db(object):
         self.migrations = self.get_migrations()
 
         self.run_migrations()
-
-        self.statement_count = 0
 
     @time_instrument
     def open_connection(self):
@@ -168,7 +168,6 @@ class base_db(object):
             self.conn.commit()
 
             result = self.rs_generator(cursor)
-            
 
         if self.settings['driver'] == "sqlite3":
 
