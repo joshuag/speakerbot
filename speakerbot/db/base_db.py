@@ -29,6 +29,8 @@ class base_db(object):
 
         self.run_migrations()
 
+        self.statement_count = 0
+
     @time_instrument
     def open_connection(self):
         
@@ -134,9 +136,16 @@ class base_db(object):
                 return "select 1"
 
         return statement
-    
+
     @time_instrument
     def execute(self, statement, query_vars=None):
+
+        if self.statement_count >= 10:
+            self.close_connection()
+            self.open_connection()
+            self.statement_count = 1
+        else:
+            self.statement_count += 1
 
         statement = self.fix_for_database(statement)
         if not query_vars:
