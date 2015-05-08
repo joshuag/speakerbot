@@ -35,6 +35,7 @@ def stub_interrogator(*args, **kwargs):
 def stub_mangler(*args, **kwargs):
     return args, kwargs
 
+sb.attach_mangler("say", evr.censor)
 sb.attach_listener("say", evr.queue_speech_for_tweet)
 sb.attach_listener("say", evr.record_utterance)
 sb.attach_listener("say", evr.post_to_slack)

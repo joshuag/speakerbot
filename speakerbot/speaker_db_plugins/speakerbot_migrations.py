@@ -119,3 +119,6 @@ def _migrate_23(self):
 
 def _migrate_24(self):
     self.execute("CREATE TABLE macros (name varchar(50), manifest text)")
+
+def _migrate_25(self):
+    self.execute("CREATE TABLE badwords (word varchar(50))")

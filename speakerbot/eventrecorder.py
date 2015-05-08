@@ -6,14 +6,41 @@ import requests
 
 from config import config
 
+from fuzzywuzzy import process
+
 class EventRecorder(object):
 
     def __init__(self, db):
 
         self.db = db
+        #self.censored_words = self.db.execute('')
+
+
+    def censor(*args, **kwargs):
+        self = args[0]
+        args = list(args)
+        censored_words = self.db.execute("select word from badwords")
+        bad_words = [row["word"] for row in censored_words]
+
+        speech_text = kwargs.get("speech_text", None) or args[1]
+
+        speech_list = speech_text.split(" ")
+
+        for word in speech_list:
+            if word.lower() in bad_words or process.extractOne(word, bad_words)[1] > 90:
+                speech_text = "You've been naughty."
+                break
+
+        if kwargs.get("speech_text", None):
+            kwargs["speech_text"] = speech_text
+        else:
+            args[1] = speech_text
+
+        return tuple(args)[1:], kwargs
+
 
     def post_to_slack(self, speech_text, record_utterance=False, **kwargs):
-        
+        return
         #Skip plugins
         if speech_text[0] == "!":
             return
@@ -24,6 +51,8 @@ class EventRecorder(object):
     def record_utterance(self, speech_text, record_utterance=False, event_result=None):
         if not record_utterance:
             return
+
+        speech_text = speech_text.lower()
 
         sha = sha256()
         sha.update(speech_text)
