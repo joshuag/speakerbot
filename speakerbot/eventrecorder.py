@@ -26,8 +26,13 @@ class EventRecorder(object):
 
         speech_list = speech_text.split(" ")
 
+        for phrase in bad_words:
+            if process.extractOne(phrase, speech_list)[1] > 90:
+                speech_text = "You've been naughty."
+                break
+
         for word in speech_list:
-            if word.lower() in bad_words or process.extractOne(word, bad_words)[1] > 90:
+            if word.lower() in bad_words:
                 speech_text = "You've been naughty."
                 break
 
@@ -86,7 +91,7 @@ class EventRecorder(object):
         speech_text = speech_text[:139].replace("@","~")
 
         md5_hash = md5()
-        md5_hash.update(speech_text)
+        md5_hash.update(speech_text.lower())
         md5_hash = md5_hash.hexdigest()
 
         try:
