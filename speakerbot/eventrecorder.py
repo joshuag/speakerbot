@@ -48,7 +48,7 @@ class EventRecorder(object):
             requests.post(config["slack_url"], data=speech_text)
 
     def record_utterance(self, speech_text, record_utterance=False, event_result=None):
-        if not record_utterance:
+        if not record_utterance or speech_text[0] == "!":
             return
 
         speech_text = speech_text.lower()
