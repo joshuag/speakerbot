@@ -28,7 +28,7 @@ class EventRecorder(object):
 
         try:
             speech_text.decode("ascii")
-        except UnicodeDecodeError:
+        except UnicodeEncodeError:
             speech_text = " "
 
         speech_list = speech_text.split(" ")
