@@ -17,6 +17,8 @@ class EventRecorder(object):
 
 
     def censor(*args, **kwargs):
+
+
         self = args[0]
         args = list(args)
         censored_words = self.db.execute("select word from badwords")
@@ -24,16 +26,21 @@ class EventRecorder(object):
 
         speech_text = kwargs.get("speech_text", None) or args[1]
 
+        try:
+            speech_text.decode("ascii")
+        except UnicodeDecodeError:
+            speech_text = " "
+
         speech_list = speech_text.split(" ")
 
         for phrase in bad_words:
             if process.extractOne(phrase, speech_list)[1] >= 90:
-                speech_text = ""
+                speech_text = " "
                 break
 
         for word in speech_list:
             if word.lower() in bad_words:
-                speech_text = ""
+                speech_text = " "
                 break
 
         if kwargs.get("speech_text", None):
