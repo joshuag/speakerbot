@@ -27,15 +27,13 @@ class EventRecorder(object):
         speech_list = speech_text.split(" ")
 
         for phrase in bad_words:
-            print phrase
-            print process.extractOne(phrase, speech_list)[1]
             if process.extractOne(phrase, speech_list)[1] >= 90:
-                speech_text = "You've been naughty."
+                speech_text = ""
                 break
 
         for word in speech_list:
             if word.lower() in bad_words:
-                speech_text = "You've been naughty."
+                speech_text = ""
                 break
 
         if kwargs.get("speech_text", None):
