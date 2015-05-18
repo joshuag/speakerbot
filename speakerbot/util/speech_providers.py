@@ -1,6 +1,8 @@
 import os
 import subprocess
 from urllib import quote_plus
+from hashlib import sha256
+
 
 from text_manipulators import split_text
 from sounds import SoundPlayer
@@ -24,7 +26,10 @@ class GoogleTextToSpeech(object):
 
         text = quote_plus(text.encode("utf-8"))
 
-        filename = "speech/%s.mp3" % text
+        hsh = sha256()
+        hsh.update(text.lower())
+
+        filename = "speech/%s.mp3" % hsh.hexdigest()
 
         self.get_file(filename, self.url_string % (text))
 

@@ -29,18 +29,18 @@ class EventRecorder(object):
         try:
             speech_text.decode("ascii")
         except UnicodeEncodeError:
-            speech_text = " "
+            speech_text = "!random"
 
         speech_list = speech_text.split(" ")
 
         for phrase in bad_words:
             if process.extractOne(phrase, speech_list)[1] >= 90:
-                speech_text = " "
+                speech_text = "!random"
                 break
 
         for word in speech_list:
             if word.lower() in bad_words:
-                speech_text = " "
+                speech_text = "!random"
                 break
 
         if kwargs.get("speech_text", None):
