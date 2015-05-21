@@ -18,6 +18,8 @@ class EventRecorder(object):
 
     def censor(*args, **kwargs):
 
+        if not config.get("censor", False):
+            return args, kwargs
 
         self = args[0]
         args = list(args)
