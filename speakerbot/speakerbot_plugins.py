@@ -194,7 +194,7 @@ def josh(sb):
     gripe_recipient.extend(['this {}'.format(s) for s in subjects])
     gripe_recipient.extend(['that {}'.format(s) for s in subjects])
     predicates = ['can go eat a nutsack', 'gets my knickers in a twist', 'is a complete {noun}','is a total {noun}','is an outright {noun}', 'is an absolute {noun}', 'is an udder {noun}', 'can go piss up a rope', 'about as useful as tits on a bull','a son of a gun']
-    predicate_nouns = ['asshat', 'fuckstick', 'chucklefuck', 'knucklehead', 'dicknut', 'scallywag', 'shithead', 'waste of skin']
+    predicate_nouns = ['ass hat', 'fuckstick', 'chucklefuck', 'knucklehead', 'dicknut', 'scallywag', 'shithead', 'waste of skin', 'cock ass']
 
     phrase = '{exclamation}! {gripe_recipient} {predicate}'.format(
         exclamation=choice(exclamations),
