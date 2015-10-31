@@ -18,10 +18,16 @@ class ATTTextToSpeech(object):
 
     CLIENT_ID = config['att_speech']['client_id']
     CLIENT_SECRET = config['att_speech']['client_secret']
-    CLIENT_SCOPE = config['att_speech']['scope']
+    CLIENT_SCOPE = ('TTS',)
     TOKEN_FIELD_NAME = 'att_speech_token'
     TOKEN_URL = 'https://api.att.com/oauth/v4/token'
     TTS_URL = 'https://api.att.com/speech/v3/textToSpeech'
+    TTS_HEADERS = {
+            'Content-Type': 'text/plain',
+            'Accept': 'audio/x-wav',
+            'X-Arg': 'VoiceName={},Tempo={}'.format(config['att_speech']['voice_name'],
+                                                    config['att_speech']['tempo'])
+    }
 
     def __init__(self):
         self._db = SpeakerDB()
@@ -67,11 +73,7 @@ class ATTTextToSpeech(object):
         if os.path.isfile(filename) and os.path.getsize(filename):
             return
 
-        headers = {
-            'Content-Type': 'text/plain',
-            'Accept': 'audio/x-wav'
-        }
-        response = self.client.post(self.TTS_URL, headers=headers, data=text)
+        response = self.client.post(self.TTS_URL, headers=self.TTS_HEADERS, data=text)
         with open(filename, 'wb') as f:
             f.write(response.content)
 

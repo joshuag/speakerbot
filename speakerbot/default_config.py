@@ -16,8 +16,7 @@ config = {
     'att_speech': {
         'client_id': '',
         'client_secret': '',
-        'scope': (
-            'TTS',
-        )
+        'voice_name': 'mike', # mike or crystal
+        'tempo': '-1' # -18 to 18 (lower is slower)
     }
 }
