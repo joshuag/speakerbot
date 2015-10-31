@@ -2,12 +2,6 @@
 config = {
     'debug': False,
     'mashape_api_key': "",
-    'twitter':{
-        'app_key':'',
-        'app_secret':'',
-        'oauth_token':'',
-        'oauth_token_secret':''
-    },
     'database':{
     	'driver':'mysql|sqlite3',
     	'host':'',
@@ -18,4 +12,12 @@ config = {
     },
     'sound_dir': 'sounds/',
     'sound_player': 'mpg321',
+    'wav_player': 'aplay|afplay',
+    'att_speech': {
+        'client_id': '',
+        'client_secret': '',
+        'scope': (
+            'TTS',
+        )
+    }
 }
