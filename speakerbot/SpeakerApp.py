@@ -17,6 +17,7 @@ from macros import Macro
 from util.words import parse_and_fill_mad_lib
 from config import config
 
+
 print "loading speakerbot"
 sb = Speakerbot()
 

@@ -45,3 +45,6 @@ speakerbot/play
 speakerbot/speakerbot.db
 
 speakerbot/config.py
+
+.venv
+.idea
