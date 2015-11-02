@@ -22,11 +22,12 @@ class ATTTextToSpeech(object):
     TOKEN_FIELD_NAME = 'att_speech_token'
     TOKEN_URL = 'https://api.att.com/oauth/v4/token'
     TTS_URL = 'https://api.att.com/speech/v3/textToSpeech'
+    TTS_VOICE= config['att_speech']['voice_name']
+    TTS_TEMPO = config['att_speech']['tempo']
     TTS_HEADERS = {
             'Content-Type': 'text/plain',
             'Accept': 'audio/x-wav',
-            'X-Arg': 'VoiceName={},Tempo={}'.format(config['att_speech']['voice_name'],
-                                                    config['att_speech']['tempo'])
+            'X-Arg': 'VoiceName={},Tempo={}'.format(TTS_VOICE, TTS_TEMPO)
     }
 
     def __init__(self):
@@ -61,7 +62,7 @@ class ATTTextToSpeech(object):
 
         for phrase in phrases:
             hsh = sha256()
-            hsh.update(phrase.lower())
+            hsh.update(phrase.lower() + self.TTS_VOICE + self.TTS_TEMPO)
             filename = 'speech/%s.wav' % hsh.hexdigest()
             self.create_sound_file(filename, phrase)
             filenames.append(filename)
