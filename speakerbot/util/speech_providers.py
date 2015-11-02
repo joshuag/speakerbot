@@ -18,7 +18,7 @@ class ATTTextToSpeech(object):
 
     CLIENT_ID = config['att_speech']['client_id']
     CLIENT_SECRET = config['att_speech']['client_secret']
-    CLIENT_SCOPE = ('TTS',)
+    CLIENT_SCOPE = ['TTS']
     TOKEN_FIELD_NAME = 'att_speech_token'
     TOKEN_URL = 'https://api.att.com/oauth/v4/token'
     TTS_URL = 'https://api.att.com/speech/v3/textToSpeech'
