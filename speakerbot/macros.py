@@ -30,10 +30,14 @@ class Macro(object):
         sound_queue = []
 
         for command_type, command_argument in self.commands:
-            if command_type == 'sound':
-                total_cost += self.sb.sounds[command_argument].cost * (sound_queue.count(command_argument) + 1)
-                sound_queue.append(command_argument)
-            elif command_type == 'speech':
-                total_cost += 2 * len(re.sub(r'[^a-z0-9]','', command_argument, flags=re.I))
+            try:
+                if command_type == 'sound':
+                    total_cost += self.sb.sounds[command_argument].cost * (sound_queue.count(command_argument) + 1)
+                    sound_queue.append(command_argument)
+                elif command_type == 'speech':
+                    total_cost += 2 * len(re.sub(r'[^a-z0-9]','', command_argument, flags=re.I))
+            except KeyError:
+                total_cost = 10000000000000
+                break 
 
         return total_cost
