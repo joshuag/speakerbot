@@ -49,8 +49,7 @@ class IBMTextToSpeech(object):
         }
 
         params = {
-            'text': text,
-            'voice': self._voice
+            'text': text
         }
 
         response = requests.get('https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize',
