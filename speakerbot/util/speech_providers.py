@@ -44,12 +44,13 @@ class IBMTextToSpeech(object):
             return
 
         headers = {
-            'Content-Type': 'application/json',
+            'Content-Type': 'text/plain',
             'Accept': 'audio/wav'
         }
 
         params = {
-            'text': text
+            'text': text,
+            'voice': self._voice
         }
 
         response = requests.get('https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize',
@@ -69,7 +70,7 @@ class ATTTextToSpeech(object):
     TOKEN_FIELD_NAME = 'att_speech_token'
     TOKEN_URL = 'https://api.att.com/oauth/v4/token'
     TTS_URL = 'https://api.att.com/speech/v3/textToSpeech'
-    TTS_VOICE= config['att_speech']['voice_name']
+    TTS_VOICE = config['att_speech']['voice_name']
     TTS_TEMPO = config['att_speech']['tempo']
     TTS_HEADERS = {
             'Content-Type': 'text/plain',
