@@ -29,17 +29,21 @@ class IBMTextToSpeech(object):
         if len(text) > self.PHRASE_LENGTH:
             phrases = split_text(text, self.PHRASE_LENGTH)
 
+        voice = self._voice
+        if 'debias' in text.lower() or 'debiac' in text.lower():
+            voice = 'it-IT_FrancescaVoice'
+
         for phrase in phrases:
             hsh = sha256()
-            hsh.update(phrase.lower() + self._voice)
+            hsh.update(phrase.lower() + voice
             filename = 'speech/%s.wav' % hsh.hexdigest()
-            self.create_sound_file(filename, phrase)
+            self.create_sound_file(filename, phrase, voice)
             filenames.append(filename)
 
         for filename in filenames:
             SoundPlayer(config['wav_player']).play_sound(filename)
 
-    def create_sound_file(self, filename, text):
+    def create_sound_file(self, filename, text, voice):
         if os.path.isfile(filename) and os.path.getsize(filename):
             return
 
@@ -50,7 +54,7 @@ class IBMTextToSpeech(object):
 
         params = {
             'text': text,
-            'voice': self._voice
+            'voice': voice
         }
 
         response = requests.get('https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize',
