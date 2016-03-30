@@ -35,7 +35,7 @@ class IBMTextToSpeech(object):
 
         for phrase in phrases:
             hsh = sha256()
-            hsh.update(phrase.lower() + voice
+            hsh.update(phrase.lower() + voice)
             filename = 'speech/%s.wav' % hsh.hexdigest()
             self.create_sound_file(filename, phrase, voice)
             filenames.append(filename)
