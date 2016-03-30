@@ -5,7 +5,7 @@ from listenable import listenable, event
 from speaker_db import SpeakerDB
 from dynamic_class import attach_methods, PluggableObject, MissingPluginException, lockable_class
 from sounds import Sound, SoundPlayer
-from util.speech_providers import ATTTextToSpeech
+from util.speech_providers import IBMTextToSpeech
 from util.words import parse_and_fill_mad_lib
 
 try:   
@@ -36,7 +36,7 @@ except ImportError:
 @attach_methods("speakerbot_plugins")
 class Speakerbot(PluggableObject):
 
-    def __init__(self, db=SpeakerDB, speech_provider=ATTTextToSpeech):
+    def __init__(self, db=SpeakerDB, speech_provider=IBMTextToSpeech):
 
         self.db = db()
         self.sound_player = SoundPlayer()

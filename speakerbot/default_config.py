@@ -18,5 +18,10 @@ config = {
         'client_secret': '',
         'voice_name': 'mike', # mike or crystal
         'tempo': '-1' # -18 to 18 (lower is slower)
+    },
+    'ibm_speech': {
+        'user': '',
+        'pw': '',
+        'voice': ''
     }
 }

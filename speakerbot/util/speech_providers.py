@@ -6,12 +6,60 @@ from config import config
 from hashlib import sha256
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
+import requests
 from urllib import quote_plus
 
 from text_manipulators import split_text
 from sounds import SoundPlayer
 
 from speaker_db import SpeakerDB
+
+
+class IBMTextToSpeech(object):
+
+    PHRASE_LENGTH = 1000
+
+    def __init__(self):
+        self._db = SpeakerDB()
+        self._voice = config['ibm_speech']['voice']
+
+    def say(self, text):
+        phrases = [text]
+        filenames = []
+        if len(text) > self.PHRASE_LENGTH:
+            phrases = split_text(text, self.PHRASE_LENGTH)
+
+        for phrase in phrases:
+            hsh = sha256()
+            hsh.update(phrase.lower() + self._voice)
+            filename = 'speech/%s.wav' % hsh.hexdigest()
+            self.create_sound_file(filename, phrase)
+            filenames.append(filename)
+
+        for filename in filenames:
+            SoundPlayer(config['wav_player']).play_sound(filename)
+
+    def create_sound_file(self, filename, text):
+        if os.path.isfile(filename) and os.path.getsize(filename):
+            return
+
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'audio/wav'
+        }
+
+        params = {
+            'text': text,
+            'voice': self._voice
+        }
+
+        response = requests.get('https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize',
+                                headers=headers,
+                                auth=(config['ibm_speech']['user'], config['ibm_speech']['pw']),
+                                params=params)
+
+        with open(filename, 'wb') as f:
+            f.write(response.content)
 
 
 class ATTTextToSpeech(object):
@@ -79,7 +127,6 @@ class ATTTextToSpeech(object):
             f.write(response.content)
 
 
-
 class GoogleTextToSpeech(object):
 
     def __init__(self, url_string=None):
@@ -118,6 +165,7 @@ class GoogleTextToSpeech(object):
                     stdout=f)
         if os.path.getsize(filename) == 0 and retries > 0:
             self.get_file(filename, url, retries=retries-1)
+
 
 class EspeakTextToSpeech(object):
 
