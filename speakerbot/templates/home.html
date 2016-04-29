@@ -138,7 +138,7 @@ $('#sort_by').popover();
               <input class="list-group-editable-input" type="text" id="filter_box" placeholder="Filter...">
             </div>
           	{% for sound_name, sound in sounds.iteritems() %}
-            <a class="list-group-item sound{% if sound.cost > current_speakerbuck_balance %} disabled{% endif %}" href="javascript:play_sound('{{sound.name}}')" data-date="{{ sound.date_added }}" data-cost="{{ sound.cost }}" data-name="{{ sound.name }}" data-score="{{ -1*sound.get_score() }}">
+            <a class="list-group-item sound{% if sound.cost > current_speakerbuck_balance %} disabled{% endif %}" href="javascript:play_sound("{{sound.name|tojson}}")" data-date="{{ sound.date_added }}" data-cost="{{ sound.cost }}" data-name="{{ sound.name }}" data-score="{{ -1*sound.get_score() }}">
                 <div class="downvote-button" onclick="downvote('{{ sound.name }}'); return false;"><span class="glyphicon glyphicon-thumbs-down"></span></div>
               {{ sound.name }}{% if sound.was_recently_added() %}<img src='{{config.get("image_url_root","")}}/static/img/new2.gif'>{% endif %}
               <span class="badge alert-default" title="{{ sound.votes }} plays, {{ sound.downvotes }} downvotes">{{ sound.get_score()}}</span>
