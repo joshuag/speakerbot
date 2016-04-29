@@ -27,7 +27,7 @@ var is_playing = false;
 var sound_queue = []
 
 function play_sound(sound_name) {
-    sound_queue.push(sound_name)
+    sound_queue.push(encodeURIComponent(sound_name))
     play_oldest_sound()
 }
 
