@@ -14,6 +14,8 @@ setup(
         'pyquery',
         'fuzzywuzzy',
         'requests-oauthlib',
-        'MySQL-python'
+        'MySQL-python',
+        'flask-ripozo',
+        'ripozo-sqlalchemy'
     ]
 )
