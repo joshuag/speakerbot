@@ -30,13 +30,20 @@ class IBMTextToSpeech(object):
             phrases = split_text(text, self.PHRASE_LENGTH)
 
         voice = self._voice
+        debiase = False
         if 'debias' in text.lower() or 'debiac' in text.lower():
+            debiase = True
             voice = 'it-IT_FrancescaVoice'
+
+        voice_prefix = '<voice-transformation type="Custom" glottal_tension="{gt}%"  breathiness="{b}%" pitch="{p}%" pitch_range="{pr}%" rate="{r}%" strength="{s}%">'\
+            .format(gt=random.randint(-99, 99), b=random.randint(-99, 99), p=random.randint(-99, 99), pr=random.randint(-99, 99), r=random.randint(-99, 99), s=random.randint(-99, 99))
 
         for phrase in phrases:
             hsh = sha256()
             hsh.update(phrase.lower() + voice)
             filename = 'speech/%s.wav' % hsh.hexdigest()
+            if not debiase:
+                phrase = voice_prefix + phrase + '</voice-transformation>'
             self.create_sound_file(filename, phrase, voice)
             filenames.append(filename)
 
