@@ -90,6 +90,7 @@ class SpeakerbotDJ:
                 continue
 
             # Hackaround to avoid economy
+            theme_song = 'monstermash'
             sb._play(theme_song)
             theme_play_time = dt.datetime.now().strftime("%s")
             self.db.execute("UPDATE person SET last_theme_play_time=? WHERE name=?", [theme_play_time, real_name])
