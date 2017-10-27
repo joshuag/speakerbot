@@ -35,9 +35,27 @@ class IBMTextToSpeech(object):
         if 'debias' in text.lower() or 'debiac' in text.lower():
             debiase = True
             voice = 'it-IT_FrancescaVoice'
-
-        voice_prefix = '<voice-transformation type="Custom" glottal_tension="{gt}%"  breathiness="{b}%" pitch="{p}%" pitch_range="{pr}%" rate="{r}%" strength="{s}%">'\
-            .format(gt=random.randint(-99, 99), b=random.randint(-99, 99), p=random.randint(-99, 99), pr=random.randint(-99, 99), r=random.randint(-99, 99), s=random.randint(-99, 99))
+        elif 'volkswagen' in text.lower():
+            debiase = True
+            voice = 'de-DE_DieterVoice'
+        elif 'godzilla' in text.lower():
+            debiase = True
+            voice = 'ja-JP_EmiVoice'
+        elif 'hola' in text.lower():
+            debiase = True
+            voice = 'es-US_SofiaVoice'
+        elif 'dan' in text.lower():
+            voice_prefix = '<voice-transformation type="Custom" strength="100%" pitch="-100%" pitch_range="20%" breathiness="20%" glottal_tension="-100%" rate="-100%">'
+        elif 'johnny' in text.lower():
+            voice_prefix = '<voice-transformation type="Custom" strength="-30%" pitch="100%" pitch_range="100%" breathiness="-30%" glottal_tension="70%" rate="-30%" timbre="Breeze" timbre_extent="50%">'
+	elif 'accounts payable' in text.lower():
+            voice_prefix = '<voice-transformation type="Custom" pitch="65%" pitch_range="99%" rate="20%">'
+        else:
+        #    voice = 'en-US_LisaVoice'
+        #    voice_prefix = '<voice-transformation type="Custom" timbre="Breeze" glottal_tension="-30%" breathiness="50%" pitch_range="-30%" rate="-90%" strength="30%" pitch="99%" timbre_extent="30%">'
+            voice_prefix = '<voice-transformation type="Custom" glottal_tension="-10%" breathiness="-10%" pitch="10%" pitch_range="15%" rate="-99%" strength="5%">'
+        #    voice_prefix = '<voice-transformation type="Custom" glottal_tension="{gt}%"  breathiness="{b}%" pitch="{p}%" pitch_range="{pr}%" rate="{r}%" strength="{s}%">'\
+        #        .format(gt=random.randint(-99, 99), b=random.randint(-99, 99), p=random.randint(-99, 99), pr=random.randint(-99, 99), r=random.randint(-99, 99), s=random.randint(-99, 99))
 
         for phrase in phrases:
             hsh = sha256()
@@ -173,7 +191,7 @@ class GoogleTextToSpeech(object):
         if not os.path.isfile(filename) or os.path.getsize(filename) == 0:
             f = open(filename, "w")
             subprocess.call(
-                    ['curl','-A Mozilla', url], 
+                    ['curl','-A Mozilla', url],
                     stdout=f)
         if os.path.getsize(filename) == 0 and retries > 0:
             self.get_file(filename, url, retries=retries-1)
@@ -184,8 +202,8 @@ class EspeakTextToSpeech(object):
     def __init__(self, speak_path="espeak", wpm=150):
 
         self.speak_path = speak_path
-        self.wpm_string = "-s %s" % wpm 
+        self.wpm_string = "-s %s" % wpm
 
-    def say(self, text): 
+    def say(self, text):
 
         subprocess.call([self.speak_path, text, self.wpm_string])
