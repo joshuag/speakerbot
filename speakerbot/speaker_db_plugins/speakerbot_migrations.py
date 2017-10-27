@@ -122,3 +122,7 @@ def _migrate_24(self):
 
 def _migrate_25(self):
     self.execute("CREATE TABLE badwords (word varchar(50))")
+
+def _migrate_26(self):
+    self.execute("CREATE TABLE slacker_listeners (channel varchar(256), phrase varchar(256) NOT NULL, command varchar(50) NOT NULL, argument varchar(256) NOT NULL)")
+
