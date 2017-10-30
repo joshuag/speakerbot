@@ -253,7 +253,7 @@ def lunch(sb):
 @plugin
 def weather(sb):
 
-    r = requests.get("https://api.forecast.io/forecast/38a9c91bca816b2e960c14c1ecdcf8c6/41.4311,-81.3886")
+    r = requests.get("%s41.4311,-81.3886" % (config["dark_sky_url"]))
 
     weather = json.loads(r.text)
 
