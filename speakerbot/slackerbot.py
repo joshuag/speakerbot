@@ -92,7 +92,7 @@ def get_listener(thing):
     listener = None
 
     try:
-        listener = db.execute("select * from slacker_listeners where phrase=?", thing).next()
+        listener = db.execute("select * from slacker_listeners where phrase=?", (thing,)).next()
         return listener["phrase"], listener["command"], listener["argument"]
     except:
         pass
