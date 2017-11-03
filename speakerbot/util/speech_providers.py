@@ -1,6 +1,6 @@
 import json
 import os
-import random
+import re
 import subprocess
 
 from config import config
@@ -23,46 +23,47 @@ class IBMTextToSpeech(object):
     def __init__(self):
         self._db = SpeakerDB()
         self._voice = config['ibm_speech']['voice']
+        self._voice_prefix = '<voice-transformation type="Custom" glottal_tension="-10%" breathiness="-10%" pitch="10%" pitch_range="15%" rate="-99%" strength="5%">'
 
     def say(self, text):
         phrases = [text]
         filenames = []
+        text = text.lower()
         if len(text) > self.PHRASE_LENGTH:
             phrases = split_text(text, self.PHRASE_LENGTH)
 
         voice = self._voice
-        debiase = False
-        if 'debias' in text.lower() or 'debiac' in text.lower():
-            debiase = True
+        voice_prefix = self._voice_prefix
+        if 'kyle' in text:
+            phrases = [r'Kyle is a programmer god.']
+            voice_prefix = '<voice-transformation type="Custom" strength="100%" breathiness="-100%" glottal_tension="100%" rate="-100%">'
+        elif re.search(r'debia(s|cc)e', text):
             voice = 'it-IT_FrancescaVoice'
-        elif 'volkswagen' in text.lower():
-            debiase = True
+            voice_prefix = ''
+        elif re.search(r'volkswagen', text):
             voice = 'de-DE_DieterVoice'
-        elif 'godzilla' in text.lower():
-            debiase = True
+            voice_prefix = ''
+        elif 'godzilla' in text:
             voice = 'ja-JP_EmiVoice'
-        elif 'hola' in text.lower():
-            debiase = True
+            voice_prefix = ''
+        elif re.search(r'(hola|gracias|amigo)', text):
             voice = 'es-US_SofiaVoice'
-        elif 'dan' in text.lower():
+            voice_prefix = ''
+        elif re.search(r'ja(ke|cob)', text):
+            voice = 'en-US_LisaVoice'
+            voice_prefix = '<voice-transformation type="Custom" glottal_tension="60%" breathiness="-30%" pitch="-50%" pitch_range="35%" rate="-30%">'
+        elif 'dan' in text:
             voice_prefix = '<voice-transformation type="Custom" strength="100%" pitch="-100%" pitch_range="20%" breathiness="20%" glottal_tension="-100%" rate="-100%">'
-        elif 'johnny' in text.lower():
+        elif 'johnny' in text:
             voice_prefix = '<voice-transformation type="Custom" strength="-30%" pitch="100%" pitch_range="100%" breathiness="-30%" glottal_tension="70%" rate="-30%" timbre="Breeze" timbre_extent="50%">'
-	elif 'accounts payable' in text.lower():
+        elif 'accounts payable' in text:
             voice_prefix = '<voice-transformation type="Custom" pitch="65%" pitch_range="99%" rate="20%">'
-        else:
-        #    voice = 'en-US_LisaVoice'
-        #    voice_prefix = '<voice-transformation type="Custom" timbre="Breeze" glottal_tension="-30%" breathiness="50%" pitch_range="-30%" rate="-90%" strength="30%" pitch="99%" timbre_extent="30%">'
-            voice_prefix = '<voice-transformation type="Custom" glottal_tension="-10%" breathiness="-10%" pitch="10%" pitch_range="15%" rate="-99%" strength="5%">'
-        #    voice_prefix = '<voice-transformation type="Custom" glottal_tension="{gt}%"  breathiness="{b}%" pitch="{p}%" pitch_range="{pr}%" rate="{r}%" strength="{s}%">'\
-        #        .format(gt=random.randint(-99, 99), b=random.randint(-99, 99), p=random.randint(-99, 99), pr=random.randint(-99, 99), r=random.randint(-99, 99), s=random.randint(-99, 99))
 
         for phrase in phrases:
-            hsh = sha256()
-            hsh.update(phrase.lower() + voice)
-            filename = 'speech/%s.wav' % hsh.hexdigest()
-            if not debiase:
-                phrase = voice_prefix + phrase + '</voice-transformation>'
+            hsh = sha256('{}{}{}'.format(phrase.lower(), voice, voice_prefix)).hexdigest()
+            filename = 'speech/%s.wav' % hsh
+            if voice_prefix:
+                phrase = '{}{}</voice-transformation>'.format(voice_prefix, phrase)
             self.create_sound_file(filename, phrase, voice)
             filenames.append(filename)
 
