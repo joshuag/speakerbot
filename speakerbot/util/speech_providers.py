@@ -1,12 +1,9 @@
-import json
 import os
 import re
 import subprocess
 
 from config import config
 from hashlib import sha256
-from oauthlib.oauth2 import BackendApplicationClient
-from requests_oauthlib import OAuth2Session
 import requests
 from urllib import quote_plus
 
@@ -89,71 +86,6 @@ class IBMTextToSpeech(object):
                                 auth=(config['ibm_speech']['user'], config['ibm_speech']['pw']),
                                 params=params)
 
-        with open(filename, 'wb') as f:
-            f.write(response.content)
-
-
-class ATTTextToSpeech(object):
-
-    CLIENT_ID = config['att_speech']['client_id']
-    CLIENT_SECRET = config['att_speech']['client_secret']
-    CLIENT_SCOPE = ['TTS']
-    TOKEN_FIELD_NAME = 'att_speech_token'
-    TOKEN_URL = 'https://api.att.com/oauth/v4/token'
-    TTS_URL = 'https://api.att.com/speech/v3/textToSpeech'
-    TTS_VOICE = config['att_speech']['voice_name']
-    TTS_TEMPO = config['att_speech']['tempo']
-    TTS_HEADERS = {
-            'Content-Type': 'text/plain',
-            'Accept': 'audio/x-wav',
-            'X-Arg': 'VoiceName={},Tempo={}'.format(TTS_VOICE, TTS_TEMPO)
-    }
-
-    def __init__(self):
-        self._db = SpeakerDB()
-        self.client = self.get_client()
-
-    def get_client(self):
-        token = self._db.get_field_value('att_speech_token')
-        if token:
-            token = json.loads(token)
-        else:
-            oauth = OAuth2Session(client=BackendApplicationClient(client_id=self.CLIENT_ID))
-            token = oauth.fetch_token(token_url=self.TOKEN_URL,
-                                      client_id=self.CLIENT_ID,
-                                      client_secret=self.CLIENT_SECRET,
-                                      scope=self.CLIENT_SCOPE)
-            self.save_token(token)
-
-        return OAuth2Session(self.CLIENT_ID,
-                             token=token,
-                             auto_refresh_url=self.TOKEN_URL,
-                             token_updater=self.save_token)
-
-    def save_token(self, token):
-        self._db.set_field_value(self.TOKEN_FIELD_NAME, json.dumps(token))
-
-    def say(self, text):
-        phrases = [text]
-        filenames = []
-        if len(text) > 100:
-            phrases = split_text(text, 100)
-
-        for phrase in phrases:
-            hsh = sha256()
-            hsh.update(phrase.lower() + self.TTS_VOICE + self.TTS_TEMPO)
-            filename = 'speech/%s.wav' % hsh.hexdigest()
-            self.create_sound_file(filename, phrase)
-            filenames.append(filename)
-
-        for filename in filenames:
-            SoundPlayer(config['wav_player']).play_sound(filename)
-
-    def create_sound_file(self, filename, text):
-        if os.path.isfile(filename) and os.path.getsize(filename):
-            return
-
-        response = self.client.post(self.TTS_URL, headers=self.TTS_HEADERS, data=text)
         with open(filename, 'wb') as f:
             f.write(response.content)
 
