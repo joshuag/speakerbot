@@ -40,7 +40,7 @@ class IBMTextToSpeech(object):
         elif re.search(r'debia(s|cc)e', text):
             voice = 'it-IT_FrancescaVoice'
             voice_prefix = ''
-        elif re.search(r'volkswagen', text):
+        elif re.search(r'(volkswagen|audi|porsche|bmw|mercedes|benz)', text):
             voice = 'de-DE_DieterVoice'
             voice_prefix = ''
         elif 'godzilla' in text:
