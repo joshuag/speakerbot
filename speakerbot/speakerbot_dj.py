@@ -40,7 +40,7 @@ class SpeakerbotDJ:
 
     def check_for_entrance(self):
         # Needs cleanup... 
-        mail = imaplib.IMAP4(config['email']['host'])
+        mail = imaplib.IMAP4_SSL(config['email']['host'])
         mail.login(config['email']['user'], config['email']['pass'])
         mail.select()
         (retcode, messages) = mail.search(None, '(UNSEEN)')
