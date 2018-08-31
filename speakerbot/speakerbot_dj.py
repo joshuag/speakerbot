@@ -19,7 +19,7 @@ class SpeakerbotDJ:
         self.last_theme_cache_time = dt.datetime.min
 
     def extract_email_field(self, s, field):
-        field_match = re.search(r'^\s*{}:\s+(.*?)\s*$'.format(re.escape(field)), s, flags=re.I|re.M)
+        field_match = re.search(r'>\s*{}:\s+(.*?)\s*<'.format(re.escape(field)), s, flags=re.I|re.M)
         if not field_match:
             return None
         return field_match.group(1)
